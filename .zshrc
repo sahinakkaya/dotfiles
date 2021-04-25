@@ -86,6 +86,10 @@ plugins=(
 # )
 #
 
+# https://stackoverflow.com/questions/28028740/git-tab-completion-in-zsh-throwing-errors
+zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
+fpath=(~/.zsh $fpath)
+
 ZVM_VI_INSERT_ESCAPE_BINDKEY=kj
 ZVM_LAZY_KEYBINDINGS=false
 
