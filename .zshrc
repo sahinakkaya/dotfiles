@@ -171,6 +171,7 @@ eval "$(pyenv virtualenv-init -)"
 
 
 # If not in tmux session, add battery and time to prompt
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [[ -n $TMUX ]] || POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(battery time)
 
 export VISUAL=vim
@@ -202,4 +203,3 @@ export FZF_DEFAULT_OPTS='--bind change:top'
 autoload -U compinit; compinit -y
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
