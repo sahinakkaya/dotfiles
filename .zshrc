@@ -78,7 +78,7 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 
 plugins=(
-  zsh-autosuggestions python pip last-working-dir history sudo command-not-found git poetry extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua
+  zsh-autosuggestions python pip last-working-dir history sudo command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua
 )
 
 # plugins=(
@@ -158,7 +158,6 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 
 # . /usr/share/autojump/autojump.sh
-export PATH="$HOME/.poetry/bin:$PATH"
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="/snap/bin:$PATH"
