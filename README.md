@@ -7,5 +7,5 @@ My dotfiles
 
 
 ### Todo
-- Write a script for automating the installation
+- ~Write a script for automating the installation~
 
