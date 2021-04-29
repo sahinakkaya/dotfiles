@@ -59,34 +59,38 @@ plugins=(
 plugins+=(zsh-prompt-benchmark)
 
 
+ZVM_LAZY_KEYBINDINGS=false
+ZVM_VI_INSERT_ESCAPE_BINDKEY=kj
+
+
+source $ZSH/oh-my-zsh.sh
+source ~/.p10k.zsh
+
 # https://stackoverflow.com/questions/28028740/git-tab-completion-in-zsh-throwing-errors
 zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
 fpath=(~/.zsh $fpath)
-
-ZVM_VI_INSERT_ESCAPE_BINDKEY=kj
-ZVM_LAZY_KEYBINDINGS=false
-
-source $ZSH/oh-my-zsh.sh
-
-
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=32'
-# User configuration
 
 eval $(thefuck --alias)
 unsetopt nomatch
 
 export LANG=en_US.UTF-8
-
-
-
-# If not in tmux session, add battery and time to prompt
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-[[ -n $TMUX ]] || POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(battery time)
-
 export VISUAL=vim
 export EDITOR="$VISUAL"
 export PYTHONBREAKPOINT=ipdb.set_trace
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=32'
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=true
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -l -g ""'
+export FZF_DEFAULT_OPTS='--bind change:top'
+# export TERM_ITALICS=false
+export PATH="$HOME/.poetry/bin:$PATH"
+
+
+
+
+# If not in tmux session, add battery and time to prompt
+[[ -n $TMUX ]] || POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(battery time)
+
 
 # https://github.com/jeffreytse/zsh-vi-mode#execute-extra-commands
 function my_bindings() {
@@ -100,8 +104,7 @@ function my_bindings() {
 
 zvm_after_init_commands+=('[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh')
 zvm_after_init_commands+=(my_bindings)
-# Always starting with insert mode for each command line
-ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT # Always starting with insert mode for each command line
 ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
 
 autoload -U compinit; compinit -y
