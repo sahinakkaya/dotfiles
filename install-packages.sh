@@ -69,6 +69,7 @@ git clone --quiet https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-
 
 git clone --quiet https://github.com/skywind3000/z.lua ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/z.lua
 git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+ln -s ~/.aliases ~/.oh-my-zsh/custom/aliases.zsh
 
 sudo pip3 --quiet install thefuck
 

@@ -72,47 +72,11 @@ source $ZSH/oh-my-zsh.sh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=32'
 # User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
+eval $(thefuck --alias)
+unsetopt nomatch
 
 export LANG=en_US.UTF-8
 
-
-alias rake='noglob bundled_rake'
-eval $(thefuck --alias)
-unsetopt nomatch
-alias weather='curl wttr.in/?0'
-alias gdm='gd master'
-alias ratslap="~/Downloads/ratslap/ratslap"
-alias charmce="/usr/local/bin/charmce"
-alias intel="sudo prime-select intel"
-alias nvidia="sudo prime-select nvidia"
-alias pls="sudo"
-alias p="charm ."
-alias cat="bat"
-alias bd="batdiff"
-alias man="batman"
-alias cd.="cd .."
-alias cd..="cd .."
-alias xd="xdg-open &>/dev/null"
-alias xd.="xdg-open &>/dev/null ."
-alias suod="sudo"
-alias sduo="sudo"
-alias zz='z -c'      # restrict matches to subdirs of $PWD
-alias zi='z -I'      # use fzf to select in multiple matches
-alias t="todo.sh"
-alias ta="todo.sh add"
-alias tl="todo.sh list"
-alias td="todo.sh do"
-alias tp="todo.sh pri"
-alias viz="vim ~/.zshrc"
-alias vit="vim ~/.tmux.conf"
-alias vip="vim ~/.p10k.zsh"
-alias viv="vim ~/.vimrc"
-alias viw="vim ~/.which-key.vim"
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
-
-export PATH="/snap/bin:$PATH"
 
 
 # If not in tmux session, add battery and time to prompt
