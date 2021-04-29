@@ -1,3 +1,14 @@
+# Always start a tmux session when opening up terminal
+if type tmux &> /dev/null; then
+    session_name=${YAKUAKE:-Konsole}
+    #if not inside a tmux session, start a new session
+    if [[ $HOST == "ubuntu" && -z "$TMUX" ]]; then
+        (tmux -2 new-session -A -s $session_name || false)
+        # || false makes Konsole happy while quitting. It doesn't ask for
+        # confirmation. Since we are in tmux, it doesn't matter if we really
+        # wanted to quit or not
+    fi
+fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block, everything else may go below.
