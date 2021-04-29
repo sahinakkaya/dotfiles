@@ -12,6 +12,7 @@ set relativenumber
 set incsearch
 set tabstop=4
 set updatetime=100
+set colorcolumn=81
 " when indenting with '>', use 4 spaces width
 set shiftwidth=4
 " On pressing tab, insert 4 spaces
@@ -42,9 +43,13 @@ vmap // gc
 nmap <C-B><C-B> :set invrelativenumber<CR>
 
 nmap gd :YcmCompleter GoToDefinition<CR>
+nmap <leader>yr :YcmCompleter RefactorRename <C-r>=expand('<cword>')<CR><C-f>
+
 nnoremap <leader>ghw :h <C-R>=expand("<cword>")<CR><CR>
-nmap <C-m> :MaximizerToggle<CR>
+
 inoremap kj <esc>
+nmap <C-m> :MaximizerToggle<CR>
+let g:maximizer_set_default_mapping = 0
 " Make Y consistent with C and D. See :help Y.
 nnoremap Y y$
 
@@ -172,7 +177,6 @@ call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
-
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'python': [
@@ -187,6 +191,7 @@ let g:ale_fixers = {
 \}
 
 let g:ale_fix_on_save = 1
+let g:ale_python_flake8_options ="--ignore=E501"
 
 source $HOME/.which-key.vim
 " source $HOME/rotate.vim
@@ -260,6 +265,7 @@ let g:ycm_key_detailed_diagnostics = ''
 
 let g:indentLine_concealcursor = 'inc'
 let g:indentLine_conceallevel = 2
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='deus'
