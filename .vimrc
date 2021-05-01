@@ -216,9 +216,6 @@ nmap <silent> <C-e> <Plug>(ale_next_wrap)
 
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
-" https://github.com/tmux/tmux/issues/2059
-let &t_SI = "\e[5 q"
-let &t_EI = "\e[2 q"
 
 set backup		" keep a backup file (restore to previous version)
 set swapfile
