@@ -47,16 +47,33 @@ nmap <leader>yr :YcmCompleter RefactorRename <C-r>=expand('<cword>')<CR><C-f>
 
 nnoremap <leader>ghw :h <C-R>=expand("<cword>")<CR><CR>
 
-inoremap kj <esc>
+" exit from insert mode without cursor movement
+inoremap kj <esc>`^
 nmap <C-m> :MaximizerToggle<CR>
 let g:maximizer_set_default_mapping = 0
 " Make Y consistent with C and D. See :help Y.
 nnoremap Y y$
 
+" by default, 'a jumps to line marked with ma
+" while `a jumps to line AND column marked with ma
+" swap ' and `
+nnoremap ' `
+nnoremap ` '
+
+" <leader>q quits the current window
+nnoremap <silent> <leader>q :q<CR>
+inoremap <silent> <leader>q <ESC>:q<CR>
+
+" indent with tab in visual mode
+vmap <Tab> >
+vmap <S-Tab> <
 
 " Disable quote concealing in JSON files
 let g:vim_json_conceal=0
 
+" scroll by visual lines, useful when wrapping is enabled
+nnoremap j gj
+nnoremap k gk
 
 let g:sneak#label = 1
 let g:loaded_matchparen=1
@@ -234,6 +251,7 @@ augroup END
 if has('syntax') && has('eval')
   packadd! matchit
 endif
+
 
 "automatically start nerdtree when vim is opened
 "autocmd vimenter * NERDTree
