@@ -1,6 +1,6 @@
 # Always start a tmux session when opening up terminal
 if type tmux &> /dev/null; then
-    session_name=${YAKUAKE:-Konsole}
+    session_name=${TERMINAL_NAME:-Terminal}
     #if not inside a tmux session, start a new session
     if [[ $HOST == "ubuntu" && -z "$TMUX" ]]; then
         (tmux -2 new-session -A -s $session_name || false)
