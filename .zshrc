@@ -54,7 +54,7 @@ HIST_STAMPS="mm/dd/yyyy"
 
 # plugins=()
 plugins=(
-  zsh-autosuggestions python pip last-working-dir history sudo command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua
+  zsh-autosuggestions python pip last-working-dir dirhistory history sudo command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua 
 )
 plugins+=(zsh-prompt-benchmark)
 
@@ -99,6 +99,10 @@ function my_bindings() {
     bindkey '^f' forward-word
     bindkey '^g' autosuggest-accept
     bindkey "\e\e" sudo-command-line
+    bindkey "\e[1;3D" dirhistory_zle_dirhistory_back
+    bindkey "\e[1;3C" dirhistory_zle_dirhistory_future
+    bindkey "\e[1;3A" dirhistory_zle_dirhistory_up
+    bindkey "\e[1;3B" dirhistory_zle_dirhistory_down
 }
 
 
