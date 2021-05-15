@@ -1,3 +1,4 @@
+alias af=alias-finder
 alias ls=lsd
 alias lt="lsd --tree"
 alias rake='noglob bundled_rake'
