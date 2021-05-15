@@ -1,3 +1,5 @@
+alias ls=lsd
+alias lt="lsd --tree"
 alias rake='noglob bundled_rake'
 alias weather='curl wttr.in/?0'
 alias gdm='gd master'
