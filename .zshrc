@@ -54,7 +54,7 @@ HIST_STAMPS="mm/dd/yyyy"
 
 # plugins=()
 plugins=(
-  alias-finder zsh-autosuggestions pip last-working-dir dirhistory history sudo command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua
+  gitignore alias-finder zsh-autosuggestions pip last-working-dir dirhistory history thefuck command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua pyenv-lazy
 )
 # plugins+=(zsh-prompt-benchmark)
 
@@ -70,7 +70,6 @@ source ~/.p10k.zsh
 zstyle ':completion:*:*:git:*' script ~/.git-completion.bash
 fpath=(~/.zsh $fpath)
 
-eval $(thefuck --alias)
 unsetopt nomatch
 
 export LANG=en_US.UTF-8
@@ -86,6 +85,9 @@ export FZF_DEFAULT_OPTS='--bind change:top'
 export PATH="$HOME/.poetry/bin:$PATH"
 
 
+# . /usr/share/autojump/autojump.sh
+export PATH="/snap/bin:$PATH"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 
 # If not in tmux session, add battery and time to prompt
@@ -98,7 +100,7 @@ function my_bindings() {
     bindkey '^j' backward-word
     bindkey '^f' forward-word
     bindkey '^g' autosuggest-accept
-    bindkey "\e\e" sudo-command-line
+    bindkey "\e\e" fuck-command-line
     bindkey "\e[1;3D" dirhistory_zle_dirhistory_back
     bindkey "\e[1;3C" dirhistory_zle_dirhistory_future
     bindkey "\e[1;3A" dirhistory_zle_dirhistory_up
