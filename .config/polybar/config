@@ -255,8 +255,8 @@ label = " %percentage_used%%"
   interface = eth0
 
   format-connected-underline = #55aa55
-; label-connected =  %linkspeed%
-  label-connected =  
+  label-connected =  %linkspeed%
+; label-connected =  
   label-connected-foreground = ${colors.primary} 
 
 [module/date]
@@ -329,8 +329,8 @@ label = " %percentage_used%%"
   label-charging = %percentage%%
   label-discharging = %percentage%%
 
-  label-full =  
-  label-full-foreground = ${colors.fourth}
+  label-full =  Fully charged
+  label-full-foreground = #00ff00
 
 
   ramp-capacity-0 = 
@@ -365,7 +365,7 @@ label = " %percentage_used%%"
 
   animation-charging-foreground = ${colors.fourth}
 
-  label-discharging-foreground = ${colors.fourth}
+  label-discharging-foreground = ${colors.foreground}
   label-charging-foreground = ${colors.fourth}
 
 [module/powermenu]
