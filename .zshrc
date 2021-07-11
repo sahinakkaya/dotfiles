@@ -97,7 +97,7 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 # https://github.com/jeffreytse/zsh-vi-mode#execute-extra-commands
 function my_bindings() {
     # easy bindings instead of ctrl + arrow keys
-    bindkey '^j' backward-word
+    bindkey '^b' backward-word
     bindkey '^f' forward-word
     bindkey '^g' autosuggest-accept
     bindkey "\e\e" fuck-command-line
