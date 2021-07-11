@@ -3,9 +3,10 @@
 
 My dotfiles
 
-![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/working_environment.jpeg)
+![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/working_environmentv2.png)
+![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/working_environmentv3.png)
 
 
 ### Todo
-- ~Write a script for automating the installation~
+- Update the installation script
 
