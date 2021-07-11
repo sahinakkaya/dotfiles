@@ -65,8 +65,8 @@ bindsym $mod+Shift+e exec $rofi powermenu
 
 
 # Set up screenshots and partial screenshots
-bindsym --release Print exec maim ~/images/scrots/`date +%Y-%m-%d_%H:%M:%S`.png
-bindsym --release Shift+Print exec maim -s ~/images/scrots/`date +%Y-%m-%d_%H:%M:%S`.png
+bindsym --release Print exec maim ~/Pictures/Screenshots/`date +%Y-%m-%d_%H:%M:%S`.png
+bindsym --release Shift+Print exec maim -s ~/Pictures/Screenshots/`date +%Y-%m-%d_%H:%M:%S`.png
 
 
 # Bind brightness keys to light interface
