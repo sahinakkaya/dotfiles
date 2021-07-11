@@ -10,6 +10,7 @@ My dotfiles
 - Shell: [zsh](https://www.zsh.org/) with [oh my zsh](https://github.com/ohmyzsh/ohmyzsh)
 - Shell theme: [powerlevel10k](https://github.com/romkatv/powerlevel10k/)
 - Editor: [neovim](https://github.com/neovim/neovim)
+- Notifications: [dunst](https://github.com/dunst-project/dunst)
 
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/working_environmentv2-0.png)
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/working_environmentv2-1.png)
