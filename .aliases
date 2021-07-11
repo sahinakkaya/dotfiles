@@ -4,6 +4,8 @@ alias lt="lsd --tree"
 alias rake='noglob bundled_rake'
 alias weather='curl wttr.in/?0'
 alias gdm='gd master'
+alias s='gst .'
+alias d='gd .'
 alias ratslap="~/Downloads/ratslap/ratslap"
 alias charmce="/usr/local/bin/charmce"
 alias intel="sudo prime-select intel"
@@ -36,4 +38,6 @@ alias vip="vim ~/.p10k.zsh"
 alias viv="vim ~/.vimrc"
 alias viw="vim ~/.which-key.vim"
 alias via="vim ~/.aliases"
+alias connect="sudo vpnc kartaca-vpn"
+alias disconnect="sudo vpnc-disconnect"
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
