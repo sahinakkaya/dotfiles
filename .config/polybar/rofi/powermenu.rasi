@@ -1,0 +1,40 @@
+* {
+    background-color: #282A3A; 
+    color: #7e8294;
+    font: "Segoe UI 10";
+}
+
+#window {
+    location: north;
+    width: 375px;
+    padding: -6px 0px;
+    children: [horibox];
+}
+
+#horibox {
+    orientation: horizontal;
+    children:   [listview];
+}
+
+#listview {
+    layout: horizontal;
+    padding: 0px 0px;
+    spacing: 2px;
+    lines: 50;
+
+}
+
+#element {
+    margin: 0px 5px;
+    padding: 6px 2px;
+}
+
+#element selected {
+    color: #e1e3e4;
+}
+
+#button {
+    font: "Segoe UI 1 ";
+    width: 12;
+    text-color: #7e8294;
+}
