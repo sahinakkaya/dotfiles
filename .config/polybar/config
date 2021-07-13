@@ -52,6 +52,7 @@
   black = #181a1c
 
 [bar/main]
+  monitor = ${env:MONITOR:}
   width = 100%
   offset-x = 0
   offset-y = 0
