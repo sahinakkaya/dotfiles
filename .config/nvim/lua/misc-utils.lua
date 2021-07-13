@@ -41,6 +41,10 @@ vim.g.loaded_matchit = 0
 vim.g.loaded_matchparen = 0
 vim.g.loaded_spec = 0
 
+-- tmux-navigator
+vim.g.tmux_navigator_disable_when_zoomed = 1
+vim.g.tmux_navigator_no_wrap = 1 -- You need to merge tmux-navigator with heewa/add-no-wrap-option
+
 local M = {}
 
 function M.is_buffer_empty()
