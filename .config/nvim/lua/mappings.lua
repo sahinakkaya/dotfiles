@@ -124,8 +124,8 @@ map("n", "<S-x>", ":bd!<CR>", opt) -- close tab
 -- indent with tabs
 map("n", "<TAB>", '>>', opt)
 map("n", "<S-TAB>", '<<', opt)
-map("v", "<TAB>", '>>', opt)
-map("v", "<S-TAB>", '<<', opt)
+map("v", "<TAB>", '>', opt)
+map("v", "<S-TAB>", '<', opt)
 
 
 map("n", "<F3>", ":set invhlsearch<CR>", opt)
