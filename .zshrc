@@ -51,7 +51,6 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # see 'man strftime' for details.
 HIST_STAMPS="mm/dd/yyyy"
 
-
 # plugins=()
 plugins=(
   gitignore alias-finder zsh-autosuggestions pip last-working-dir dirhistory history thefuck command-not-found git extract zsh-syntax-highlighting docker docker-compose zsh-vi-mode z.lua pyenv-lazy
@@ -73,7 +72,7 @@ fpath=(~/.zsh $fpath)
 unsetopt nomatch
 
 export LANG=en_US.UTF-8
-export VISUAL=vim
+export VISUAL=nvim
 export EDITOR="$VISUAL"
 export PYTHONBREAKPOINT=ipdb.set_trace
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
@@ -83,6 +82,7 @@ export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -l -g ""'
 export FZF_DEFAULT_OPTS='--bind change:top'
 # export TERM_ITALICS=false
 export PATH="$HOME/.poetry/bin:$PATH"
+export PATH=$PATH:$HOME/scripts
 
 
 # . /usr/share/autojump/autojump.sh

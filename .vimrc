@@ -38,6 +38,18 @@ set ttymouse=xterm2
 nmap // gcc
 vmap // gc
 
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+" Triger `autoread` when files changes on disk
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+" https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+            \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
+
+" Notification after file change
+" https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+
 
 " Toggle relative line number
 nmap <C-B><C-B> :set invrelativenumber<CR>
@@ -61,8 +73,8 @@ nnoremap ' `
 nnoremap ` '
 
 " <leader>q quits the current window
-nnoremap <silent> <leader>q :q<CR>
-inoremap <silent> <leader>q <ESC>:q<CR>
+" nnoremap <silent> <leader>q :q<CR>
+" inoremap <silent> <leader>q <ESC>:q<CR>
 
 " indent with tab in visual mode
 vmap <Tab> >
@@ -148,6 +160,7 @@ Plugin 'kana/vim-textobj-line'
 Plugin 'kana/vim-textobj-user'
 Plugin 'lepture/vim-jinja'
 Plugin 'liuchengxu/vim-which-key'
+Plugin 'dylanaraps/wal.vim'
 "rainbow parenthesis
 Plugin 'luochen1990/rainbow'
 Plugin 'mbbill/undotree'
@@ -216,6 +229,7 @@ nmap <silent> <C-e> <Plug>(ale_next_wrap)
 
 " Disable tmux navigator when zooming the Vim pane
 let g:tmux_navigator_disable_when_zoomed = 1
+let g:tmux_navigator_no_wrap = 1
 
 set backup		" keep a backup file (restore to previous version)
 set swapfile
