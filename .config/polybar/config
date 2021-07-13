@@ -18,13 +18,21 @@
 ;
 ; 並 全 侀 冀 勇 勺 喝 啕 喙 嗢 塚 墳 奄 奔 婢 嬨 廒 廙 彩 徭 惘 慎 愈 憎 慠 懲 戴 揄 搜 摒 敖 晴 朗 望 杖 歹 殺 流 滛 滋 漢 瀞 煮 瞧 爵 犯 猪 瑱 甆 画 瘝 瘟 益 盛 直 睊 着 磌 窱 節 类 絛 練 缾 者 荒 華 蝹 襁 覆 視 調 諸 請 謁 諾 諭 謹 變 贈 輸 遲 醙 鉶 陼 難 靖 韛 響 頋 頻 鬒 龜 𢡊 𢡄 𣏕 㮝 䀘 䀹 𥉉 𥳐 𧻓 齃 龎
 [colors]
-  background = #fa1e2137 
-  foreground = #e3eaf3
-  primary = #02c084
-  secondary = #65a2d9
-  tertiary = #d07ef2
-  fourth = #e5c246
-  alert = #ed404c
+; background = #fa1e2137 
+; foreground = #e3eaf3
+; primary = #02c084
+; secondary = #65a2d9
+; tertiary = #d07ef2
+; fourth = #e5c246
+; alert = #ed404c
+  background = ${xrdb:color0:#222}
+  foreground = ${xrdb:color7:#e3eaf3}
+  alert = ${xrdb:color1:#222}
+  primary = ${xrdb:color2:#222}
+  secondary = ${xrdb:color3:#222}
+  tertiary = ${xrdb:color4:#222}
+  fourth = ${xrdb:color5:#222}
+  fifth = ${xrdb:color6:#222}
 
 [colors-andromeda]
   background = #282A3A
@@ -182,7 +190,7 @@
   format = <label> 
   label = " %percentage%%"
   format-prefix = ﬙ 
-  format-foreground = ${colors-andromeda.magenta}
+  format-foreground = ${colors.fifth}
   format-padding = 0
   ramp-coreload-spacing = 0
   ramp-coreload-0 = ▁
@@ -207,7 +215,6 @@
   units = true
 
   format = <ramp> <label>
-  ; format-background = ${colors-andromeda.background}
   format-foreground = ${colors.secondary}
   format-overline = ${colors-andromeda.background}
   format-underline = ${colors-andromeda.background}
@@ -215,7 +222,7 @@
 
   format-warn = <ramp> <label-warn>
   ; format-warn-background = ${colors-andromeda.background}
-  format-warn-foreground = ${colors-andromeda.red}
+  format-warn-foreground = ${colors.alert}
   format-warn-overline = ${colors-andromeda.background}
   format-warn-underline = ${colors-andromeda.background}
   ; format-warn-padding = 2
@@ -224,9 +231,9 @@
 
   label-warn = "%temperature-c%"
 
-  ; Requires the <ramp> tag
-  ; The icon selection will range from 0 to `warn-temperature`
-  ; with the current temperature as index.
+; Requires the <ramp> tag
+; The icon selection will range from 0 to `warn-temperature`
+; with the current temperature as index.
   ramp-0 =  
   ramp-1 = 
   ramp-2 = 
