@@ -54,8 +54,8 @@ set_from_resource $grayish i3wm.color15 #555555
 client.focused          $grayish    $grayish     $fg     $bg            $bg
 
 # Change gap size
-gaps outer 0
-gaps inner 0
+gaps outer 20
+gaps inner 10
 gaps top 20
 
 # kill focused window
