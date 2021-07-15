@@ -24,10 +24,10 @@
 ; secondary = #65a2d9
 ; tertiary = #d07ef2
 ; fourth = #e5c246
-; alert = #ed404c
+  alert = #ed404c
   background = ${xrdb:color0:#222}
   foreground = ${xrdb:color7:#e3eaf3}
-  alert = ${xrdb:color1:#222}
+; alert = ${xrdb:color1:#222}
   primary = ${xrdb:color2:#222}
   secondary = ${xrdb:color3:#222}
   tertiary = ${xrdb:color4:#222}
