@@ -63,7 +63,7 @@
   override-redirect = true
   wm-restack = i3
 
-  background = #1E222A
+  background = #dd1E222A
   foreground = ${colors.foreground}
 
   padding-left = 1
