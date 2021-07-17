@@ -3,7 +3,7 @@ if type tmux &> /dev/null; then
     session_name=${TERMINAL_NAME:-Terminal}
     #if not inside a tmux session, start a new session
     if [[ $HOST == "ubuntu" && -z "$TMUX" ]]; then
-        (tmux -2 new-session -A -s $session_name || false)
+        ( TERM=xterm-256color tmux -2 new-session -A -s $session_name || false)
         # || false makes Konsole happy while quitting. It doesn't ask for
         # confirmation. Since we are in tmux, it doesn't matter if we really
         # wanted to quit or not
