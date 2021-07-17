@@ -48,7 +48,6 @@ return packer.startup(
         }
 
         use "kabouzeid/nvim-lspinstall"
-        use {"mfussenegger/nvim-jdtls"}
         use "glepnir/lspsaga.nvim"
 
         use {
