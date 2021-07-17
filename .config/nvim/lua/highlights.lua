@@ -42,6 +42,7 @@ fg("IndentBlanklineChar", line)
 -- misc --
 fg("LineNr", grey)
 fg("Comment", grey)
+vim.cmd("highlight Comment gui=italic")
 fg("NvimInternalError", red)
 fg("VertSplit", line)
 fg("EndOfBuffer", black)
