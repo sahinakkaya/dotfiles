@@ -6,6 +6,7 @@ My dotfiles
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/Desktop.png)
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/nf.png)
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/work.png)
+![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/locked.png)
 
 - Window manager: [i3-gaps](https://github.com/Airblader/i3)
 - Compositor: [Picom](https://github.com/yshui/picom)
