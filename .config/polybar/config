@@ -28,7 +28,7 @@
   background = ${xrdb:color0:#222}
   foreground = ${xrdb:color15:#e3eaf3}
 ; alert = ${xrdb:color1:#222}
-  primary = ${xrdb:color9:#222}
+  primary = ${xrdb:color10:#222}
   secondary = ${xrdb:color11:#222}
   tertiary = ${xrdb:color12:#222}
   fourth = ${xrdb:color13:#222}

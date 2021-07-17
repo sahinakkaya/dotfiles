@@ -110,7 +110,7 @@ function my_bindings() {
 chbackground() {
     if [ "$3" == "" ]
     then
-      wal -st -i ~/Pictures/Wallpapers/Desktop --backend=haishoku
+      wal -st -i ~/Pictures/Wallpapers/Desktop --backend=haishoku --iterative
       python3 ~/scripts/misc/adjust_terminal_colors.py $1 $2
       ~/scripts/misc/restart_dunst.sh
     else
