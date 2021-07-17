@@ -107,6 +107,22 @@ function my_bindings() {
     bindkey "\e[1;3B" dirhistory_zle_dirhistory_down
 }
 
+chbackground() {
+    if [ "$3" == "" ]
+    then
+      wal -st -i ~/Pictures/Wallpapers/Desktop --backend=haishoku
+      python3 ~/scripts/misc/adjust_terminal_colors.py $1 $2
+      ~/scripts/misc/restart_dunst.sh
+    else
+      python3 ~/scripts/misc/adjust_terminal_colors.py $1 $2 dummy
+    fi
+
+}
+
+chcolors() {
+  chbackground $1 $2 dummy
+}
+
 
 zvm_after_init_commands+=('[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh')
 zvm_after_init_commands+=(my_bindings)

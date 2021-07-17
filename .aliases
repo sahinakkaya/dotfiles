@@ -1,4 +1,3 @@
-alias newbg="wal -i ~/Pictures/Wallpapers/Desktop/ --backend=haishoku -o ~/scripts/misc/restart_dunst.sh"
 alias af=alias-finder
 alias ls=lsd
 alias lt="lsd --tree"
