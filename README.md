@@ -23,6 +23,8 @@ My dotfiles
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/v4-4.png)
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/v4-5.png)
 ![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/v4-6.png)
+![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/v4-7.png)
+![Sample screenshot](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/v4-8.png)
 
 
 
