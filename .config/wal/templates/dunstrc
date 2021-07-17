@@ -183,12 +183,12 @@
 # --- Colors --- #
 
 [urgency_low]
-    background = "{color1}"
+    background = "{color9}"
     foreground = "{foreground}"
     timeout = 8
 
 [urgency_normal]
-    background = "{color1}"
+    background = "{color9}"
     foreground = "{foreground}"
     timeout = 8
 

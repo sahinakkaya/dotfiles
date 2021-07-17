@@ -26,13 +26,13 @@
 ; fourth = #e5c246
   alert = #ed404c
   background = ${xrdb:color0:#222}
-  foreground = ${xrdb:color7:#e3eaf3}
+  foreground = ${xrdb:color15:#e3eaf3}
 ; alert = ${xrdb:color1:#222}
-  primary = ${xrdb:color2:#222}
-  secondary = ${xrdb:color3:#222}
-  tertiary = ${xrdb:color4:#222}
-  fourth = ${xrdb:color5:#222}
-  fifth = ${xrdb:color6:#222}
+  primary = ${xrdb:color9:#222}
+  secondary = ${xrdb:color11:#222}
+  tertiary = ${xrdb:color12:#222}
+  fourth = ${xrdb:color13:#222}
+  fifth = ${xrdb:color14:#222}
 
 [colors-andromeda]
   background = #282A3A
