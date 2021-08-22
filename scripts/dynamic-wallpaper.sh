@@ -22,12 +22,21 @@ else
 fi
 path="$wallpaper_set/$num.$format"
 echo "path: $path"
+if [[ (-L "$path") ]]; then
+  actual_file=$(readlink -f $path)
+else
+  actual_file=$path
+fi
 
-# if the file is not a symlink, set the new wallpaper
-if [[ ! -L "$path" ]];
-then
-  wal -st -i $path --backend=haishoku
+set_wallpaper() {
+  wal -st -i $1 --backend=haishoku
   python3 ~/scripts/misc/adjust_terminal_colors.py rgb 0.5
   ~/scripts/misc/restart_dunst.sh
   xrdb ~/.Xresources
+
+}
+# if the current wallpaper is different than the previous one, set it
+if [[ $(< ~/.last_wallpaper_path) != "$actual_file" ]]; then
+  set_wallpaper $path
 fi
+echo "$actual_file" > ~/.last_wallpaper_path
