@@ -22,11 +22,7 @@ else
 fi
 path="$wallpaper_set/$num.$format"
 echo "path: $path"
-if [[ (-L "$path") ]]; then
-  actual_file=$(readlink -f $path)
-else
-  actual_file=$path
-fi
+actual_file=$(readlink -f $path)
 
 set_wallpaper() {
   wal -st -i $1 --backend=haishoku
@@ -36,7 +32,5 @@ set_wallpaper() {
 
 }
 # if the current wallpaper is different than the previous one, set it
-if [[ $(< ~/.last_wallpaper_path) != "$actual_file" ]]; then
-  set_wallpaper $path
-fi
+[[ $(< ~/.last_wallpaper_path) != "$actual_file" ]] && set_wallpaper $actual_file
 echo "$actual_file" > ~/.last_wallpaper_path
