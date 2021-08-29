@@ -179,6 +179,54 @@ bindurl github.com gp open github.com/Asocia
 bindurl gitlab.com gp open gitlab.com/Asocia
 bindurl reddit.com gp open reddit.com/user/Asocia
 bindurl stackoverflow.com gp open stackoverflow.com/users/9608759/asocia
+bind --mode=ex <C-a> text.beginning_of_line
+bind --mode=ex <C-e> text.end_of_line
+bind --mode=ex <C-f> text.forward_word
+bind --mode=ex <C-k> text.kill_line
+bind --mode=ex <C-u> text.backward_kill_line
+bind --mode=ex <C-V> composite getclip selection | text.insert_text
+bind --mode=ex <C-w> text.backward_kill_word
+bind --mode=ex <Enter> ex.accept_line
+bind --mode=ex <C-Enter> ex.execute_ex_on_completion
+bind --mode=ex <C-j> ex.accept_line
+bind --mode=ex <C-m> ex.accept_line
+bind --mode=ex <Escape> ex.hide_and_clear
+bind --mode=ex <C-[> ex.hide_and_clear
+bind --mode=ex <ArrowUp> ex.prev_history
+bind --mode=ex <ArrowDown> ex.next_history
+bind --mode=ex <S-Delete> ex.execute_ex_on_completion_args tabclose
+bind --mode=ex <A-b> text.backward_word
+bind --mode=ex <A-f> text.forward_word
+bind --mode=ex <A-d> text.kill_word
+bind --mode=ex <S-Backspace> text.backward_kill_word
+bind --mode=ex <Tab> ex.next_completion
+bind --mode=ex <S-Tab> ex.prev_completion
+bind --mode=ex <Space> ex.insert_space_or_completion
+bind --mode=ex <C-o>yy ex.execute_ex_on_completion_args clipboard yank
+bind --mode=ex <S-Del> ex.execute_ex_on_completion_args tabclose
+bind --mode=insert <C-a> text.beginning_of_line
+bind --mode=insert <C-e> text.end_of_line
+bind --mode=insert <C-f> text.forward_word
+bind --mode=insert <C-k> text.kill_line
+bind --mode=insert <C-u> text.backward_kill_line
+bind --mode=insert <C-V> composite getclip selection | text.insert_text
+bind --mode=insert <C-w> text.backward_kill_word
+bind --mode=insert <Escape> composite unfocus | mode normal
+bind --mode=insert <C-[> composite unfocus | mode normal
+bind --mode=insert <C-i> editor
+bind --mode=insert <AC-Escape> mode normal
+bind --mode=insert <AC-`> mode normal
+bind --mode=insert <S-Escape> mode ignore
+bind --mode=input <C-a> text.beginning_of_line
+bind --mode=input <C-e> text.end_of_line
+bind --mode=input <C-f> text.forward_word
+bind --mode=input <C-k> text.kill_line
+bind --mode=input <C-u> text.backward_kill_line
+bind --mode=input <C-V> composite getclip selection | text.insert_text
+bind --mode=input <C-w> text.backward_kill_word
+bind --mode=input <Tab> focusinput -n
+bind --mode=input <S-Tab> focusinput -N
+bind --mode=input 🕷🕷INHERITS🕷🕷 imaps
 
 " Subconfig Settings
 seturl monkeytype.com allowautofocus true
