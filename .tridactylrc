@@ -166,6 +166,9 @@ bind c scrollline 5
 bind e scrollline -5
 bind q back
 bind Q forward
+bind gc composite git_clone | clipboard yank
+bind gC composite git_clone_ssh | clipboard yank
+bind yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
 bindurl ^https://web.whatsapp.com f hint -c [tabindex]:not(.two)>div,a
 bindurl ^https://web.whatsapp.com F hint -bc [tabindex]:not(.two)>div,a
 
@@ -175,6 +178,10 @@ seturl www.google.com followpagepatterns.next Next
 seturl overleaf.com allowautofocus true
 seturl .*/.*\.ipynb allowautofocus true
 seturl nitrotype.com allowautofocus true
+
+" Aliases
+alias git_clone js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
 
 " Autocmds
 autocmd DocStart monkeytype.com mode ignore
