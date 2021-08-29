@@ -171,6 +171,10 @@ bind gC composite git_clone_ssh | clipboard yank
 bind yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
 bindurl ^https://web.whatsapp.com f hint -c [tabindex]:not(.two)>div,a
 bindurl ^https://web.whatsapp.com F hint -bc [tabindex]:not(.two)>div,a
+bindurl github.com gp open github.com/Asocia
+bindurl gitlab.com gp open gitlab.com/Asocia
+bindurl reddit.com gp open reddit.com/user/Asocia
+bindurl stackoverflow.com gp open stackoverflow.com/users/9608759/asocia
 
 " Subconfig Settings
 seturl monkeytype.com allowautofocus true
