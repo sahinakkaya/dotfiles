@@ -5,10 +5,12 @@ TERMINAL = vim.fn.expand('$TERMINAL')
 
 -- load all plugins
 require "pluginList"
+local g = vim.g
+g.vimspector_enable_mappings = 'HUMAN'
+
 require "misc-utils"
 require "top-bufferline"
 
-local g = vim.g
 
 g.mapleader = " "
 g.auto_save = false

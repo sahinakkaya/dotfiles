@@ -188,6 +188,11 @@ return packer.startup(
                 require("misc-utils").blankline()
             end
         }
+
+        --- testing area ---
+        use 'puremourning/vimspector'
+        --- testing area ---
+
     end,
     {
         display = {

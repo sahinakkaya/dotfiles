@@ -144,6 +144,22 @@ local mappings = {
         }
     },
 
+    d = {
+      name = 'Debug',
+      e = {':call vimspector#Reset()<cr>',        'exit debug mode'},
+      l = {':call vimspector#StepInto()<cr>',     'step into'},
+      j = {':call vimspector#StepOver()<cr>',     'step over'},
+      h = {':call vimspector#StepOut()<cr>',      'step out'},
+      k = {':call vimspector#Restart()<cr>',      'restart debugging'},
+      c = {':call vimspector#Continue()<cr>',     'continue'},
+      r = {':call vimspector#RunToCursor()<cr>', 'run to cursor'},
+      d = {':call vimspector#Launch()<cr>', 'Launch'},
+      b = {':call vimspector#ToggleBreakpoint()<cr>', 'toggle breakpoint'},
+      B = {'<Plug>VimspectorToggleConditionalBreakpoint', 'toggle breakpoint'},
+      C = {':call vimspector#ClearBreakpoints()<cr>', 'clear breakpoints'},
+      i = {'<Plug>VimspectorBalloonEval', 'inspect'},
+      },
+
     -- diagnostics vanilla nvim
     -- -- diagnostic
     -- function lv_utils.get_all()
