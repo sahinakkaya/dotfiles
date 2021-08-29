@@ -171,6 +171,10 @@ bind gC composite git_clone_ssh | clipboard yank
 bind yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
 bindurl ^https://web.whatsapp.com f hint -c [tabindex]:not(.two)>div,a
 bindurl ^https://web.whatsapp.com F hint -bc [tabindex]:not(.two)>div,a
+bindurl youtu((\.be)|(be\.com)) f hint -J
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search f hint -Jc #top_nav a, #search a, #searchform a, #botstuff a, #lb a, .card-section a, a.fl, #pnnext, #pnprev
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search F hint -Jbc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
+bindurl google(\.[a-zA-Z0-9]+){1,2}/search gf hint -Jqbc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
 bindurl github.com gp open github.com/Asocia
 bindurl gitlab.com gp open gitlab.com/Asocia
 bindurl reddit.com gp open reddit.com/user/Asocia
