@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # get todays md5sum and extract first 2 chars then convert it to base 10
-todays_hash=$(date +%x | md5sum | cut -c 1-2)
-base10=$(echo "ibase=16;$todays_hash" | bc)
+randomizer=$(cat ~/.wallpaper_randomizer)
+today=$(date +%x)
+todays_hash=$(echo "$randomizer $today" | md5sum | cut -c 1-2)
+base10=$(echo $((0x$todays_hash)) | bc)
+
+echo "base 10 ${base10}"
 
 # calculate the index for the wallpaper set: base10 % num_of_dirs
 dirs=$(find ~/Pictures/Wallpapers/time-based/* -maxdepth 1 -type d)
@@ -32,5 +36,5 @@ set_wallpaper() {
 
 }
 # if the current wallpaper is different than the previous one, set it
-[[ $(< ~/.last_wallpaper_path) != "$actual_file" ]] && set_wallpaper $actual_file
+[[ $(< ~/.last_wallpaper_path) != "$actual_file" || $1 ]] && set_wallpaper $actual_file
 echo "$actual_file" > ~/.last_wallpaper_path

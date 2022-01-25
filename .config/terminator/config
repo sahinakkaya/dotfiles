@@ -10,6 +10,8 @@
   close_window = None
   go_down = None
   go_left = None
+  go_next = None
+  go_prev = None
   go_right = None
   go_up = None
   zoom_in = <Primary>KP_Add
@@ -25,7 +27,7 @@
 [plugins]
 [profiles]
   [[default]]
-    background_darkness = 0.93
+    background_darkness = 0.95
     background_type = transparent
     cursor_color = "#aaaaaa"
     custom_command = TERMINAL_NAME=Terminator /usr/bin/zsh

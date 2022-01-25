@@ -22,6 +22,6 @@ charging=$(acpi | cut -d ' ' -f 3 | tr -d ',| ')
 # fi
 
 if [[ "$batteryLevel" -le "$batteryLimit" ]] && [[ "$charging" == "Discharging" ]]; then
-    /usr/bin/notify-send -a "Battery Warning" --urgency critical "Battery level at ${batteryLevel}%" -i abrt
+    /usr/bin/notify-send -a "Battery Warning" --urgency critical "Battery level at ${batteryLevel}%" -i abrt -t 10000
     /usr/bin/paplay /usr/share/sounds/Oxygen-K3B-Finish-Error.ogg
 fi

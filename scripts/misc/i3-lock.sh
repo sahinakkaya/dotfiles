@@ -33,7 +33,6 @@ i3lock \
 --keyhl-color=$W       \
 --bshl-color=$W        \
 \
---screen 1            \
 --blur 5              \
 --clock               \
 --indicator           \
