@@ -19,6 +19,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 
+fpath=("${ZDOTDIR:-$HOME}/.zsh" $fpath)
+
 # Customize to your needs...
 source "${ZDOTDIR:-$HOME}/.aliases"
 
