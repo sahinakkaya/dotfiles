@@ -4,7 +4,7 @@ from libqtile.config import Key, KeyChord
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
-mod = "mod1"
+mod = "mod4"
 terminal = guess_terminal()
 # terminal = "xfce4-terminal"
 home = os.path.expanduser
