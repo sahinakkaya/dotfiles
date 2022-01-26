@@ -39,13 +39,13 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'rsync' \
   'tmux' \
+  'archive' \
   'completion' \
   'syntax-highlighting' \
   'history-substring-search' \
   'autosuggestions' \
   'prompt'
 
-  # 'archive' \ archive things
   # 'rsync' \ rsync-copy rsync-move
   # 'git' \ use oh my zsh git
   # https://github.com/Asocia/prezto/tree/master/modules/spectrum
