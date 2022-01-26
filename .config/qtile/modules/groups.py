@@ -12,7 +12,7 @@ for i, j in zip(groups, symbols):
         Key([mod], j, lazy.group[i.name].toscreen(),
             desc="Switch to group {}".format(i.name)),
 
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
+        Key([mod, "shift"], j, lazy.window.togroup(i.name),
             desc="move focused window to group {}".format(i.name)),
 
         # Use below if you prefer to switch to that group.
