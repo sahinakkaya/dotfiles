@@ -7,7 +7,9 @@ function run {
 	fi
 }
 
-feh --bg-scale /usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png
+#feh --bg-scale /usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png
+
+nitrogen --save --set-zoom-fill ~/Pictures/Wallpapers/default.jpg
 run picom & disown # --experimental-backends --vsync should prevent screen tearing on most setups if needed
 
 # Low battery notifier
@@ -15,6 +17,5 @@ run picom & disown # --experimental-backends --vsync should prevent screen teari
 
 # Start welcome
 #run eos-welcome & disown
-run /home/sahin/.config/openbox/polybar/default/launch.sh & disown
-
-run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & disown # start polkit agent from GNOME
+$HOME/.config/qtile/polybar/default/launch.sh & disown
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & disown # start polkit agent from GNOME
