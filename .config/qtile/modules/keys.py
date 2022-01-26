@@ -86,6 +86,7 @@ keys = [
         "d",
         lazy.spawncmd(),
         desc="Spawn a command using a prompt widget"),
+    Key([mod], "s", lazy.spawn("passmenu"), desc="Spawn passmenu"),
 
     # Key([mod, "shift"], "e", lazy.spawn("menu_powermenu"), desc="Spawn powermenu using rofi"),
 
