@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    file=$(find . -maxdepth 1 -type f | cut -c 3- | rofi -i -dmenu -p "Select file to copy its contents")
+  else
+    file=$1
+fi
+
+
+if [ -z "$file" ]; then
+  exit
+fi
+cat $file | xclip -selection c
+notify-send "Contents of the '$file' is copied to clipboard!"

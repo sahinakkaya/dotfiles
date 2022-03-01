@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ip=$(curl "https://api.ipify.org" 2>/dev/null)
+
+res=$(curl -s "http://ip-api.com/json/$ip" 2>/dev/null)
+# echo $res | jq '.'
+echo $res | jq -r -j '.city, ", ", .country, "\n"'

@@ -1,4 +1,5 @@
 # alias af=alias-finder
+alias menu="menu | lolcat"
 alias ls=lsd
 alias lt="lsd --tree"
 alias rake='noglob bundled_rake'

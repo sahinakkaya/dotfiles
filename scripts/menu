@@ -1,0 +1,9 @@
+#!/bin/bash
+clear
+figlet -f slant "Today's
+         menu" 
+
+
+cat ~/.todaysmenu
+
+cowsay "Bon appetit!"

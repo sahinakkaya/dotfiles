@@ -7,10 +7,10 @@ C='#ffffff22'  # clear ish
 # W='#880000bb'  # wrong
 # V='#bb00bbbb'  # verifying
 
-D="$(xrdb -query | grep "*.color12\b" | cut -d":" -f2 | xargs)cc"
-T="$(xrdb -query | grep "*.color13\b" | cut -d":" -f2 | xargs)ee"
-W="$(xrdb -query | grep "*.color1\b" | cut -d":" -f2 | xargs)bb"
-V="$(xrdb -query | grep "*.color6\b" | cut -d":" -f2 | xargs)bb"
+D="$(xrdb -query | grep ".color12" | cut -d":" -f2 | xargs)cc"
+T="$(xrdb -query | grep ".color13" | cut -d":" -f2 | xargs)ee"
+W="$(xrdb -query | grep ".color1" | cut -d":" -f2 | xargs)bb"
+V="$(xrdb -query | grep ".color6" | cut -d":" -f2 | xargs)bb"
 
 
 i3lock \
