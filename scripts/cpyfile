@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    files=( $(find . -maxdepth 1 -type f | cut -c 3- | rofi -i -dmenu -p "Select a file to copy") )
+  else
+    files=("$@")
+fi
+
+
+if [ -z "$files" ]; then
+  exit
+fi
+
+args=()
+for arg in "${files[@]}"; do
+   fullpath=$(readlink -f $arg)
+   args+=("file://$fullpath")
+done
+
+printf '%s\n' "${args[@]}" | xclip -i -sel clipboard -t text/uri-list

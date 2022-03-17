@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+variant=$(setxkbmap -query | grep variant | cut -d" " -f5)
+
+if [[ $variant == "cdhisopt" ]] 
+  then
+  setxkbmap us cdhpt -option ''
+else
+  setxkbmap us cdhisopt 'caps:ctrl_modifier'
+fi

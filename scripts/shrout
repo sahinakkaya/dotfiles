@@ -1,0 +1,24 @@
+#!/bin/bash
+
+tmpfile=$(mktemp /tmp/cmd-output.XXXXXX)
+trap 'rm "$tmpfile"' 0 1 15
+echo "\$ $@" | tee $tmpfile
+eval "$@" |& tee -a $tmpfile
+
+read -p "Sharing output. [O]k, [e]dit, [d]iscard? " -n1 ans;
+
+
+echo
+case "$ans" in
+  o|O) ;;
+  e|E) $EDITOR $tmpfile
+  ;;
+  d|D) exit 0
+  ;;
+  *) exit 1
+  ;;
+esac
+
+shrfile $tmpfile 2>/dev/null
+
+

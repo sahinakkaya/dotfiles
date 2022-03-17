@@ -12,3 +12,4 @@ if [ -z "$file" ]; then
 fi
 curl -F "file=@$file" https://0x0.st | xclip -selection c
 notify-send "Link to $file is copied to clipboard!"
+echo "$(xclip -o -sel clipboard)"

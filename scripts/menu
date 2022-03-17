@@ -4,6 +4,6 @@ figlet -f slant "Today's
          menu" 
 
 
-cat ~/.todaysmenu
+cat ~/.cronresults/todaysmenu
 
 cowsay "Bon appetit!"

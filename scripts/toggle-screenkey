@@ -1,0 +1,11 @@
+#!/bin/bash
+
+num=$(ps aux | grep /usr/bin/screenkey | wc -l)
+
+if [[ $num -eq 1 ]]; then
+  screenkey &
+  notify-send "Screenkey enabled."
+else
+  pkill screenkey
+  notify-send "Screenkey disabled."
+fi

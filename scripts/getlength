@@ -1,0 +1,2 @@
+date -u -d @`find . -maxdepth 1 -iname '*.mp4' -exec ffprobe -v quiet -of csv=p=0 -show_entries format=duration {} \; | paste -sd+ -| bc` +"%T"
+
