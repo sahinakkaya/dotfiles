@@ -1,0 +1,38 @@
+// Colemak-DH (ISO) symbols for xkb on X.Org Server 7.x
+// https://colemakmods.github.io/mod-dh/
+
+xkb_symbols "cdhisopt" {
+
+    include "us(colemak_dh)"
+    name[Group1]= "English (Programmer Colemak-DH ISO with Turkish support)";
+
+    key <TLDE> { [        grave,   asciitilde,      dead_tilde,       asciitilde ] };
+    key <AE01> { [            at,       1 ] };
+    key <AE02> { [            bracketleft,           2 ] };
+    key <AE03> { [            braceleft,   3 ] };
+    key <AE04> { [            parenleft,    4 ] };
+    key <AE05> { [            plus,      5 ] };
+    key <AE06> { [            equal,  6 ] };
+    key <AE07> { [            parenright,    7 ] };
+    key <AE08> { [            braceright,     8 ] };
+    key <AE09> { [            bracketright,    9 ] };
+    key <AE10> { [            percent,  0 ] };
+    key <AE11> { [        asterisk,   numbersign ] };
+    key <AE12> { [        ampersand,         exclam ] };
+
+    key <AD08> { [            u,            U, udiaeresis, Udiaeresis ] };
+    key <AD11> { [  minus,    underscore ] };
+    key <AC06> { [            m,            M, Left, Left ] };
+    key <AC07> { [            n,            N, Down, Down ] };
+    key <AC08> { [            e,            E, Up, Up ] };
+    key <AC09> { [            i,            I, Right, Right ] };
+    key <AC11> { [   apostrophe,     quotedbl, idotless, Iabovedot  ] };
+    key <AC03> { [            s,            S, scedilla, Scedilla ] };
+    key <AC05> { [            g,            G, gbreve, Gbreve ] };
+    key <AB02> { [            c,            C, ccedilla, Ccedilla ] };
+    key <AC10> { [            o,            O, odiaeresis, Odiaeresis ] };
+    key <AD12> { [ dollar,   asciicircum ] };
+    key <AB05> { [ backslash, bar, asciitilde, brokenbar] };
+
+    include "level3(ralt_switch)"
+};

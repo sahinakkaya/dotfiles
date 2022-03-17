@@ -1,0 +1,12 @@
+<variant>
+  <configItem>
+    <name>cdhpt</name>
+    <description>English (Programmer Colemak-DH with Turkish support)</description>
+  </configItem>
+</variant>
+<variant>
+  <configItem>
+    <name>cdhisopt</name>
+    <description>English (Programmer Colemak-DH ISO with Turkish support)</description>
+  </configItem>
+</variant>
