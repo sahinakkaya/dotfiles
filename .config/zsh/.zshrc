@@ -1,3 +1,6 @@
+
+d="$HOME/scripts/colorscripts"
+bash "$d/`ls $d | shuf -n 1`"
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -24,11 +27,9 @@ fpath=("${ZDOTDIR:-$HOME}/.zsh" $fpath)
 # Customize to your needs...
 source "${ZDOTDIR:-$HOME}/.aliases"
 
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_STRATEGY=(history)
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true
 
-
-export PATH=$PATH:$HOME/.pyenv/bin/
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
@@ -57,12 +58,15 @@ zinit light-mode for \
 ### End of Zinit's installer chunk
 
 zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
+zinit snippet OMZ::plugins/dirhistory/dirhistory.plugin.zsh
 zinit light skywind3000/z.lua
 
 # ZVM
 function zvm_config() {
   ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
-  # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
+  ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
   ZVM_LAZY_KEYBINDINGS=true
   ZVM_VI_INSERT_ESCAPE_BINDKEY=kj
 }
@@ -78,8 +82,12 @@ function zvm_after_init() {
     bindkey '^f' forward-word
     bindkey '^g' autosuggest-accept
     # allow ctrl-r and ctrl-s to search the history
-    bindkey '^r' history-incremental-search-backward
-    bindkey '^s' history-incremental-search-forward
+    # bindkey '^r' history-incremental-search-backward
+    # bindkey '^s' history-incremental-search-forward
+    bindkey '^h' backward-kill-word
+    bindkey '^[[M' kill-word
+    bindkey -s '^@' ""
+    bindkey -s '' "fg\n"
 
 
     # allow ctrl-a and ctrl-e to move to beginning/end of line
@@ -88,15 +96,52 @@ function zvm_after_init() {
 
 
     # allow ctrl-h, ctrl-w, ctrl-? for char and word deletion (standard behaviour)
-    bindkey '^h' backward-delete-char
+    # bindkey '^h' backward-delete-char
     bindkey '^w' backward-kill-word
 
 
     bindkey '^x' fzf-cd-widget
-    bindkey "\e\e" fuck-command-line
     bindkey "\e[1;3D" dirhistory_zle_dirhistory_back
     bindkey "\e[1;3C" dirhistory_zle_dirhistory_future
     bindkey "\e[1;3A" dirhistory_zle_dirhistory_up
     bindkey "\e[1;3B" dirhistory_zle_dirhistory_down
+}
+
+doit ()
+{
+  # this function is created for forcing the deletion of the file or directory.
+  # 
+  # ❯ rm somedir
+  # rm: cannot remove 'somedir': Is a directory
+  # ❯ rmdir somedir/
+  # rmdir: failed to remove 'somedir/': Directory not empty
+  # ❯ rm -rf somedir/
+  # rm: cannot remove 'somedir/': Permission denied
+  # 
+  # Just remove the f**king directory!!
+
+
+  lastCommand=$(history | tail -n 1 | cut -d' ' -f3-)
+  firstWord=$(echo $lastCommand | cut -d' ' -f1)
+  RED="\033[1;31m"
+  GREEN="\033[1;32m"
+  NOCOLOR="\033[0m"
+
+  lastWord=$(echo $lastCommand | awk '{print $NF}')
+  case "$firstWord" in
+    "rm"|"rmdir") 
+      echo -en "Execute ${RED}\"sudo rm -rf $lastWord\"${NOCOLOR}?"
+      read -k "? " ans
+      echo 
+      if [ "$ans" = "y" ]; then
+        sudo rm -rf $lastWord
+      fi
+    ;;
+    "cd") 
+      mkdir $lastWord && cd $lastWord
+    ;;
+    *) echo "Don't know what to do with \"$lastCommand\"." 
+    ;;
+  esac
 }
 
