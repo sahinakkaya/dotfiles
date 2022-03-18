@@ -122,9 +122,9 @@ keys = [
 
         # == backlight
         Key([], "XF86MonBrightnessUp",
-            lazy.spawn("xbacklight -inc 5")),
+            lazy.spawn("light -A 5")),
         Key([], "XF86MonBrightnessDown",
-            lazy.spawn("xbacklight -dec 5")),
+            lazy.spawn("light -U 5")),
 
         Key([], "Print",
             lazy.spawn("flameshot gui")),
