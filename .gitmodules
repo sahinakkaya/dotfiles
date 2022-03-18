@@ -1,0 +1,12 @@
+[submodule "GitRepositories/st"]
+	path = GitRepositories/st
+	url = https://github.com/Asocia/st.git
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = https://github.com/Asocia/nvim-config.git
+[submodule "GitRepositories/rofi-bluetooth"]
+	path = GitRepositories/rofi-bluetooth
+	url = https://github.com/nickclyde/rofi-bluetooth.git
+[submodule "GitRepositories/polybar-wireguard"]
+	path = GitRepositories/polybar-wireguard
+	url = https://github.com/mil-ad/polybar-wireguard.git

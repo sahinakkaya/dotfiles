@@ -1,0 +1,18 @@
+diff --git a/polybar-wireguard b/polybar-wireguard
+index 6712185..b770d44 100755
+--- a/polybar-wireguard
++++ b/polybar-wireguard
+@@ -6,11 +6,11 @@
+ # https://github.com/polybar/polybar/wiki/Formatting#format-tags-inside-polybar-config
+ green=#55aa55
+ 
+-configs_path="/PATH/TO/CONF/FILES"
++configs_path="$HOME/.config/wireguard"
+ connected_interface=$(sudo wg | grep interface | cut -d " " -f2)
+ 
+ connect() {
+-    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | dmenu)
++    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | rofi -i -dmenu -p "Connect to: ")
+     [[ $selected_config ]] && sudo wg-quick up "$configs_path"/"$selected_config".conf
+ }
+ 

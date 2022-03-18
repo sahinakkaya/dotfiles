@@ -1,0 +1,53 @@
+diff --git a/rofi-bluetooth b/rofi-bluetooth
+index 5c52fd8..cebb5c1 100755
+--- a/rofi-bluetooth
++++ b/rofi-bluetooth
+@@ -33,7 +33,6 @@ power_on() {
+ toggle_power() {
+     if power_on; then
+         bluetoothctl power off
+-        show_menu
+     else
+         if rfkill list bluetooth | grep -q 'blocked: yes'; then
+             rfkill unblock bluetooth && sleep 3
+@@ -59,7 +58,6 @@ toggle_scan() {
+     if scan_on; then
+         kill $(pgrep -f "bluetoothctl scan on")
+         bluetoothctl scan off
+-        show_menu
+     else
+         bluetoothctl scan on &
+         echo "Scanning..."
+@@ -83,10 +81,8 @@ pairable_on() {
+ toggle_pairable() {
+     if pairable_on; then
+         bluetoothctl pairable off
+-        show_menu
+     else
+         bluetoothctl pairable on
+-        show_menu
+     fi
+ }
+ 
+@@ -105,10 +101,8 @@ discoverable_on() {
+ toggle_discoverable() {
+     if discoverable_on; then
+         bluetoothctl discoverable off
+-        show_menu
+     else
+         bluetoothctl discoverable on
+-        show_menu
+     fi
+ }
+ 
+@@ -126,10 +120,8 @@ device_connected() {
+ toggle_connection() {
+     if device_connected $1; then
+         bluetoothctl disconnect $1
+-        device_menu "$device"
+     else
+         bluetoothctl connect $1
+-        device_menu "$device"
+     fi
+ }
+ 
