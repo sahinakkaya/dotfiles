@@ -18,5 +18,5 @@ My dotfiles
 ![Some terminals](https://raw.github.com/Asocia/dotfiles/master/Pictures/Screenshots/ricing/terms.png)
 
 ### Todo
-- Update the installation script
+- Create an installation script
 
