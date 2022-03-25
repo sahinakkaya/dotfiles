@@ -181,8 +181,8 @@ scale trough {
 }
 
 .0 , .01, .02, .03, .04, .05, .06, .07, .08, .09, .00,
-.011, .022, .033, .044, .055, .066, .077, .088, .099, .000  {  
-  margin: 0px 10px 0px 0px;
+.011, .022, .033, .044, .055, .066, .077, .088, .099, .000  { 
+  margin: 5px 10px 0px 0px;
 }
 
 /* Unoccupied */
@@ -510,6 +510,7 @@ calendar:indeterminate {
 }
 .button-off{
   color: $red;
+  margin-right: 15px;
 }
 .button-qtres:hover, .button-reb:hover, .button-lock:hover,
 .button-quit:hover, .button-off:hover{
