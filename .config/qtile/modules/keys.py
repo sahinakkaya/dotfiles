@@ -8,6 +8,33 @@ terminal = "st"
 # terminal = "xfce4-terminal"
 home = os.path.expanduser
 
+
+@lazy.function
+def explore(qtile):
+    """ open the app attached to current workspace"""
+
+    preffered_apps = {
+        "1": "default",
+        "2": "virtualbox",
+        "3": "thunderbird",
+        "4": "st",
+        "5": "thunar",
+        "6": "ModernDeck",
+        "7": "firefox",
+        "8": "streamlink-twitch-gui",
+        "9": "default",
+        "0": "telegram-desktop",
+    }
+    group = qtile.current_group.info()['name']
+    command = preffered_apps[group]
+    if command == "default":
+        command = "rofi -show drun"
+
+    qtile.cmd_spawn(f'notify-send -t 1000 "Launching {command}"')
+    qtile.cmd_spawn(command)
+
+
+
 keys = [
     # '`': 'grave',
     # '-': 'minus',
@@ -23,6 +50,7 @@ keys = [
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+    Key([mod], "u", explore, desc="Move focus up"),
     Key(
         [mod],
         "Tab",
