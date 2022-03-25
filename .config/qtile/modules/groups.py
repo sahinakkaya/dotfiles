@@ -5,16 +5,16 @@ from .keys import keys, mod
 
 groups = [Group(i) for i in "1234567890"]
 
-browsers = [Match(wm_class="firefox"), Match(wm_class="Google-chrome")]
+browsers = [Match(wm_class=["firefox", "Google-chrome"])]
 file_managers = [Match(wm_class="Thunar")]
-video_players = [Match(wm_class="streamlink-twitch-gui"), Match(wm_class="mpv")]
+video_players = [Match(wm_class=["streamlink-twitch-gui", "mpv"])]
 groups = [
     Group("1"),
     Group("2", matches=[Match(wm_class="VirtualBox Manager")]),
     Group("3", matches=[Match(wm_class="Thunderbird")]),
     Group("4", matches=[Match(wm_class="st-256color")]),
     Group("5", matches=file_managers),
-    Group("6"),
+    Group("6", matches=[Match(wm_class="ModernDeck")]),
     Group("7", matches=browsers),
     Group("8", matches=video_players),
     Group("9"),
