@@ -133,7 +133,7 @@ keys = [
     Key(
         [mod],
         "v",
-        lazy.spawn("polybar-wireguard --toggle"),
+        lazy.spawn("rofi-wireguard --toggle"),
         desc="Manage VPN connections",
     ),
     # Key([mod], "x", lazy.spawn(home("~/scripts/kill-process.sh")),
