@@ -9,7 +9,11 @@ function run {
 
 #feh --bg-scale /usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png
 
+rm ~/.cache/workspaces
 nitrogen --save --set-zoom-fill ~/Pictures/Wallpapers/default.jpg
 run picom & disown # --experimental-backends --vsync should prevent screen tearing on most setups if needed
+
+eww -c ~/.config/eww/bar/ close-all
+eww -c ~/.config/eww/bar/ open bar
 
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & disown # start polkit agent from GNOME

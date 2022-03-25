@@ -1,5 +1,5 @@
 diff --git a/rofi-bluetooth b/rofi-bluetooth
-index 5c52fd8..cebb5c1 100755
+index 5c52fd8..012e612 100755
 --- a/rofi-bluetooth
 +++ b/rofi-bluetooth
 @@ -33,7 +33,6 @@ power_on() {
@@ -48,6 +48,24 @@ index 5c52fd8..cebb5c1 100755
      else
          bluetoothctl connect $1
 -        device_menu "$device"
+     fi
+ }
+ 
+@@ -183,8 +175,6 @@ toggle_trust() {
+ # Useful for status bars like polybar, etc.
+ print_status() {
+     if power_on; then
+-        printf ''
+-
+         mapfile -t paired_devices < <(bluetoothctl paired-devices | grep Device | cut -d ' ' -f 2)
+         counter=0
+ 
+@@ -202,8 +192,6 @@ print_status() {
+             fi
+         done
+         printf "\n"
+-    else
+-        echo ""
      fi
  }
  

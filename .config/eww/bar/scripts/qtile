@@ -1,0 +1,12 @@
+#!/bin/bash
+
+case "$1" in
+  switch) qtile cmd-obj -o group $2 -f toscreen
+  ;;
+  restart) qtile cmd-obj -o cmd -f restart
+  ;;
+  shutdown) qtile cmd-obj -o cmd -f shutdown
+  ;;
+esac
+
+

@@ -50,7 +50,7 @@ keys = [
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "u", explore, desc="Move focus up"),
+    Key([mod], "u", explore, desc="Open app related with current group"),
     Key(
         [mod],
         "Tab",

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+query=$(xset q | grep -Po "(?:Caps|Num|Scroll)\s+Lock:\s*(\w*)" | grep -Po "(off|on)")
+
+
+result=""
+for i in $query
+do
+  [ $i = "off" ] && result+="ﰊ "|| result+="ﰉ "
+done
+
+# somehow results are shown reversed. So i am reversing them here to fix it
+echo $result | rev | xargs
+

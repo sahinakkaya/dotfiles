@@ -1,0 +1,6 @@
+#!/bin/bash
+dir=`dirname $0`
+python3 $dir/workspaces.py
+tail -F -n1 ~/.cache/workspaces | while read -r; do
+  python3 $dir/workspaces.py
+done
