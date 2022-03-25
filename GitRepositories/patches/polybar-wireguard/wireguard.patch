@@ -1,64 +1,33 @@
-diff --git a/polybar-wireguard b/polybar-wireguard
-deleted file mode 100755
-index 6712185..0000000
+diff --git a/polybar-wireguard b/rofi-wireguard
+similarity index 88%
+rename from polybar-wireguard
+rename to rofi-wireguard
+index 6712185..03e7dcb 100755
 --- a/polybar-wireguard
-+++ /dev/null
-@@ -1,58 +0,0 @@
--#!/usr/bin/env sh
--
--# Unfortunately it's not easy to directly use Polybar colour values in this
--# script so I have to redefine some of my colours here. See the link below for
--# more details:
--# https://github.com/polybar/polybar/wiki/Formatting#format-tags-inside-polybar-config
--green=#55aa55
--
++++ b/rofi-wireguard
+@@ -6,11 +6,11 @@
+ # https://github.com/polybar/polybar/wiki/Formatting#format-tags-inside-polybar-config
+ green=#55aa55
+ 
 -configs_path="/PATH/TO/CONF/FILES"
--connected_interface=$(sudo wg | grep interface | cut -d " " -f2)
--
--connect() {
++configs_path="$HOME/.config/wireguard"
+ connected_interface=$(sudo wg | grep interface | cut -d " " -f2)
+ 
+ connect() {
 -    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | dmenu)
--    [[ $selected_config ]] && sudo wg-quick up "$configs_path"/"$selected_config".conf
--}
--
--disconnect() {
--    # Normally we should have a single connected interface but technically
--    # there's nothing stopping us from having multiple active intgerfaces so
--    # let's do this in a loop:
--    for connected_config in $(sudo wg | grep interface | cut -d " " -f2)
--    do
--        sudo wg-quick down $configs_path/"$connected_config".conf
--    done
--}
--
--toggle() {
--    if [[ $connected_interface ]]
--    then
--        disconnect
--    else
--        connect
--    fi
--}
--
--print() {
--    if [[ $connected_interface ]]
--    then
++    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | rofi -i -dmenu -p "Select a VPN server to connect: ")
+     [[ $selected_config ]] && sudo wg-quick up "$configs_path"/"$selected_config".conf
+ }
+ 
+@@ -36,9 +36,9 @@ toggle() {
+ print() {
+     if [[ $connected_interface ]]
+     then
 -        echo %{u"$green"}%{+u}%{T4}%{F"$green"}%{T-}%{F-} "$connected_interface"
--    else
++        echo $connected_interface
+     else
 -        echo %{T4}%{T-}
--    fi
--}
--
--case "$1" in
--    --connect)
--        connect
--        ;;
--    --disconnect)
--        disconnect
--        ;;
--    --toggle)
--        toggle
--        ;;
--    *)
--        print
--        ;;
--esac
++        echo 
+     fi
+ }
+ 
