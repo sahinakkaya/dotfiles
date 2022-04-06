@@ -12,3 +12,6 @@
 	path = GitRepositories/rofi-bluetooth
 	url = https://github.com/nickclyde/rofi-bluetooth.git
   ignore = dirty
+[submodule "GitRepositories/binary-wallpaper"]
+	path = GitRepositories/binary-wallpaper
+	url = https://github.com/Asocia/binary-clock-wallpaper.git

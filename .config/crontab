@@ -19,7 +19,9 @@ XDG_RUNTIME_DIR=/run/user/1000
 
 * * * * * /home/sahin/scripts/check-battery.sh 6
 
-# At every 15th minute past every hour from 6 through 16. 
-*/15 06-16 * * * curl 'https://sks.itu.edu.tr/ExternalPages/sks/yemek-menu-v2/uzerinde-calisilan/yemek-menu.aspx' 2>/dev/null | grep -oP "js-nyro-modal.*?>\K(.+?)(?=<[is].*>)" > /home/sahin/.cronresults/todaysmenu
+# At every 15th minute past every hour from 6 through 19. 
+*/15 06-19 * * * curl 'https://sks.itu.edu.tr/ExternalPages/sks/yemek-menu-v2/uzerinde-calisilan/yemek-menu.aspx' 2>/dev/null | grep -oP "js-nyro-modal.*?>\K(.+?)(?=<[is].*>)" > /home/sahin/.cronresults/todaysmenu
 
 * * * * * cat /var/spool/cron/sahin > /home/sahin/.config/crontab
+
+* * * * * /home/sahin/GitRepositories/binary-wallpaper/set_binary_wallpaper.sh
