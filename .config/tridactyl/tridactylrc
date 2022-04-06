@@ -1,10 +1,7 @@
 " General Settings
-set update.lastchecktime 1647585997410
+set update.lastchecktime 1648676458956
 set configversion 2.0
-
-" Aliases
-alias git_clone js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
-alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+set smoothscroll true
 
 " Binds
 bind j scrollline 5
@@ -35,6 +32,10 @@ seturl www.google.com followpagepatterns.next Next
 seturl overleaf.com allowautofocus true
 seturl .*/.*\.ipynb allowautofocus true
 seturl nitrotype.com allowautofocus true
+
+" Aliases
+alias git_clone js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
 
 " Autocmds
 autocmd DocStart monkeytype.com mode ignore
