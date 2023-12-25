@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+
+###############################################################################
+#
+# Copyright 2016, 2018 - 2022, Gothenburg Bit Factory
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# https://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+import argparse
+import datetime
+import json
+import os
+import re
+from textwrap import dedent
+from urllib.error import HTTPError
+from urllib.request import urlopen
+
+
+def gather_locale_files(path):
+    """Enumerate all holiday files in the current directory."""
+
+    locale_file_map = {}
+    re_holiday_file = re.compile(r"/holidays.([a-z]{2}-[A-Z]{2})$")
+
+    for file in enumerate(path):
+        result = re_holiday_file.search(file)
+        if result:
+            # Extract the locale name.
+            locale_file_map[result.group(1)] = file
+
+    return locale_file_map
+
+
+def enumerate(path):
+    if not os.path.exists(path):
+        raise Exception(f"Directory '{path}' does not exist")
+
+    found = []
+
+    for path, dirs, files in os.walk(path, topdown=True, onerror=None, followlinks=False):
+        found.extend([os.path.join(path, x) for x in files])
+
+    return found
+
+
+def create_locale_files(path, locales):
+    locale_file_map = {}
+
+    for locale in locales:
+        locale_file_map[locale] = os.path.join(path, f"holidays.{locale}")
+
+    return locale_file_map
+
+
+def update_locale_files(locales, regions, years):
+    now = datetime.datetime.now()
+
+    if not years:
+        years = [now.year, now.year + 1]
+
+    for locale, file in locales.items():
+        with open(file, "w") as fh:
+            fh.write(dedent(f"""\
+            # Holiday data provided by holidata.net
+            #   Generated {now:%Y-%m-%dT%H:%M:%S}
+            
+            define holidays:
+              {locale}:
+            """))
+
+            for year in years:
+                try:
+                    holidays = get_holidata(locale, regions, year)
+
+                    for date, desc in holidays.items():
+                        fh.write(f"    {date} = {desc}\n")
+
+                    fh.write("\n")
+
+                except HTTPError as e:
+                    if e.code == 404:
+                        print(f"holidata.net does not have data for {locale}, for {year}.")
+                    else:
+                        print(e.code, e.read())
+
+
+def get_holidata(locale, regions, year):
+    url = f"https://holidata.net/{locale}/{year}.json"
+    print(url)
+    holidays = dict()
+    lines = urlopen(url).read().decode("utf-8")
+
+    for line in lines.split("\n"):
+        if line:
+            j = json.loads(line)
+
+            if not j["region"] or not regions or j["region"] in regions:
+                day = j["date"].replace("-", "_")
+                desc = j["description"]
+                holidays[day] = desc
+
+    return holidays
+
+
+def main(args):
+    locale_files = create_locale_files(args.path, args.locale) if args.locale else gather_locale_files(args.path)
+    update_locale_files(locale_files, args.region, args.year)
+
+
+if __name__ == "__main__":
+    usage = """See https://holidata.net for details of supported locales and regions."""
+    parser = argparse.ArgumentParser(
+        description="Update holiday data files. Simply run 'refresh' to update all of them.",
+        usage="refresh [-h] [path] [--locale LOCALE [LOCALE ...]] [--region REGION [REGION ...]] [--year YEAR [YEAR ...]]"
+    )
+    parser.add_argument("--locale", nargs="+", help="specify locale to update")
+    parser.add_argument("--region", nargs="+", help="specify locale region to update", default=[])
+    parser.add_argument("--year", nargs="+", help="specify year to fetch (defaults to current and next year)", type=int, default=[])
+    parser.add_argument("path", nargs="?", help="base path to search for locales (defaults to current directory)", default=".")
+
+    try:
+        main(parser.parse_args())
+    except Exception as msg:
+        print("Error:", msg)
