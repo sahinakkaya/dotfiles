@@ -1,11 +1,11 @@
 # sahinakkaya's dotfiles
 
-**Note: These are my old dotfiles. You can find up-to-date version at [sahinakkaya/dotfiles](https://github.com/sahinakkaya/dotfiles/).**
+**Note: These are my old dotfiles. You can find up-to-date version in [main branch](https://github.com/sahinakkaya/dotfiles/tree/main).**
 
 ### Showcase
 ![showcase](https://user-images.githubusercontent.com/32161460/160180461-efc75d21-ccd4-45f5-8a14-5ea47efc51eb.gif)
-![Desktop](https://raw.github.com/sahinakkaya/old-dotfiles/master/Pictures/Screenshots/ricing/Desktop.png)
-![Some terminals](https://raw.github.com/sahinakkaya/old-dotfiles/master/Pictures/Screenshots/ricing/terms.png)
+![Desktop](https://raw.github.com/sahinakkaya/dotfiles/old-dots/Pictures/Screenshots/ricing/Desktop.png)
+![Some terminals](https://raw.github.com/sahinakkaya/dotfiles/old-dots/Pictures/Screenshots/ricing/terms.png)
 
 
 ### My dotfiles
