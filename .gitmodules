@@ -10,3 +10,7 @@
 	path = .config/nvim
 	url = https://github.com/sahinakkaya/nvim-config.git
 	branch = macos
+[submodule ".config/zsh"]
+	path = .config/zsh
+	url = https://github.com/sahinakkaya/zsh.git
+	branch = macos
