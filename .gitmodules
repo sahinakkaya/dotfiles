@@ -1,9 +1,11 @@
-[submodule "/home/sahin/.config/tmux/plugins/tpm"]
-	path = /home/sahin/.config/tmux/plugins/tpm
+[submodule ".config/tmux/plugins/tpm"]
+	path = .config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm.git
-[submodule "/home/sahin/.config/alacritty/themes"]
-	path = /home/sahin/.config/alacritty/themes
+  branch = master
+[submodule ".config/alacritty/themes"]
+	path = .config/alacritty/themes
 	url = https://github.com/alacritty/alacritty-theme.git
+  branch = master
 [submodule ".config/nvim"]
 	path = .config/nvim
 	url = https://github.com/sahinakkaya/nvim-config.git
