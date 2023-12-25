@@ -1,3 +1,6 @@
 [submodule "/home/sahin/.config/tmux/plugins/tpm"]
 	path = /home/sahin/.config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm.git
+[submodule "/home/sahin/.config/alacritty/themes"]
+	path = /home/sahin/.config/alacritty/themes
+	url = https://github.com/alacritty/alacritty-theme.git
