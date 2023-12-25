@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    res="300"
+  else
+    res=$1
+fi
+
+v4l2-ctl --set-fmt-video=width=$res,height=$res
+mpv /dev/video0
+

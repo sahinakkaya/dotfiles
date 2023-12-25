@@ -1,0 +1,33 @@
+diff --git a/polybar-wireguard b/rofi-wireguard
+similarity index 88%
+rename from polybar-wireguard
+rename to rofi-wireguard
+index 6712185..03e7dcb 100755
+--- a/polybar-wireguard
++++ b/rofi-wireguard
+@@ -6,11 +6,11 @@
+ # https://github.com/polybar/polybar/wiki/Formatting#format-tags-inside-polybar-config
+ green=#55aa55
+ 
+-configs_path="/PATH/TO/CONF/FILES"
++configs_path="$HOME/.config/wireguard"
+ connected_interface=$(sudo wg | grep interface | cut -d " " -f2)
+ 
+ connect() {
+-    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | dmenu)
++    selected_config=$(ls $configs_path/*.conf | xargs basename -a -s .conf | rofi -i -dmenu -p "Select a VPN server to connect: ")
+     [[ $selected_config ]] && sudo wg-quick up "$configs_path"/"$selected_config".conf
+ }
+ 
+@@ -36,9 +36,9 @@ toggle() {
+ print() {
+     if [[ $connected_interface ]]
+     then
+-        echo %{u"$green"}%{+u}%{T4}%{F"$green"}%{T-}%{F-} "$connected_interface"
++        echo $connected_interface
+     else
+-        echo %{T4}%{T-}
++        echo 
+     fi
+ }
+ 

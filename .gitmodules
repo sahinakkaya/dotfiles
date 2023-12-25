@@ -1,0 +1,26 @@
+[submodule "GitRepositories/st"]
+	path = GitRepositories/st
+	url = https://github.com/Asocia/st.git
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = https://github.com/Asocia/nvim-config.git
+[submodule "GitRepositories/polybar-wireguard"]
+	path = GitRepositories/polybar-wireguard
+	url = https://github.com/mil-ad/polybar-wireguard.git
+  ignore = dirty
+[submodule "GitRepositories/rofi-bluetooth"]
+	path = GitRepositories/rofi-bluetooth
+	url = https://github.com/nickclyde/rofi-bluetooth.git
+  ignore = dirty
+[submodule "GitRepositories/binary-wallpaper"]
+	path = GitRepositories/binary-wallpaper
+	url = https://github.com/Asocia/binary-clock-wallpaper.git
+[submodule "GitRepositories/bat-extras"]
+	path = GitRepositories/bat-extras
+	url = https://github.com/eth-p/bat-extras.git
+[submodule "GitRepositories/fzf"]
+	path = GitRepositories/fzf
+	url = https://github.com/junegunn/fzf
+[submodule ".config/tmux/plugins/tpm"]
+	path = .config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm

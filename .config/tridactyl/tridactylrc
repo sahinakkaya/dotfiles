@@ -1,0 +1,47 @@
+" General Settings
+set update.lastchecktime 1648676458956
+set configversion 2.0
+set smoothscroll true
+
+" Binds
+bind j scrollline 5
+bind h back
+bind l forward
+bind H tabprev
+bind L tabnext
+bind J scrollpx -50
+bind K scrollpx 50
+bind q back
+bind Q forward
+bindurl github.com gp open github.com/Asocia
+bindurl github.com gc composite git_clone | clipboard yank
+bindurl github.com gC composite git_clone_ssh | clipboard yank
+bindurl github.com yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl gitlab.com gp open gitlab.com/Asocia
+bindurl gitlab.com gc composite git_clone | clipboard yank
+bindurl gitlab.com gC composite git_clone_ssh | clipboard yank
+bindurl gitlab.com yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl reddit.com gp open reddit.com/user/Asocia
+bindurl stackoverflow.com gp open stackoverflow.com/users/9608759/asocia
+bindurl youtube.com p composite get_current_url | mpvsafe
+bindurl youtube.com P hint -W mpvsafe
+
+" Subconfig Settings
+seturl monkeytype.com allowautofocus true
+seturl www.google.com followpagepatterns.next Next
+seturl overleaf.com allowautofocus true
+seturl .*/.*\.ipynb allowautofocus true
+seturl nitrotype.com allowautofocus true
+
+" Aliases
+alias git_clone js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+
+" Autocmds
+autocmd DocStart monkeytype.com mode ignore
+autocmd DocStart overleaf.com mode ignore
+autocmd DocStart undefined mode ignore
+autocmd DocStart .*/.*\.ipynb mode ignore
+
+" For syntax highlighting see https://github.com/tridactyl/vim-tridactyl
+" vim: set filetype=tridactyl

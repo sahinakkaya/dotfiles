@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+git ls-files -o | xargs -t rm
+

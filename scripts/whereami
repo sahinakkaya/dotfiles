@@ -1,0 +1,5 @@
+#!/bin/bash
+
+res=$(curl -s "http://ip-api.com/json/" 2>/dev/null)
+# echo $res | jq '.'
+echo $res | jq -r -j '.city, ", ", .country, "\n"'
