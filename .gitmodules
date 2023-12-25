@@ -4,3 +4,7 @@
 [submodule "/home/sahin/.config/alacritty/themes"]
 	path = /home/sahin/.config/alacritty/themes
 	url = https://github.com/alacritty/alacritty-theme.git
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = https://github.com/sahinakkaya/nvim-config.git
+	branch = main
