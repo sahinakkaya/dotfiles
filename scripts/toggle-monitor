@@ -1,0 +1,9 @@
+#!/bin/bash
+
+monitor=$(hyprctl -j monitors | jq '.[] | select(.name == "eDP-1") | .id')
+
+if [[ $monitor == "" ]]; then
+  hyprctl keyword monitor eDP-1,preferred,0x1107,2.0
+else
+  hyprctl keyword monitor eDP-1,disable
+fi

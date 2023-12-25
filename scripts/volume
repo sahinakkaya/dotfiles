@@ -1,0 +1,59 @@
+#!/bin/bash
+
+VOLUME_STEP=2
+
+# Function to check if the audio is currently muted
+is_muted() {
+    amixer sget Master | grep -q "\[off\]"
+}
+
+# Function to toggle mute status
+toggle_mute() {
+    amixer sset Master toggle
+}
+
+# Function to increase volume
+increase_volume() {
+    amixer sset Master "${VOLUME_STEP}%+"
+}
+
+# Function to decrease volume
+decrease_volume() {
+    amixer sset Master "${VOLUME_STEP}%-"
+}
+
+# Main function
+main() {
+    case "$1" in
+        "up")
+            if is_muted; then
+                toggle_mute
+            fi
+            increase_volume
+            ;;
+        "down")
+            if is_muted; then
+                toggle_mute
+            fi
+            decrease_volume
+            ;;
+        "toggle-mute")
+            toggle_mute
+            ;;
+        *)
+            echo "Usage: $0 {up|down|toggle-mute}"
+            exit 1
+            ;;
+    esac
+
+    # Display the current volume
+    amixer get Master | grep -oE "[0-9]+%"
+}
+
+# Check if an argument is provided
+if [ $# -eq 1 ]; then
+    main "$1"
+else
+    echo "Usage: $0 {up|down|toggle-mute}"
+    exit 1
+fi
