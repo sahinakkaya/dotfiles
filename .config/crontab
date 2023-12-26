@@ -1,0 +1,19 @@
+# DISPLAY=:0
+XDG_RUNTIME_DIR=/run/user/1000
+
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR Jan-Dec
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR SUN-SAT
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+
+# *     any value
+# ,     value list separator
+# -     range of values
+# /     step values
+
+* * * * * /home/sahin/scripts/check-battery.sh 10
