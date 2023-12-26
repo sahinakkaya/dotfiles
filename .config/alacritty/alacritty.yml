@@ -126,9 +126,8 @@ env:
 # Font configuration
 font:
   normal:
-    family: FiraCode Nerd Font Mono
-      #family: FantasqueSansM Nerd Font Mono
-    style: regular
+    family: MesloLGS Nerd Font
+    style: Regular
 
 #font:
   # Normal (roman) font face
