@@ -12,5 +12,5 @@
 	branch = main
 [submodule ".config/zsh"]
 	path = .config/zsh
-	url = https://github.com/sahinakkaya/zsh.git
+	url = https://github.com/sahinakkaya/zsh-config.git
 	branch = main
