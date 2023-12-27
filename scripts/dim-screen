@@ -1,0 +1,30 @@
+#!/usr/bin/python3
+
+# Gradually decrease brightness level. Thanks ChatGPT
+import subprocess
+import time
+
+def set_brightness(brightness):
+    subprocess.call(['light', '-S', str(brightness)])
+
+def smooth_dimming(initial_brightness, final_brightness, duration, steps):
+    brightness_step = (initial_brightness - final_brightness) / steps
+    sleep_time = duration / steps
+
+    for i in range(steps + 1):
+        current_brightness = round(initial_brightness - i * brightness_step,2)
+        set_brightness(current_brightness)
+        print(current_brightness)
+        time.sleep(sleep_time)
+
+    set_brightness(final_brightness)
+
+# Save brighness value for later
+subprocess.call(['light', '-O'])
+
+initial_brightness = float(subprocess.getoutput('light'))
+final_brightness = 0 if initial_brightness < 20 else 5
+dimming_duration = 0.3 if initial_brightness < 20 else .5
+num_steps = 20 if initial_brightness < 20 else 50
+
+smooth_dimming(initial_brightness, final_brightness, dimming_duration, num_steps)

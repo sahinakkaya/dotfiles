@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if pid=$(pgrep -x "dim-screen"); then
+  kill $pid
+fi
+
+light -I
