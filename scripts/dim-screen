@@ -23,7 +23,18 @@ def smooth_dimming(initial_brightness, final_brightness, duration, steps):
 subprocess.call(['light', '-O'])
 
 initial_brightness = float(subprocess.getoutput('light'))
-final_brightness = 0 if initial_brightness < 20 else 5
+if initial_brightness < 20:
+    final_brightness = max(0, initial_brightness - 10)
+elif initial_brightness < 40:
+    final_brightness = max(10, initial_brightness - 20)
+elif initial_brightness < 60:
+    final_brightness = max(30, initial_brightness - 30)
+elif initial_brightness < 80:
+    final_brightness = max(40, initial_brightness - 40)
+elif initial_brightness < 100:
+    final_brightness = max(50, initial_brightness - 50)
+
+
 dimming_duration = 0.3 if initial_brightness < 20 else .5
 num_steps = 20 if initial_brightness < 20 else 50
 
