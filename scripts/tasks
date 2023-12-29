@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+
+tasks_window=$(tmux list-windows | grep tasks | cut -d: -f1)
+if [[ -z "$tasks_window" ]]; then
+  tmux create-window
+  tmux split-window -h
+  tmux split-window
+  tmux resize-pane -U 14
+  tmux resize-pane -R 5
+  tmux send-keys -t0 "btop" Enter
+  tmux send-keys -t1 "while true;do task next limit:5;sleep 2;done" Enter
+  tmux send-keys -t2 "while true;do task burndown.daily;sleep 3;done" Enter
+
+  tmux rename-window "tasks"
+else
+  tmux select-window -t $tasks_window
+fi
+
+
+
+
+
+
