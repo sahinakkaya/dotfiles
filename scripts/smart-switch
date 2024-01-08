@@ -1,0 +1,21 @@
+#!/bin/bash
+
+monitors=$(hyprctl monitors -j | jq '.[] | .name')
+edp=$(echo "$monitors" | grep eDP)
+hdmi=$(echo "$monitors" | grep HDMI)
+
+if [[ "$1" == "close" ]]; then # lid is closing
+  if [[ -n "$hdmi" ]]; then # -n means if string is not empty
+    hyprctl keyword monitor "eDP-1, disable"
+  else
+    hyprctl dispatch exec lock-screen 
+
+  fi
+else
+  if [[ -z "$edp" ]]; then # -z means if string is empty
+    hyprctl keyword monitor eDP-1,preferred,0x1107,2.0 
+    killall ags
+    ags
+  fi
+fi
+

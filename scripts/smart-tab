@@ -1,0 +1,16 @@
+#!/bin/bash
+
+focusedClient=$(hyprctl clients -j | jq '[.[] | select(.focusHistoryID|contains(0))][0]')
+
+if [[ -n "$focusedClient" ]]; then
+  clientClass=$(echo "$focusedClient" | jq '.class' )
+  
+  case "$clientClass" in
+    kitty) hyprctl pass "" # cannot pass arbitrary keys to applications atm. abort mission
+    ;;
+    d|D) exit 0
+    ;;
+    *) exit 1
+  esac
+fi
+

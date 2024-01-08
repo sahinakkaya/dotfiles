@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Get the currently focused workspace
+current_workspace=$(hyprctl monitors -j | jq '.[] | .activeWorkspace.id' )
+
+# Define preferred apps based on workspace
+case $current_workspace in
+    1) app="kitty --single-instance";;
+    2) app="default";;
+    3) app="thunderbird";;
+    4) app="firefox";;
+    5) app="default";;
+esac
+
+
+
+if [[ "$app" == "default" ]]; then
+  hyprctl dispatch exec "wofi --show drun --normal-window"
+else
+  notify-send -t 500 "opening $app"
+  hyprctl dispatch exec "$app"
+fi
