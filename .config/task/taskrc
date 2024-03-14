@@ -27,11 +27,11 @@ hooks.location=~/.config/task/hooks
 
 
 # Color theme (uncomment one to use)
-include solarized-dark-256.theme
-#include dark-16.theme
-#include light-16.theme
-#include light-256.theme
-#include dark-256.theme
+# include solarized-dark-256.theme
+# include dark-16.theme
+# include light-16.theme
+# include light-256.theme
+# include dark-256.theme
 #include dark-red-256.theme
 #include dark-green-256.theme
 #include dark-blue-256.theme
@@ -45,3 +45,4 @@ include solarized-dark-256.theme
 news.version=2.6.0
 #
 color.calendar.holiday=black on yellow
+include light-256.theme
