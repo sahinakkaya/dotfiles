@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>dev.sahinakkaya.dark-mode-notify</string>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/Users/sahin/.dark-mode-notify-stderr.log</string>
+    <key>StandardOutPath</key>
+    <string>/Users/sahin/.dark-mode-notify-stdout.log</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/sahin/.local/bin/dark-mode-notify</string>
+      <string>/Users/sahin/scripts/change-background</string>
+    </array>
+</dict>
+</plist>
