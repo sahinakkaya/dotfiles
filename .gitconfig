@@ -4,7 +4,7 @@
 	signingkey = sahin@sahinakkaya.dev
 
 [include]
-  path = ~/.gitconfig-work
+  path = ~/.gitconfig-work ;this file is ignored in dot files intentionally. create it if you are using work computer
 [includeIf "gitdir:~/.dots/"]
   path = ~/.gitconfig-personal
 [init]
