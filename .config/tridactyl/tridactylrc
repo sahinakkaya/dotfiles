@@ -1,0 +1,43 @@
+" General Settings
+set update.lastchecktime 1746702576363
+set configversion 2.0
+set smoothscroll true
+set hintchars jklasdfghuioqwertynmzxcv
+
+" Binds
+bind j scrollline 5
+bind h back
+bind l forward
+bind J tabnext
+bind K tabprev
+bind H scrollpx -50
+bind L scrollpx 50
+bind q back
+bind Q forward
+bindurl github.com gp open github.com/sahinakkaya
+bindurl github.com gc composite git_clone | clipboard yank
+bindurl github.com gC composite git_clone_ssh | clipboard yank
+bindurl github.com yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl gitlab.com gp open gitlab.com/sahinakkayadev
+bindurl gitlab.com gc composite git_clone | clipboard yank
+bindurl gitlab.com gC composite git_clone_ssh | clipboard yank
+bindurl gitlab.com yr composite js "\"" + document.location.href.split('#')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl stackoverflow.com gp open stackoverflow.com/users/9608759/sahinakkaya
+bindurl youtube.com p composite get_current_url | mpvsafe
+bindurl youtube.com P hint -W mpvsafe
+
+" Subconfig Settings
+seturl monkeytype.com allowautofocus true
+
+" Aliases
+alias git_clone js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('/').at(4)
+alias get_current_url js document.location.href
+alias mpvsafe js -p tri.excmds.shellescape(JS_ARG).then(url => tri.excmds.exclaim_quiet('mpv --no-terminal ' + url))
+
+" Autocmds
+autocmd DocStart monkeytype.com mode ignore
+autocmd DocStart agar.io mode ignore
+
+" For syntax highlighting see https://github.com/tridactyl/vim-tridactyl
+" vim: set filetype=tridactyl
