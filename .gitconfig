@@ -2,5 +2,15 @@
 	email = sahin@sahinakkaya.dev
 	name = Şahin Akkaya
 	signingkey = sahin@sahinakkaya.dev
+
+[include]
+  path = ~/.gitconfig-work
+[includeIf "gitdir:~/.dots/"]
+  path = ~/.gitconfig-personal
 [init]
 	defaultBranch = main
+[url "ssh://git@bitbucket.org/"]
+	insteadOf = https://bitbucket.org/
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+
