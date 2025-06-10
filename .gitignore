@@ -25,3 +25,12 @@ Downloads
 .local
 .docker
 .gitconfig-work
+**automatic_backups/
+.config/github-copilot/
+navigate_kitty.py
+pass_keys.py
+uv-receipt.json
+.claude
+.claude.json
+.pyenv
+.yarnrc
