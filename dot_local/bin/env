@@ -1,0 +1,22 @@
+#!/bin/sh
+# add binaries to PATH if they aren't added yet
+# affix colons on either side of $PATH to simplify matching
+#
+#
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export YOLK_DIR="$HOME/.dotfiles/main"
+
+export GOPATH="$HOME/go"
+export NVM_DIR="$HOME/.nvm"
+export BUN_INSTALL="$HOME/.bun"
+
+for dir in \
+    "$HOME/.local/bin" \
+    "$HOME/.cargo/bin" \
+    "$BUN_INSTALL/bin"
+do
+    case ":$PATH:" in
+        *:"$dir":*) ;;
+        *) export PATH="$dir:$PATH" ;;
+    esac
+done

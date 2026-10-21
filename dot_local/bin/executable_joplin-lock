@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MOUNTPOINT="$HOME/.local/share/joplin-unlocked"
+
+if ! mountpoint -q "$MOUNTPOINT"; then
+    echo "Joplin is already locked."
+    exit 0
+fi
+
+if fusermount3 -u "$MOUNTPOINT"; then
+    echo "Joplin locked successfully."
+else
+    echo "Failed to lock Joplin. The filesystem may still be in use." >&2
+    exit 1
+fi

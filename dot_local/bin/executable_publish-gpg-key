@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+EMAIL="sahin@sahinakkaya.dev"
+FINGERPRINT="A89C2003345AF08F4C834B4F1C88DBE6CDA15ED2"
+SERVER="sahinakkaya.dev"
+
+HASH=$(gpg-wks-client --print-wkd-hash "$EMAIL" | awk '{print $1}')
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+mkdir -p "$tmpdir/.well-known/openpgpkey/sahinakkaya.dev/hu"
+
+gpg --export "$FINGERPRINT" > "$tmpdir/.well-known/openpgpkey/sahinakkaya.dev/hu/$HASH"
+gpg --armor --export "$FINGERPRINT" > "$tmpdir/public.asc"
+
+tar -C "$tmpdir" -cf - . |
+    ssh "$SERVER" 'mkdir -p ~/selfhost/caddy/wkd && tar -C ~/selfhost/caddy/wkd -xf -'

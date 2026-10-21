@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Joplin
+Comment=Joplin with encrypted local profiles
+Exec=/usr/bin/env joplin-secure %u
+Icon=net.cozic.joplin_desktop
+Terminal=false
+Categories=Office;
+MimeType=x-scheme-handler/joplin;

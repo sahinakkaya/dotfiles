@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+if [ -n "${1:-}" ]; then
+  file=$1
+elif command -v rofi >/dev/null 2>&1; then
+  file=$(find . -maxdepth 1 -type f | cut -c 3- | rofi -i -dmenu -p 'Select file to share')
+else
+  printf 'Usage: %s file\n' "${0##*/}" >&2
+  exit 64
+fi
+
+if [ -z "$file" ]; then
+  exit 0
+fi
+
+if [ ! -r "$file" ]; then
+  printf 'Cannot read file: %s\n' "$file" >&2
+  exit 1
+fi
+
+if [ -n "${SHRFILE_CURL:-}" ]; then
+  curl_cmd=$SHRFILE_CURL
+elif [ -x /opt/homebrew/opt/curl/bin/curl ]; then
+  # Homebrew's curl is newer than the curl bundled with many macOS releases.
+  curl_cmd=/opt/homebrew/opt/curl/bin/curl
+elif [ -x /usr/local/opt/curl/bin/curl ]; then
+  curl_cmd=/usr/local/opt/curl/bin/curl
+else
+  curl_cmd=curl
+fi
+
+url=$("$curl_cmd" --fail --silent --show-error \
+  -F "file=@$file" \
+  https://files.ts.sahinakkaya.dev)
+curl_status=$?
+if [ "$curl_status" -ne 0 ]; then
+  if [ "$curl_status" -eq 35 ]; then
+    printf 'The file server rejected the TLS handshake before the file was uploaded.\n' >&2
+    printf 'This is usually a network filter; try another network or a VPN.\n' >&2
+  fi
+  exit "$curl_status"
+fi
+
+printf '%s\n' "$url"
+
+if command -v pbcopy >/dev/null 2>&1; then
+  printf '%s' "$url" | pbcopy
+fi
+
+if [ "$(uname -s)" = Darwin ] && command -v osascript >/dev/null 2>&1; then
+  osascript -e "display notification \"Link copied to clipboard\" with title \"shrout\"" >/dev/null 2>&1 || true
+elif command -v notify-send >/dev/null 2>&1; then
+  notify-send "Link to $file is copied to clipboard!" >/dev/null 2>&1 || true
+fi

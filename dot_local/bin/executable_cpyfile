@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [ "$#" -ne 1 ]; then
+  printf 'Usage: %s file\n' "${0##*/}" >&2
+  exit 64
+fi
+
+if [ ! -r "$1" ]; then
+  printf 'Cannot read file: %s\n' "$1" >&2
+  exit 1
+fi
+
+if ! command -v pbcopy >/dev/null 2>&1; then
+  printf 'cpyfile requires pbcopy (available on macOS).\n' >&2
+  exit 69
+fi
+
+pbcopy < "$1"
+printf 'Copied %s to the clipboard.\n' "$1"

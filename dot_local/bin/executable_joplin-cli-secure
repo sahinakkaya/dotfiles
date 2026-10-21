@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ENCRYPTED="$HOME/.local/share/joplin-encrypted"
+UNLOCKED="$HOME/.local/share/joplin-unlocked"
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+source "$NVM_DIR/nvm.sh" --no-use
+NODE="$(nvm which default)"
+JOPLIN="${NODE%/*}/joplin"
+export PATH="${NODE%/*}:$PATH"
+
+# Prevent concurrent secure launchers.
+exec 9>"${XDG_RUNTIME_DIR}/joplin-secure.lock"
+flock -n 9 || {
+    echo "Another Joplin secure launcher is active." >&2
+    exit 1
+}
+
+# Do not interfere with Joplin Desktop.
+if flatpak ps --columns=application |
+    grep -Fxq net.cozic.joplin_desktop; then
+    echo "Close Joplin Desktop first." >&2
+    exit 1
+fi
+
+# Unlock only when necessary.
+MOUNTED_BY_US=false
+
+if ! mountpoint -q "$UNLOCKED"; then
+    gocryptfs \
+      -extpass "$HOME/.local/bin/joplin-password" \
+      "$ENCRYPTED" "$UNLOCKED"
+    MOUNTED_BY_US=true
+fi
+
+cleanup() {
+    if [[ "$MOUNTED_BY_US" == true ]] && mountpoint -q "$UNLOCKED"; then
+        fusermount3 -u "$UNLOCKED" ||
+            echo "WARNING: Failed to lock Joplin." >&2
+    fi
+}
+
+trap cleanup EXIT
+
+# Never start with an inaccessible profile.
+if [[ ! -d "$UNLOCKED/joplin" ]]; then
+    echo "Joplin CLI profile directory not found." >&2
+    exit 1
+fi
+
+"$JOPLIN" "$@"

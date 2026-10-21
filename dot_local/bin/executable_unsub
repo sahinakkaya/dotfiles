@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+last=$(ls -ltr | tail -n 1 | rev | cut -d' ' -f1 | rev)
+
+unzip $last

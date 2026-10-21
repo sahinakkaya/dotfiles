@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ENCRYPTED="$HOME/.local/share/joplin-encrypted"
+UNLOCKED="$HOME/.local/share/joplin-unlocked"
+APP_ID="net.cozic.joplin_desktop"
+
+# Prevent concurrent launcher executions.
+exec 9>"${XDG_RUNTIME_DIR}/joplin-secure.lock"
+flock -n 9 || {
+    zenity --error \
+        --title="Joplin is already running" \
+        --text="Close the other Joplin application before opening this one."
+    exit 1
+}
+
+# Don't interfere with an already-running Joplin instance.
+if flatpak ps --columns=application | grep -Fxq "$APP_ID"; then
+    echo "Joplin is already running." >&2
+    exit 1
+fi
+
+# Unlock the filesystem if necessary.
+MOUNTED_BY_US=false
+if ! mountpoint -q "$UNLOCKED"; then
+    gocryptfs \
+        -extpass "$HOME/.local/bin/joplin-password" \
+        "$ENCRYPTED" "$UNLOCKED"
+    MOUNTED_BY_US=true
+fi
+
+# Attempt to unmount when the launcher exits.
+cleanup() {
+    if [[ "$MOUNTED_BY_US" == true ]] && mountpoint -q "$UNLOCKED"; then
+        fusermount3 -u "$UNLOCKED" || {
+            echo "WARNING: Failed to lock Joplin profile." >&2
+        }
+    fi
+}
+
+trap cleanup EXIT
+
+# Verify the profile is accessible, including before its first launch.
+if [[ ! -d "$UNLOCKED/joplin-desktop" ]]; then
+    echo "Joplin profile directory not found!" >&2
+    exit 1
+fi
+
+# Launch Joplin and wait for it to exit.
+flatpak run "$APP_ID" "$@"

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+if [ "$#" -eq 0 ]; then
+  printf 'Usage: %s command [argument ...]\n' "${0##*/}" >&2
+  exit 64
+fi
+
+if ! command -v pbcopy >/dev/null 2>&1; then
+  printf 'cpyout requires pbcopy (available on macOS).\n' >&2
+  exit 69
+fi
+
+tmpfile=$(mktemp "${TMPDIR:-/tmp}/cpyout.XXXXXX") || exit 1
+trap 'rm -f "$tmpfile"' EXIT HUP INT TERM
+
+# Put a safely shell-quoted version of the invoked command at the top of both
+# the terminal output and the clipboard capture.
+{
+  printf '$'
+  for argument in "$@"; do
+    printf ' %q' "$argument"
+  done
+  printf '\n'
+} | tee "$tmpfile"
+
+# Avoid `|&`: macOS includes Bash 3.2, which does not support that shorthand.
+"$@" 2>&1 | tee -a "$tmpfile"
+pipeline_status=("${PIPESTATUS[@]}")
+command_status=${pipeline_status[0]}
+tee_status=${pipeline_status[1]}
+
+if [ "$tee_status" -ne 0 ]; then
+  printf 'Could not capture command output.\n' >&2
+  exit "$tee_status"
+fi
+
+pbcopy < "$tmpfile"
+printf 'Copied command output to the clipboard.\n' >&2
+exit "$command_status"

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -eu
+
+
+if [[ "${1:-}" == "dark" ]]; then
+    theme="dark"
+else
+    theme="light"
+fi
+
+
+echo "$theme" > "$HOME/.theme"
+
+export YOLK_DIR="$HOME/dotfiles"
+$HOME/.cargo/bin/yolk sync
+
+kitty_socket_base='/tmp/mykitty'
+kitten_bin=/opt/homebrew/bin/kitten
+
+ps -axo pid=,command= |
+    awk '$2 == "kitty" || $2 ~ /\/kitty$/ { print $1 }' |
+    while IFS= read -r kitty_pid; do
+        "$kitten_bin" @ \
+            --to "unix:${kitty_socket_base}-${kitty_pid}" \
+            load-config --no-response 2>/dev/null ||
+            kill -USR1 "$kitty_pid" 2>/dev/null ||
+            true
+    done

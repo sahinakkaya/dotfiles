@@ -1,0 +1,10 @@
+#!/bin/bash
+
+## Play video with subtitles
+
+video=$1
+
+subtitle=$(ls *.srt | gum filter)
+
+mpv $video --sub-file="$subtitle"
+

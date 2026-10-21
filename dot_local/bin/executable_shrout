@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+if [ "$#" -eq 0 ]; then
+  printf 'Usage: %s command [argument ...]\n' "${0##*/}" >&2
+  exit 64
+fi
+
+tmpfile=$(mktemp "${TMPDIR:-/tmp}/cmd-output.XXXXXX") || exit 1
+trap 'rm -f "$tmpfile"' EXIT HUP INT TERM
+
+printf '$ %s\n' "$*" | tee "$tmpfile"
+
+# macOS ships Bash 3.2, which does not understand Bash 4's `|&` shorthand.
+# Passing arguments directly also avoids treating command arguments as shell code.
+"$@" 2>&1 | tee -a "$tmpfile"
+pipeline_status=("${PIPESTATUS[@]}")
+command_status=${pipeline_status[0]}
+tee_status=${pipeline_status[1]}
+
+if [ "$tee_status" -ne 0 ]; then
+  printf 'Could not write command output to %s\n' "$tmpfile" >&2
+  exit "$tee_status"
+fi
+
+read -r -p 'Sharing output. [O]k, [e]dit, [d]iscard? ' -n 1 ans
+printf '\n'
+
+case "$ans" in
+  o|O) ;;
+  e|E)
+    "${EDITOR:-vi}" "$tmpfile"
+    ;;
+  d|D) exit "$command_status" ;;
+  *) exit 1 ;;
+esac
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+"$script_dir/shrfile" "$tmpfile"
+upload_status=$?
+
+[ "$upload_status" -eq 0 ] || exit "$upload_status"
+exit "$command_status"
