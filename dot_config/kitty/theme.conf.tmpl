@@ -1,0 +1,14 @@
+{{- $dark := false -}}
+{{- $themeFile := joinPath .chezmoi.homeDir ".theme" -}}
+{{- if stat $themeFile -}}
+{{- $dark = eq (include $themeFile | trim) "dark" -}}
+{{- end -}}
+{{ if and $dark (eq .chezmoi.username "sahin") -}}
+include themes/kanagawa.conf
+{{ else if $dark -}}
+include themes/tokyonight_storm.conf
+{{ else if eq .chezmoi.username "sahin" -}}
+include themes/kanagawa_light.conf
+{{ else -}}
+include themes/tokyonight_day.conf
+{{ end -}}

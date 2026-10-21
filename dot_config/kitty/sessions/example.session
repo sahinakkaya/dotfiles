@@ -1,0 +1,7 @@
+# Optional example; not loaded automatically by kitty.conf.
+# Run after installing this config: kitty --session ~/.config/kitty/sessions/example.session
+# Start two shells side by side in your home directory.
+layout tall
+cd ~
+launch
+launch

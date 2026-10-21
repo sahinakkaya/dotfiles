@@ -1,0 +1,3 @@
+.config/kitty/__pycache__
+.config/kitty/**/__pycache__
+.config/kitty/dirty

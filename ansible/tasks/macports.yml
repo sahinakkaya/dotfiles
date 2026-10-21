@@ -1,9 +1,0 @@
----
-- name: Install MacPorts packages
-  become: true
-  community.general.macports:
-    name: "{{ macports_packages }}"
-    state: present
-  when:
-    - ansible_facts['system'] == 'Darwin'
-    - macports_packages | length > 0

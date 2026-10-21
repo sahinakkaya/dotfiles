@@ -1,0 +1,36 @@
+# Platform settings rendered by Yolk, using data.is_macos.
+
+# font_size
+#: Font size (in pts)
+
+# focus_follows_mouse
+#: Set the active window to the window under the mouse when moving the
+#: mouse around. On macOS, this will also cause the OS Window under
+#: the mouse to be focused automatically when the mouse enters it.
+
+# enable_audio_bell
+#: The audio bell. Useful to disable it in environments that require
+#: silence.
+
+# hide_window_decorations
+#: Hide the window decorations (title-bar and window borders) with
+#: yes. On macOS, titlebar-only and titlebar-and-corners can be used
+#: to only hide the titlebar and the rounded corners. Whether this
+#: works and exactly what effect it has depends on the window
+#: manager/operating system. Note that the effects of changing this
+#: option when reloading config are undefined. When using titlebar-
+#: only, it is useful to also set window_margin_width and
+#: placement_strategy to prevent the rounded corners from clipping
+#: text. Or use titlebar-and-corners.
+
+{{ if eq .chezmoi.os "darwin" -}}
+font_size 18.0
+focus_follows_mouse yes
+enable_audio_bell no
+hide_window_decorations titlebar-only
+{{ else -}}
+font_size 10.0
+focus_follows_mouse no
+enable_audio_bell yes
+hide_window_decorations yes
+{{ end -}}
