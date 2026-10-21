@@ -1,0 +1,170 @@
+# Paneru configuration
+
+[options]
+focus_follows_mouse = true
+mouse_follows_focus = false
+animation_speed = 15
+preset_column_widths = [0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
+window_resize_cycle = false
+mouse_resize_modifier = "cmd + shift"
+virtual_workspace_animations = false
+create_virtual_workspace_automatically = true
+insert_windows_mid_strip = true
+disable_native_tabs = false
+
+
+auto_center = true
+
+[padding]
+top = 0
+bottom = 0
+
+[bindings]
+
+window_focus_west = ["cmd - q", "cmd - h"]
+window_focus_east = ["cmd - e", "cmd - l"]
+window_virtual_north = "cmd - k"
+window_virtual_south = "cmd - j"
+window_virtualmove_north = "cmd + shift - k"
+window_virtualmove_south = "cmd + shift - j"
+window_center = "cmd - t"
+
+window_virtualnum_1 = "cmd - 1"
+window_virtualnum_2 = "cmd - 2"
+window_virtualnum_3 = "cmd - 3"
+window_virtualnum_4 = "cmd - 4"
+window_virtualnum_5 = "cmd - 5"
+window_virtualnum_6 = "cmd - 6"
+window_virtualnum_7 = "cmd - 7"
+window_virtualnum_8 = "cmd - 8"
+window_virtualnum_9 = "cmd - 9"
+window_virtualnum_10 = "cmd - 0"
+
+window_virtualmovenum_1 = "cmd + shift - 1"
+window_virtualmovenum_2 = "cmd + shift - 2"
+window_virtualmovenum_3 = "cmd + shift - 3"
+window_virtualmovenum_4 = "cmd + shift - 4"
+window_virtualmovenum_5 = "cmd + shift - 5"
+window_virtualmovenum_6 = "cmd + shift - 6"
+window_virtualmovenum_7 = "cmd + shift - 7"
+window_virtualmovenum_8 = "cmd + shift - 8"
+window_virtualmovenum_9 = "cmd + shift - 9"
+window_virtualmovenum_10 = "cmd + shift - 0"
+
+window_virtualsendnum_1 = "cmd + ctrl - 1"
+window_virtualsendnum_2 = "cmd + ctrl - 2"
+window_virtualsendnum_3 = "cmd + ctrl - 3"
+window_virtualsendnum_4 = "cmd + ctrl - 4"
+window_virtualsendnum_5 = "cmd + ctrl - 5"
+window_virtualsendnum_6 = "cmd + ctrl - 6"
+window_virtualsendnum_7 = "cmd + ctrl - 7"
+window_virtualsendnum_8 = "cmd + ctrl - 8"
+window_virtualsendnum_9 = "cmd + ctrl - 9"
+window_virtualsendnum_10 = "cmd + ctrl - 0"
+
+window_swap_west = "cmd - ,"
+window_swap_east = "cmd - ."
+window_swap_first = "cmd + shift - ,"
+window_swap_last = "cmd + shift - ."
+window_focus_first = "cmd - minus"
+window_focus_last = "cmd - equal"
+
+# window_focus_unmanaged = "cmd - f"
+# window_focus_managed = "cmd + shift - f"
+# window_togglefloatlayer = "cmd + ctrl - f"
+window_togglefloatlayer = "cmd - f"
+
+window_resize = "cmd + ctrl - l"
+window_shrink = "cmd + ctrl - h"
+window_balance = "cmd - b"
+
+window_fullwidth = "cmd - m"
+window_manage = "ctrl + cmd - ;"
+window_snap = "cmd + shift - t"
+
+quit = "ctrl + cmd - q"
+restart = "ctrl + cmd - r"
+
+[swipe]
+deceleration = 4
+sensitivity = 0.5
+continuous = false
+
+[swipe.gesture]
+fingers_count = 4
+direction = "Natural"
+
+[swipe.scroll]
+vertical_modifier = "shift"
+
+[decorations.inactive.dim]
+opacity = -0.15
+opacity_night = -0.05
+
+[decorations.active.border]
+enabled = true
+color = "#89b4fa"
+width = 2.0
+radius = 12.0
+
+[windows.calculator]
+title = ".*"
+bundle_id = "com.apple.calculator"
+floating = true
+
+[windows.preferences]
+title = ".*Preferences.*"
+floating = true
+
+
+[windows.mpv]
+title = ".* - mpv"
+floating = true
+
+[windows.system-settings]
+title = ".*"
+bundle_id = "com.apple.systempreferences"
+floating = true
+
+[windows.quicktime]
+title = ".*"
+bundle_id = "com.apple.QuickTimePlayerX"
+floating = true
+
+[windows.clock]
+title = ".*"
+bundle_id = "com.apple.clock"
+floating = true
+
+
+[windows.kitty]
+title = ".*"
+bundle_id = "net.kovidgoyal.kitty"
+index = 0
+
+
+[windows.zen]
+title = ".*"
+bundle_id = "app.zen-browser.zen"
+index = 1
+
+[windows.extensions]
+title = "Extension: .*"
+bundle_id = "app.zen-browser.zen"
+floating = true
+
+[windows.finder-info]
+title = ".* Info"
+bundle_id = "com.apple.finder"
+floating = true
+
+[windows.music]
+title = ".*"
+bundle_id = "com.apple.Music"
+width = 0.75
+
+[windows.all]
+title = ".*"
+horizontal_padding = 6
+vertical_padding = 0
+width = 0.5

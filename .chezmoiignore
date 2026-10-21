@@ -4,6 +4,9 @@
 
 {{ if ne .chezmoi.os "darwin" }}
 .config/karabiner
+.config/yabai
+.config/paneru
+.config/skhd
 Library/LaunchAgents
 {{ end }}
 
