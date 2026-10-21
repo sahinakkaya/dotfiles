@@ -10,4 +10,12 @@
 Library/LaunchAgents
 {{ end }}
 
+
+{{ if ne .chezmoi.os "linux" }}
+.config/keymapper
+.config/hypr
+.config/darkman
+.config/i3
+{{ end }}
+
 .config/karabiner/automatic_backups
