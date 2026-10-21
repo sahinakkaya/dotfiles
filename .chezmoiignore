@@ -20,3 +20,13 @@ dot_local/share/symlink_darkman
 {{ end }}
 
 .config/karabiner/automatic_backups
+
+
+# Installed by the upstream uosc installer.
+.config/mpv/watch_later
+.config/mpv/scripts/uosc/
+.config/mpv/scripts/uosc_shared/
+.config/mpv/scripts/uosc.lua
+.config/mpv/fonts/uosc_icons.otf
+.config/mpv/fonts/uosc_textures.ttf
+.config/mpv/.uosc-backup/
