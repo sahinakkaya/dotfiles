@@ -7,7 +7,7 @@
 .config/yabai
 .config/paneru
 .config/skhd
-Library/LaunchAgents
+Library
 {{ end }}
 
 
