@@ -6,5 +6,6 @@ packages:
     - direnv
     - zoxide
     - darkman
+    - lsd
   macports:
     - difftastic

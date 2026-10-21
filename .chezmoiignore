@@ -30,3 +30,6 @@ dot_local/share/symlink_darkman
 .config/mpv/fonts/uosc_icons.otf
 .config/mpv/fonts/uosc_textures.ttf
 .config/mpv/.uosc-backup/
+
+# btop
+.config/btop/btop.log
