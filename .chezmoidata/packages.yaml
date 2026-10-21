@@ -7,5 +7,26 @@ packages:
     - zoxide
     - darkman
     - lsd
+    - trash-cli
+
+    - sudo
+    - passwd
+    - shadow-utils
+    - python3
+    - python3-pip
+    - procps-ng # pgrep
+    - iputils # ping
+    - cmake
+    - golang
+    - difftastic
+    - dmenu-wayland
+    - gocryptfs # for encrypting joplin notes
+    - zenity # to get a password ui
+    - lolcat
+    - htop
+    - btop
+    # - fuse3
+    # - util-linux
+    - flatpak
   macports:
     - difftastic
