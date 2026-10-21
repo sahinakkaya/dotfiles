@@ -1,0 +1,42 @@
+---
+- name: Check whether uosc is installed
+  ansible.builtin.stat:
+    path: "{{ ansible_facts['user_dir'] }}/.config/mpv/scripts/uosc/main.lua"
+  register: uosc_install
+
+- name: Install uosc
+  when: not uosc_install.stat.exists
+  environment:
+    MPV_CONFIG_DIR: "{{ ansible_facts['user_dir'] }}/.config/mpv"
+  block:
+    - name: Check uosc installer dependencies
+      ansible.builtin.command:
+        argv: ["{{ item.name }}", "{{ item.flag }}"]
+      loop:
+        - { name: curl, flag: --version }
+        - { name: unzip, flag: -v }
+      changed_when: false
+
+    - name: Create temporary uosc installer file
+      ansible.builtin.tempfile:
+        state: file
+        suffix: -uosc-installer.sh
+      register: uosc_installer_file
+
+    - name: Download and run the official uosc installer
+      block:
+        - name: Download uosc installer
+          ansible.builtin.get_url:
+            url: https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh
+            dest: "{{ uosc_installer_file.path }}"
+            mode: "0700"
+
+        - name: Run uosc installer
+          ansible.builtin.command:
+            argv: [/bin/bash, "{{ uosc_installer_file.path }}"]
+            creates: "{{ ansible_facts['user_dir'] }}/.config/mpv/scripts/uosc/main.lua"
+      always:
+        - name: Remove temporary uosc installer
+          ansible.builtin.file:
+            path: "{{ uosc_installer_file.path }}"
+            state: absent

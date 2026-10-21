@@ -1,0 +1,75 @@
+---
+pass_gpg_id: sahin@sahinakkaya.dev
+bw_server: https://vault.home.sahinakkaya.dev
+bw_user: sahin@sahinakkaya.dev
+bw_gpg_item: GPG Private Key
+bw_gpg_attachment: private.asc
+bw_2fa_method: "0" # Authenticator; use "1" for email or "3" for YubiKey.
+pass_git_remote: ssh://git@git.sahinakkaya.dev:2242/sahin/password-store.git
+main_yolk_remote: ssh://git@git.sahinakkaya.dev:2242/sahin/dotfiles.git
+zsh_yolk_remote: git@github.com:sahinakkaya/zsh-config.git
+pass_store_dir: "{{ lookup('env', 'PASSWORD_STORE_DIR') or (lookup('env', 'HOME') ~ '/.password-store') }}"
+joplin_password_entry: joplin
+
+dnf_packages:
+  - sudo
+  - passwd
+  - shadow-utils
+  - neovim
+  - zsh
+  - python3
+  - python3-pip
+  - procps-ng # pgrep
+  - iputils # ping
+  - cmake
+  - direnv
+  - zoxide
+  - golang
+  - difftastic
+  - dmenu-wayland
+  - darkman
+  - git
+  - curl
+  - gocryptfs # for encrypting joplin notes
+  - zenity # to get a password ui
+  - pinentry
+  - lsd
+  - trash-cli
+  - kitty
+  - lolcat
+  - htop
+  - btop
+  # - fuse3
+  # - util-linux
+  - flatpak
+  - pass
+
+macports_packages:
+  # - go
+  - difftastic
+
+flatpak_packages:
+  - net.cozic.joplin_desktop
+  - com.bitwarden.desktop
+
+npm_global_packages:
+  - "@bitwarden/cli"
+  - "joplin"
+
+nvm_dir: "{{ lookup('env', 'HOME') }}/.nvm"
+node_version: "lts/*"
+
+python_user_packages:
+  - subliminal
+  - neovim-remote
+
+keymapper_version: "5.7.3"
+keymapper_architectures:
+  aarch64: arm64
+  arm64: arm64
+  x86_64: x86_64
+yolk_version: "1.3.0"
+yolk_installer: "https://github.com/elkowar/yolk/releases/download/v{{ yolk_version }}/yolk_dots-installer.sh"
+yolk_build_from_source: "{{ ansible_facts['system'] == 'Linux' and ansible_facts['architecture'] in ['aarch64', 'arm64'] }}"
+
+caelestia_source_dir: "{{ lookup('env', 'HOME') }}/.config/quickshell/caelestia"

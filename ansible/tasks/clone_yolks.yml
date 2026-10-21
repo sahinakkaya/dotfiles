@@ -1,0 +1,23 @@
+- name: Check main yolk destination
+  ansible.builtin.stat:
+    path: "{{ playbook_dir | dirname }}/main"
+  register: main_yolk_dir
+
+- name: Clone main yolk repository
+  ansible.builtin.git:
+    repo: "{{ main_yolk_remote }}"
+    dest: "{{ playbook_dir | dirname }}/main"
+    update: false
+  when: not main_yolk_dir.stat.exists
+
+- name: Check zsh yolk destination
+  ansible.builtin.stat:
+    path: "{{ playbook_dir | dirname }}/zsh"
+  register: zsh_yolk_dir
+
+- name: Clone zsh yolk repository
+  ansible.builtin.git:
+    repo: "{{ zsh_yolk_remote }}"
+    dest: "{{ playbook_dir | dirname }}/zsh"
+    update: false
+  when: not zsh_yolk_dir.stat.exists

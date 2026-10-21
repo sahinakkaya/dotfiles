@@ -1,0 +1,50 @@
+---
+- name: Check whether Yolk is installed
+  ansible.builtin.command: yolk --version
+  register: yolk_check
+  changed_when: false
+  failed_when: false
+
+- name: Download Yolk installer
+  ansible.builtin.get_url:
+    url: "{{ yolk_installer }}"
+    dest: /tmp/yolk-installer.sh
+    mode: "0700"
+  when:
+    - yolk_check.rc != 0
+    - not yolk_build_from_source
+
+- name: Install Yolk
+  ansible.builtin.command: sh /tmp/yolk-installer.sh
+  when:
+    - yolk_check.rc != 0
+    - not yolk_build_from_source
+
+- name: Build Yolk on ARM64 Linux
+  when:
+    - yolk_check.rc != 0
+    - yolk_build_from_source
+  environment:
+    PATH: "{{ lookup('env', 'CARGO_HOME') or (lookup('env', 'HOME') ~ '/.cargo') }}/bin:{{ lookup('env', 'PATH') }}"
+  block:
+    - name: Ensure the Rust toolchain is installed
+      ansible.builtin.import_tasks: rust.yml
+
+    - name: Install Yolk from source
+      community.general.cargo:
+        name: yolk_dots
+        version: "{{ yolk_version }}"
+        locked: true
+        state: present
+
+- name: Safeguard yolk
+  ansible.builtin.command: yolk safeguard
+  environment:
+    YOLK_DIR: "{{ playbook_dir | dirname }}"
+  changed_when: false
+
+- name: Sync dotfiles with Yolk before installing mpv plugins
+  ansible.builtin.command: yolk sync
+  environment:
+    YOLK_DIR: "{{ playbook_dir | dirname }}"
+  changed_when: false

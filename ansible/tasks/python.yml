@@ -1,0 +1,9 @@
+---
+- name: Install Python packages for the current user
+  become: false
+  ansible.builtin.pip:
+    name: "{{ python_user_packages }}"
+    executable: pip3
+    extra_args: --user
+    state: present
+  when: python_user_packages | length > 0

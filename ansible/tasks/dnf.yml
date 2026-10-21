@@ -1,0 +1,17 @@
+---
+- name: Install DNF packages
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ dnf_packages }}"
+    state: present
+  when:
+    - ansible_facts['pkg_mgr'] in ['dnf', 'dnf5']
+    - dnf_packages | length > 0
+
+- name: Enable and start darkman
+  ansible.builtin.systemd_service:
+    name: darkman.service
+    enabled: true
+    state: started
+    scope: user
+  become: false

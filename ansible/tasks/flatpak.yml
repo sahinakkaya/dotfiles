@@ -1,0 +1,27 @@
+---
+- name: Add Flathub for the current user
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    method: user
+    state: present
+
+- name: Check for existing Flatpak applications
+  ansible.builtin.command:
+    argv: [flatpak, info, "{{ item }}"]
+  loop: "{{ flatpak_packages }}"
+  register: flatpak_installed
+  changed_when: false
+  failed_when: flatpak_installed.rc not in [0, 1]
+  check_mode: false
+
+- name: Install missing Flatpak applications for the current user
+  community.general.flatpak:
+    name: "{{ item.item }}"
+    remote: flathub
+    method: user
+    state: present
+  loop: "{{ flatpak_installed.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.rc != 0

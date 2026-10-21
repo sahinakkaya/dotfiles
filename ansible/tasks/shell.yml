@@ -1,0 +1,5 @@
+- name: Change shell to zsh
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh
+  become: true

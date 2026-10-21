@@ -1,0 +1,67 @@
+---
+- name: Configure workstation
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  gather_subset:
+    - min
+
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Set up DNF packages
+      ansible.builtin.import_tasks: tasks/dnf.yml
+      tags: [dnf, packages, bootstrap]
+
+    - name: Set up MacPorts packages
+      ansible.builtin.import_tasks: tasks/macports.yml
+      tags: [macports, packages, bootstrap]
+
+    - name: Clone yolks
+      ansible.builtin.import_tasks: tasks/clone_yolks.yml
+      tags: [clone_yolks]
+
+    - name: Set up Flatpak applications
+      ansible.builtin.import_tasks: tasks/flatpak.yml
+      tags: [flatpak, packages]
+      when: ansible_facts['system'] == 'Linux'
+
+    - name: Set up npm packages
+      ansible.builtin.import_tasks: tasks/npm.yml
+      tags: [npm, bootstrap]
+
+    - name: Set up Python packages
+      ansible.builtin.import_tasks: tasks/python.yml
+      tags: [python]
+
+    - name: Build and install Go projects
+      ansible.builtin.import_tasks: tasks/go-projects.yml
+      tags: [go-projects]
+
+    - name: Set up shell
+      ansible.builtin.import_tasks: tasks/shell.yml
+      tags: [shell]
+
+    - name: Set up password store and save subtitle credentials
+      ansible.builtin.import_tasks: tasks/pass.yml
+
+    - name: Set up Yolk and sync dotfiles
+      ansible.builtin.import_tasks: tasks/yolk.yml
+
+    - name: Set up mpv plugins
+      ansible.builtin.import_tasks: tasks/mpv.yml
+
+    - name: Set up keymapper
+      ansible.builtin.import_tasks: tasks/keymapper.yml
+
+    - name: Set up Joplin encrypted storage
+      ansible.builtin.import_tasks: tasks/joplin.yml
+      tags: [joplin]
+      when: ansible_facts['system'] == 'Linux'
+
+    - name: Install and configure caelestia
+      ansible.builtin.import_tasks: tasks/caelestia.yml
+      tags: [caelestia]
+      when: ansible_facts['system'] == 'Linux'
+
