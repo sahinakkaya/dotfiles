@@ -16,6 +16,7 @@ Library/LaunchAgents
 .config/hypr
 .config/darkman
 .config/i3
+dot_local/share/symlink_darkman
 {{ end }}
 
 .config/karabiner/automatic_backups
