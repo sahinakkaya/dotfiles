@@ -1,0 +1,66 @@
+" General Settings
+sanitise tridactylconfig
+set smoothscroll true
+set update.lastchecktime 1788973753580
+set configversion 2.0
+
+" Binds
+bind h back
+unbind j
+unbind k
+bind l forward
+unbind <C-u>
+unbind <C-d>
+bind <D-j> scrollstart 0 250
+bind <D-k> scrollstart 0 -250
+unbind <D-h>
+unbind <D-l>
+bind <CD-d> scrollstart 0 500
+bind <CD-u> scrollstart 0 -500
+bind <U-j> scrollstop
+bind <U-k> scrollstop
+bind <U-h> scrollstop
+bind <U-l> scrollstop
+bind <U-J> scrollstop
+bind <U-K> scrollstop
+bind <U-H> scrollstop
+bind <U-L> scrollstop
+bind <CU-u> scrollstop
+bind <CU-d> scrollstop
+bind <CU-U> scrollstop
+bind <CU-D> scrollstop
+unbind L
+unbind H
+bind J tabnext
+bind K tabprev
+" ;r reveal password
+bind ;r hint -JFc input[type=password],input[data-tridactyl-password] e => { if (e.type === "password") { e.dataset.tridactylPassword = ""; e.type = "text" } else { delete e.dataset.tridactylPassword; e.type = "password" } }
+bindurl github.com gp open github.com/sahinakkaya
+bindurl github.com yr composite js "\"" + document.location.href.split('#')[0].split('?')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl gitlab.com gp open gitlab.com/sahinakkayadev
+bindurl gitlab.com yr composite js "\"" + document.location.href.split('#')[0].split('?')[0].split('/').slice(3, 5).join('/') + "\"" | clipboard yank
+bindurl stackoverflow.com gp open stackoverflow.com/users/9608759/
+bindurl videos.sahinakkaya.dev yy composite js "https://youtube.com/" + document.location.href.split('sahinakkaya.dev/')[1] | clipboard yank
+bindurl ^https://(www\.)?youtube\.com/ yM composite js "<!-- " + document.title.replace(/ - YouTube$/, "") + " -->\n" + location.href | clipboard yank
+
+bindurl youtube.com p composite get_current_url | mpvsafe
+bindurl youtube.com P hint -W mpvsafe
+bindurl github.com|gitlab.com|git.sahinakkaya.dev gc composite git_clone | clipboard yank
+bindurl github.com|gitlab.com|git.sahinakkaya.dev gC composite git_clone_ssh | clipboard yank
+
+" Aliases
+alias git_clone js "git clone " + document.location.href.split('#')[0].split('?')[0].split('/').slice(0, 5).join('/') + " ;cd " + document.location.href.split('#')[0].split('?')[0].split('/').at(4)
+alias git_clone_ssh js "git clone " + document.location.href.split('#')[0].split('?')[0].split('/').slice(0, 5).join('/').replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") + " ;cd " + document.location.href.split('#')[0].split('?')[0].split('/').at(4)
+
+" Autocmds
+autocmd DocStart monkeytype.com mode ignore
+autocmd DocStart overleaf.com mode ignore
+autocmd DocStart .*/.*\.ipynb mode ignore
+autocmd DocStart agar.io mode ignore
+autocmd DocStart web.telegram.org mode ignore
+autocmd DocStart netflix.com mode ignore
+autocmd DocStart blutv.com/dizi mode ignore
+autocmd DocStart blutv.com/diziler mode ignore
+
+" For syntax highlighting see https://github.com/tridactyl/vim-tridactyl
+" vim: set filetype=tridactyl
