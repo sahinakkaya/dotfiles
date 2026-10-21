@@ -27,6 +27,17 @@ if ! command -v pass >/dev/null 2>&1 ||
     esac
 fi
 
+if ! command -v python3 >/dev/null 2>&1; then
+    case "$(uname -s)" in
+        Linux) sudo dnf install -y python3 ;;
+        Darwin)
+            sudo port install python313
+            sudo port select --set python3 python313
+            ;;
+        *) echo "Unsupported operating system." >&2; exit 1 ;;
+    esac
+fi
+
 if command -v bw >/dev/null 2>&1; then
     exit 0
 fi
