@@ -1,0 +1,11 @@
+{{- $dark := false -}}
+{{- $themeFile := joinPath .chezmoi.homeDir ".theme" -}}
+{{- if stat $themeFile -}}
+{{- $dark = eq (include $themeFile | trim) "dark" -}}
+{{- end -}}
+
+{{ if $dark -}}
+--color=dark
+{{ else -}}
+--color=light
+{{ end -}}
