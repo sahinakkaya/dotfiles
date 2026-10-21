@@ -29,7 +29,15 @@ PINENTRY_PROGRAM="$pinentry_program" awk '
         if (!replaced) print "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]
     }
 ' "$agent_config" > "$temporary_config"
-if ! cmp -s "$agent_config" "$temporary_config"; then
+if jq -ne --rawfile current "$agent_config" --rawfile proposed "$temporary_config" \
+    '$current == $proposed' >/dev/null; then
+    : # Configuration is unchanged.
+else
+    comparison_status=$?
+    if [ "$comparison_status" -ne 1 ]; then
+        echo "Could not compare GPG agent configuration." >&2
+        exit "$comparison_status"
+    fi
     cat "$temporary_config" > "$agent_config"
     gpgconf --kill gpg-agent
 fi
