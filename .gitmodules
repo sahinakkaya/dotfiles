@@ -1,0 +1,3 @@
+[submodule "dot_config/external_nvim"]
+	path = dot_config/external_nvim
+	url = git@github.com:sahinakkaya/nvim-config.git
