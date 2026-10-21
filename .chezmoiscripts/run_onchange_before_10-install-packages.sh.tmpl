@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.os "linux" -}}
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/sh
+set -eu
+sudo dnf install -y \
+{{ range .packages.fedora -}}
+    {{ . | quote }} \
+{{ end }}
+    ;
+{{ end -}}
+{{ else if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+set -eu
+sudo port install \
+{{ range .packages.macports -}}
+    {{ . | quote }} \
+{{ end }}
+    ;
+{{ end -}}

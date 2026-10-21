@@ -1,0 +1,9 @@
+packages:
+  fedora:
+    - neovim
+    - zsh
+    - kitty
+    - direnv
+    - zoxide
+  macports:
+    - difftastic
