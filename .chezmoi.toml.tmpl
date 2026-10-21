@@ -1,0 +1,12 @@
+[merge]
+command = "nvim"
+args = [
+    "-d",
+    "{{ "{{ .Destination }}" }}",
+    "{{ "{{ .Source }}" }}",
+    "{{ "{{ .Target }}" }}"
+]
+
+[hooks.read-source-state.pre]
+command = "sh"
+args = ["{{ .chezmoi.sourceDir }}/.install-password-manager.sh"]
