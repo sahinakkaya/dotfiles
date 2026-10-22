@@ -58,6 +58,8 @@ packages:
     - zsh
     - neovim
     - flatpak
+    - python3
+    - python3-pip
   debian_personal:
     - gocryptfs
   macports:
