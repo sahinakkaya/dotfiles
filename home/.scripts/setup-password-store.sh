@@ -49,6 +49,8 @@ fi
 
 export PASSWORD_STORE_DIR=${PASSWORD_STORE_DIR:-"$HOME/.password-store"}
 if [ ! -e "$PASSWORD_STORE_DIR" ]; then
+    script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+    sh "$script_dir/prepare-password-store-ssh.sh"
     mkdir -p "$(dirname -- "$PASSWORD_STORE_DIR")"
     git clone -- "$remote" "$PASSWORD_STORE_DIR"
 fi
