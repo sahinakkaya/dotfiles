@@ -1,8 +1,23 @@
+{{/* boolean feature tags */}}
+{{- $ephemeral := promptBoolOnce . "ephemeral" "Is this machine temporary (a disposable VM or cloud instance)?" false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
+{{- $work := promptBoolOnce . "work" "Is this a work machine?" false -}}{{/* true if this machine is a work machine */}}
+{{- $headless := promptBoolOnce . "headless" "Is this a headless machine (no local screen and keyboard)?" false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $personal := promptBoolOnce . "personal" "Should this machine have access to personal secrets?" false -}}{{/* true if this machine should have personal secrets */}}
+{{- "" -}}
+[data]
+ephemeral = {{ $ephemeral }}
+work = {{ $work }}
+headless = {{ $headless }}
+personal = {{ $personal }}
+personalSecrets = {{ and $personal (not $ephemeral) }}
+
 [add]
 secrets = "error"
 
+{{ if and $personal (not $ephemeral) -}}
 [bitwarden]
 unlock = "auto"
+{{ end }}
 
 [merge]
 command = "nvim"
@@ -13,6 +28,8 @@ args = [
     "{{ "{{ .Target }}" }}"
 ]
 
+{{ if and $personal (not $ephemeral) -}}
 [hooks.read-source-state.pre]
 command = "sh"
 args = ["{{ .chezmoi.sourceDir }}/.scripts/ensure-gpg-key.sh"]
+{{ end -}}

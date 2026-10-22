@@ -18,8 +18,11 @@ else
 fi
 
 # Set up dependencies and credentials before rendering password-backed templates.
+export CHEZMOI_INITIAL_SETUP=1
 "$chezmoi" init sahinakkaya
 source_dir="$("$chezmoi" source-path)"
-sh "$source_dir/.bootstrap-password-manager.sh"
+personal_secrets="$("$chezmoi" execute-template '{{ .personalSecrets }}')"
+sh "$source_dir/.bootstrap-password-manager.sh" "$personal_secrets"
+unset CHEZMOI_INITIAL_SETUP
 exec "$chezmoi" apply
 

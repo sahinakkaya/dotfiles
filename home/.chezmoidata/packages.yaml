@@ -2,10 +2,8 @@ packages:
   fedora:
     - neovim
     - zsh
-    - kitty
     - direnv
     - zoxide
-    - darkman
     - lsd
     - trash-cli
 
@@ -19,14 +17,18 @@ packages:
     - cmake
     - golang
     - difftastic
-    - dmenu-wayland
-    - gocryptfs # for encrypting joplin notes
-    - zenity # to get a password ui
     - lolcat
     - htop
     - btop
     # - fuse3
     # - util-linux
+  fedora_desktop:
+    - kitty
+    - darkman
+    - dmenu-wayland
+    - zenity # to get a password ui
     - flatpak
+  fedora_personal:
+    - gocryptfs # for encrypting joplin notes
   macports:
     - difftastic

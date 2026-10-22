@@ -1,6 +1,12 @@
 #!/bin/sh
 set -eu
 
+case "${1:-}" in
+    false) exit 0 ;;
+    true) ;;
+    *) echo "Expected personalSecrets flag (true or false) from install.sh." >&2; exit 1 ;;
+esac
+
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"
 

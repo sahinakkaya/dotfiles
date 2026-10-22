@@ -3,7 +3,7 @@
 #!/bin/sh
 set -eu
 
-sudo dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}
+sudo dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}{{ if not .headless }}{{ range .packages.fedora_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.fedora_personal }} {{ . | quote }}{{ end }}{{ end }}
 {{ end -}}
 {{ else if eq .chezmoi.os "darwin" -}}
 #!/bin/sh

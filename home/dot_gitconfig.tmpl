@@ -1,7 +1,9 @@
 [user]
 	email = sahin@sahinakkaya.dev
 	name = Şahin Akkaya
+{{ if .personalSecrets -}}
 	signingkey = sahin@sahinakkaya.dev
+{{ end -}}
 [init]
 	defaultBranch = main
 
@@ -33,9 +35,17 @@
 # `git dlog` to show `git log -p` with difftastic.
 [alias]
         dlog = "-c diff.external=difft log -p --ext-diff"
+{{ if .personalSecrets -}}
 [gpg]
 	format = openpgp
 [commit]
 	gpgsign = true
 [tag]
 	gpgSign = true
+
+{{ else -}}
+[commit]
+	gpgsign = false
+[tag]
+	gpgSign = false
+{{ end -}}

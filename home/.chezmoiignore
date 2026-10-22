@@ -33,3 +33,41 @@ dot_local/share/symlink_darkman
 
 # btop
 .config/btop/btop.log
+
+{{ if .headless }}
+.config/kitty
+.config/mpv
+.config/hypr
+.config/i3
+.config/darkman
+.config/keymapper
+.config/karabiner
+.config/yabai
+.config/paneru
+.config/skhd
+.config/tridactyl
+.config/sptlrx
+Library
+.local/share/darkman
+.local/share/applications
+.local/bin/wofi-auto
+.local/bin/update-theme
+.local/bin/cpyfile
+.local/bin/cpyout
+.local/bin/play
+.local/bin/joplin
+.local/bin/joplin-secure
+{{ end }}
+
+{{ if not .personalSecrets }}
+.ssh/id_rsa_secondary
+.ssh/id_rsa_secondary.pub
+.config/mpv/scripts/autosub.lua
+.local/bin/joplin
+.local/bin/joplin-secure
+.local/bin/joplin-cli-secure
+.local/bin/joplin-password
+.local/bin/joplin-lock
+.local/bin/publish-gpg-key
+.local/share/applications/net.cozic.joplin_desktop.desktop
+{{ end }}
