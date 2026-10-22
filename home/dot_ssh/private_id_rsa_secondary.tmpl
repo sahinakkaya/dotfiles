@@ -1,0 +1,6 @@
+{{- $key := joinPath .chezmoi.homeDir ".ssh/id_rsa_secondary" -}}
+{{- if stat $key -}}
+{{ include $key }}
+{{- else -}}
+{{ (bitwarden "item" "Ssh Key").sshKey.privateKey }}
+{{- end -}}
