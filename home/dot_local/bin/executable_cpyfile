@@ -18,7 +18,7 @@ while (( $# )); do
     -c|--content) content=true ;;
     -r|--recursive) recursive=true ;;
     -h|--help)
-      printf 'Usage: %s [-c|--content] [-r|--recursive] [--] [path ...]\n\nWithout paths, select files with fzf (Tab selects multiple).\nUse --content to copy the contents of one file, including over Kitty SSH.\nRemote file references cannot be pasted locally; use kitten transfer instead.\n' "${0##*/}"
+      printf 'Usage: %s [-c|--content] [-r|--recursive] [--] [path ...]\n\nWithout paths, select files with fzf (Tab selects multiple).\nUse --content to copy the contents of one file, including over Kitty SSH.\nOver SSH or on headless Linux, contents are copied automatically (one file).\n' "${0##*/}"
       exit 0 ;;
     --) shift; break ;;
     -*) error "Unknown option: $1" ;;
@@ -27,8 +27,10 @@ while (( $# )); do
   shift
 done
 
-if [[ "$content" == false && -n "${SSH_CONNECTION:-}${SSH_TTY:-}" ]]; then
-  error "Remote file references cannot be pasted locally. Use --content for text, or kitten transfer FILE /local/destination to download a file."
+# Remote file references are not useful on the client; copy contents instead.
+if [[ -n "${SSH_CONNECTION:-}${SSH_TTY:-}" ]] ||
+   { [[ $(uname -s) == Linux ]] && [[ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]]; }; then
+  content=true
 fi
 
 if (( $# == 0 )); then
@@ -86,7 +88,7 @@ fi
 
 require "${clipboard[0]}"
 if [[ "$content" == true ]]; then
-  (( ${#files[@]} == 1 )) || error "--content requires exactly one file"
+  (( ${#files[@]} == 1 )) || error "Copying file contents requires exactly one file"
   [[ -f "${files[0]}" && -r "${files[0]}" ]] || error "Cannot read file: ${files[0]}"
   "${clipboard[@]}" < "${files[0]}" || error "Clipboard operation failed"
 else
@@ -101,4 +103,8 @@ PY
     "${clipboard[@]}" -t text/uri-list || error "Clipboard operation failed"
 fi
 
-printf 'Copied %d item(s) to clipboard.\n' "${#files[@]}"
+if [[ "$content" == true ]]; then
+  printf 'Copied contents of %s to clipboard.\n' "${files[0]}"
+else
+  printf 'Copied %d item(s) to clipboard.\n' "${#files[@]}"
+fi
