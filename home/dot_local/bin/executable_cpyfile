@@ -1,19 +1,98 @@
 #!/usr/bin/env bash
 
-if [ "$#" -ne 1 ]; then
-  printf 'Usage: %s file\n' "${0##*/}" >&2
-  exit 64
-fi
+set -o pipefail
 
-if [ ! -r "$1" ]; then
-  printf 'Cannot read file: %s\n' "$1" >&2
+error() {
+  printf 'cpyfile: %s\n' "$*" >&2
   exit 1
+}
+
+require() {
+  command -v "$1" >/dev/null 2>&1 || error "Missing dependency: $1"
+}
+
+content=false
+recursive=false
+while (( $# )); do
+  case "$1" in
+    -c|--content) content=true ;;
+    -r|--recursive) recursive=true ;;
+    -h|--help)
+      printf 'Usage: %s [-c|--content] [-r|--recursive] [--] [path ...]\n\nWithout paths, select files with fzf (Tab selects multiple).\nUse --content to copy the contents of one file.\n' "${0##*/}"
+      exit 0 ;;
+    --) shift; break ;;
+    -*) error "Unknown option: $1" ;;
+    *) break ;;
+  esac
+  shift
+done
+
+if (( $# == 0 )); then
+  require fzf
+  tmpfile=$(mktemp) || exit 1
+  trap 'rm -f "$tmpfile"' EXIT
+
+  if [[ "$recursive" == true ]]; then
+    find . -type f -print0
+  else
+    find . -maxdepth 1 -type f -print0
+  fi | fzf --read0 --print0 --multi --prompt='Select files to copy: ' > "$tmpfile" || exit 0
+
+  files=()
+  while IFS= read -r -d '' file; do
+    files+=("$file")
+  done < "$tmpfile"
+  (( ${#files[@]} )) || exit 0
+  set -- "${files[@]}"
 fi
 
-if ! command -v pbcopy >/dev/null 2>&1; then
-  printf 'cpyfile requires pbcopy (available on macOS).\n' >&2
-  exit 69
+files=()
+for file in "$@"; do
+  [[ -e "$file" ]] || error "Path not found: $file"
+  dir=$(cd -P -- "$(dirname -- "$file")" && pwd) || error "Cannot resolve path: $file"
+  files+=("$dir/$(basename -- "$file")")
+done
+
+if [[ $(uname -s) == Darwin ]]; then
+  if [[ "$content" == true ]]; then
+    clipboard=(pbcopy)
+  else
+    require osascript
+    osascript - "${files[@]}" <<'APPLESCRIPT' || error "Clipboard operation failed"
+on run paths
+  set copiedFiles to {}
+  repeat with filePath in paths
+    set end of copiedFiles to (POSIX file (contents of filePath)) as alias
+  end repeat
+  set the clipboard to copiedFiles
+end run
+APPLESCRIPT
+    printf 'Copied %d item(s) to clipboard.\n' "${#files[@]}"
+    exit 0
+  fi
+elif [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+  clipboard=(wl-copy)
+elif [[ -n "${DISPLAY:-}" ]]; then
+  clipboard=(xclip -selection clipboard)
+else
+  error "No graphical clipboard available"
 fi
 
-pbcopy < "$1"
-printf 'Copied %s to the clipboard.\n' "$1"
+require "${clipboard[0]}"
+if [[ "$content" == true ]]; then
+  (( ${#files[@]} == 1 )) || error "--content requires exactly one file"
+  [[ -f "${files[0]}" && -r "${files[0]}" ]] || error "Cannot read file: ${files[0]}"
+  "${clipboard[@]}" < "${files[0]}" || error "Clipboard operation failed"
+else
+  require python3
+  python3 - "${files[@]}" <<'PY' |
+import pathlib
+import sys
+
+for path in sys.argv[1:]:
+    print(pathlib.Path(path).as_uri(), end="\r\n")
+PY
+    "${clipboard[@]}" -t text/uri-list || error "Clipboard operation failed"
+fi
+
+printf 'Copied %d item(s) to clipboard.\n' "${#files[@]}"
