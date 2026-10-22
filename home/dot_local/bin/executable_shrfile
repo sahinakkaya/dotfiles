@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 if [ -n "${1:-}" ]; then
   file=$1
 elif command -v rofi >/dev/null 2>&1; then
@@ -43,8 +45,32 @@ fi
 
 printf '%s\n' "$url"
 
-if command -v pbcopy >/dev/null 2>&1; then
-  printf '%s' "$url" | pbcopy
+case "$(uname -s)" in
+  Darwin) clipboard=(pbcopy) ;;
+  Linux)
+    if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+      clipboard=(wl-copy)
+    elif [[ -n "${DISPLAY:-}" ]]; then
+      clipboard=(xclip -selection clipboard)
+    else
+      printf 'Link uploaded, but no graphical clipboard is available.\n' >&2
+      exit 1
+    fi
+    ;;
+  *)
+    printf 'Link uploaded, but clipboard support is unavailable on this system.\n' >&2
+    exit 1
+    ;;
+esac
+
+if ! command -v "${clipboard[0]}" >/dev/null 2>&1; then
+  printf 'Link uploaded, but clipboard utility is missing: %s\n' "${clipboard[0]}" >&2
+  exit 1
+fi
+
+if ! printf '%s' "$url" | "${clipboard[@]}"; then
+  printf 'Link uploaded, but copying it to the clipboard failed.\n' >&2
+  exit 1
 fi
 
 if [ "$(uname -s)" = Darwin ] && command -v osascript >/dev/null 2>&1; then
