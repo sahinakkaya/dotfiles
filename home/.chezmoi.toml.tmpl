@@ -4,6 +4,9 @@
 {{- $headless := promptBoolOnce . "headless" "Is this a headless machine (no local screen and keyboard)?" false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $personal := promptBoolOnce . "personal" "Should this machine have access to personal secrets?" false -}}{{/* true if this machine should have personal secrets */}}
 {{- "" -}}
+# Prompt before replacing pre-existing files, including during chezmoi update.
+lessInteractive = true
+
 [data]
 ephemeral = {{ $ephemeral }}
 work = {{ $work }}

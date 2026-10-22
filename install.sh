@@ -28,5 +28,5 @@ fi
 personal_secrets="$("$chezmoi" execute-template '{{ .personalSecrets }}')"
 sh "$source_dir/.bootstrap-password-manager.sh" "$personal_secrets"
 unset CHEZMOI_INITIAL_SETUP
-exec "$chezmoi" apply
+exec "$chezmoi" apply --less-interactive
 
