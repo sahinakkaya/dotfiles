@@ -35,6 +35,7 @@ dot_local/share/symlink_darkman
 .config/btop/btop.log
 
 {{ if .headless }}
+.config/task
 .zshenv
 .config/zsh
 .config/zsh-paths.zsh
