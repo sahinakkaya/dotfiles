@@ -57,8 +57,6 @@ Library
 .local/share/applications
 .local/bin/wofi-auto
 .local/bin/update-theme
-.local/bin/cpyfile
-.local/bin/cpyout
 .local/bin/play
 .local/bin/joplin
 .local/bin/joplin-secure

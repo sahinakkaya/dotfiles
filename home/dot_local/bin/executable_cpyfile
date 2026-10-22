@@ -18,7 +18,7 @@ while (( $# )); do
     -c|--content) content=true ;;
     -r|--recursive) recursive=true ;;
     -h|--help)
-      printf 'Usage: %s [-c|--content] [-r|--recursive] [--] [path ...]\n\nWithout paths, select files with fzf (Tab selects multiple).\nUse --content to copy the contents of one file.\n' "${0##*/}"
+      printf 'Usage: %s [-c|--content] [-r|--recursive] [--] [path ...]\n\nWithout paths, select files with fzf (Tab selects multiple).\nUse --content to copy the contents of one file, including over Kitty SSH.\nRemote file references cannot be pasted locally; use kitten transfer instead.\n' "${0##*/}"
       exit 0 ;;
     --) shift; break ;;
     -*) error "Unknown option: $1" ;;
@@ -26,6 +26,10 @@ while (( $# )); do
   esac
   shift
 done
+
+if [[ "$content" == false && -n "${SSH_CONNECTION:-}${SSH_TTY:-}" ]]; then
+  error "Remote file references cannot be pasted locally. Use --content for text, or kitten transfer FILE /local/destination to download a file."
+fi
 
 if (( $# == 0 )); then
   require fzf
@@ -53,7 +57,9 @@ for file in "$@"; do
   files+=("$dir/$(basename -- "$file")")
 done
 
-if [[ $(uname -s) == Darwin ]]; then
+if [[ "$content" == true ]] && [[ "${TERM:-}" == xterm-kitty || -n "${KITTY_WINDOW_ID:-}" ]] && command -v kitten >/dev/null 2>&1; then
+  clipboard=(kitten clipboard --wait-for-completion)
+elif [[ $(uname -s) == Darwin ]]; then
   if [[ "$content" == true ]]; then
     clipboard=(pbcopy)
   else

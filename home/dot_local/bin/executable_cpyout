@@ -8,25 +8,30 @@ if (( $# == 0 )) && [[ -t 0 ]]; then
 fi
 
 # Select clipboard utility.
-case "$(uname -s)" in
-    Darwin)
-        clipboard=(pbcopy)
-        ;;
-    Linux)
-        if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-            clipboard=(wl-copy)
-        elif [[ -n "${DISPLAY:-}" ]]; then
-            clipboard=(xclip -selection clipboard)
-        else
-            printf 'No supported graphical clipboard available.\n' >&2
-            exit 69
-        fi
-        ;;
-    *)
-        printf 'Unsupported operating system.\n' >&2
-        exit 69
-        ;;
-esac
+# Kitty sends text to the client clipboard, including over SSH.
+if [[ "${TERM:-}" == xterm-kitty || -n "${KITTY_WINDOW_ID:-}" ]] && command -v kitten >/dev/null 2>&1; then
+  clipboard=(kitten clipboard --wait-for-completion)
+else
+  case "$(uname -s)" in
+      Darwin)
+          clipboard=(pbcopy)
+          ;;
+      Linux)
+          if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+              clipboard=(wl-copy)
+          elif [[ -n "${DISPLAY:-}" ]]; then
+              clipboard=(xclip -selection clipboard)
+          else
+              printf 'No supported graphical clipboard available.\n' >&2
+              exit 69
+          fi
+          ;;
+      *)
+          printf 'Unsupported operating system.\n' >&2
+          exit 69
+          ;;
+  esac
+fi
 
 if ! command -v "${clipboard[0]}" >/dev/null 2>&1; then
     printf 'Missing clipboard utility: %s\n' "${clipboard[0]}" >&2

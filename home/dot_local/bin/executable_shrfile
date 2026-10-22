@@ -53,23 +53,28 @@ fi
 
 printf '%s\n' "$url"
 
-case "$(uname -s)" in
-  Darwin) clipboard=(pbcopy) ;;
-  Linux)
-    if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-      clipboard=(wl-copy)
-    elif [[ -n "${DISPLAY:-}" ]]; then
-      clipboard=(xclip -selection clipboard)
-    else
-      printf 'Link uploaded, but no graphical clipboard is available.\n' >&2
+# Kitty sends text to the client clipboard, including over SSH.
+if [[ "${TERM:-}" == xterm-kitty || -n "${KITTY_WINDOW_ID:-}" ]] && command -v kitten >/dev/null 2>&1; then
+  clipboard=(kitten clipboard --wait-for-completion)
+else
+  case "$(uname -s)" in
+    Darwin) clipboard=(pbcopy) ;;
+    Linux)
+      if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+        clipboard=(wl-copy)
+      elif [[ -n "${DISPLAY:-}" ]]; then
+        clipboard=(xclip -selection clipboard)
+      else
+        printf 'Link uploaded, but no graphical clipboard is available.\n' >&2
+        exit 1
+      fi
+      ;;
+    *)
+      printf 'Link uploaded, but clipboard support is unavailable on this system.\n' >&2
       exit 1
-    fi
-    ;;
-  *)
-    printf 'Link uploaded, but clipboard support is unavailable on this system.\n' >&2
-    exit 1
-    ;;
-esac
+      ;;
+  esac
+fi
 
 if ! command -v "${clipboard[0]}" >/dev/null 2>&1; then
   printf 'Link uploaded, but clipboard utility is missing: %s\n' "${clipboard[0]}" >&2
