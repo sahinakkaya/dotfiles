@@ -12,6 +12,7 @@ require() {
 }
 
 content=false
+automatic_content=false
 recursive=false
 while (( $# )); do
   case "$1" in
@@ -30,6 +31,7 @@ done
 # Remote file references are not useful on the client; copy contents instead.
 if [[ -n "${SSH_CONNECTION:-}${SSH_TTY:-}" ]] ||
    { [[ $(uname -s) == Linux ]] && [[ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]]; }; then
+  [[ "$content" == true ]] || automatic_content=true
   content=true
 fi
 
@@ -105,6 +107,18 @@ fi
 
 if [[ "$content" == true ]]; then
   printf 'Copied contents of %s to clipboard.\n' "${files[0]}"
+  if [[ "$automatic_content" == true ]]; then
+    {
+      printf 'To download the file instead, run this on the remote machine (destination: your local Downloads directory):\n'
+      printf '  kitten transfer --confirm-paths '
+      if [[ "${files[0]}" == *"'"* || "${files[0]}" == *$'\n'* || "${files[0]}" == *$'\r'* || "${files[0]}" == *$'\t'* ]]; then
+        printf '%q' "${files[0]}"
+      else
+        printf "'%s'" "${files[0]}"
+      fi
+      printf ' Downloads/\n'
+    } >&2
+  fi
 else
   printf 'Copied %d item(s) to clipboard.\n' "${#files[@]}"
 fi
