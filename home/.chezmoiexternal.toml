@@ -2,7 +2,7 @@
 [".config/zsh"]
     type = "git-repo"
     url = "https://github.com/sahinakkaya/zsh-config.git"
-    refreshPeriod = "168h"
+    refreshPeriod = "24h"
     clone.args = ["--recurse-submodules"]
     pull.args = ["--ff-only", "--recurse-submodules"]
 {{ end -}}
