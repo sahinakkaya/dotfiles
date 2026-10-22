@@ -1,0 +1,39 @@
+# Shared by Fish and Zsh. Keep definitions compatible with both shells.
+# Use shell-specific config for functions or commands with different syntax.
+#
+#
+
+alias cz=chezmoi
+
+
+alias icat="kitten icat"
+alias co='cpyout'
+alias so='shrout'
+alias cf='cpyfile'
+alias sf='shrfile'
+alias s='git status .'
+alias d='git diff .'
+alias gdm='gd main'
+
+alias lsl="clear; ls"
+alias lll="clear; ll"
+alias ltr='ls -ltr'
+
+alias cd.="cd .."
+alias cd..="cd .."
+alias .c='cd ~/.config'
+alias .b='cd ~/.local/bin'
+alias .s='cd ~/scripts'
+alias .g='cd ~/GitRepositories'
+alias .d='cd ~/Downloads'
+alias .p="cd ~/Pictures"
+alias .v="cd ~/Videos"
+
+alias cp='cp -ri'
+alias mv='mv -i'
+alias mkdir='mkdir -p'
+alias rm='echo "Use trash-cli instead of rm. Or use /bin/rm"'
+alias rmv='trash'
+
+alias suod="sudo"
+alias sduo="sudo"
