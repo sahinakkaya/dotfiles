@@ -8,9 +8,10 @@
 theme=$1
 echo "$theme" > ~/.theme
 
-yolk sync
+chezmoi apply
 
-kill -SIGUSR1 $(pgrep kitty)
+# kill -SIGUSR1 $(pgrep kitty)
+pkill -USR1 -u "$(id -u)" -x kitty
 # tmux source-file "$HOME/.config/tmux/$theme.conf"
 
 
