@@ -10,5 +10,6 @@ if [ -t 0 ]; then
 fi
 
 sh "$SCRIPT_DIR/.install-password-manager.sh"
+sh "$SCRIPT_DIR/.scripts/login-bitwarden.sh" "$SCRIPT_DIR/.password-manager.json"
 python3 "$SCRIPT_DIR/.scripts/import-gpg-key.py" "$SCRIPT_DIR/.password-manager.json"
 sh "$SCRIPT_DIR/.scripts/setup-password-store.sh" "$SCRIPT_DIR/.password-manager.json"
