@@ -3,6 +3,14 @@
 .config/kitty/dirty
 
 {{ if ne .chezmoi.os "darwin" }}
+.chezmoiscripts/darwin/**
+{{ end }}
+
+{{ if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
+{{ end }}
+
+{{ if ne .chezmoi.os "darwin" }}
 .config/karabiner
 .config/yabai
 .config/paneru

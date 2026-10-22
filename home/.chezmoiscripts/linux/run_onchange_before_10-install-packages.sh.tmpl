@@ -1,4 +1,3 @@
-{{ if eq .chezmoi.os "linux" -}}
 {{ if eq .chezmoi.osRelease.id "fedora" -}}
 #!/bin/sh
 set -eu
@@ -22,10 +21,4 @@ else
 fi
 "$@" apt-get update
 "$@" apt-get install -y{{ range .packages.debian }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.debian_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.debian_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.debian_personal }} {{ . | quote }}{{ end }}{{ end }}
-{{ end -}}
-{{ else if eq .chezmoi.os "darwin" -}}
-#!/bin/sh
-set -eu
-
-sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}
 {{ end -}}

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}
