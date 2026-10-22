@@ -1,5 +1,6 @@
 packages:
   fedora:
+    - git
     - direnv
     - zoxide
     - lsd
@@ -50,6 +51,7 @@ packages:
   debian_personal:
     - gocryptfs
   macports:
+    - git
     - difftastic
   macports_headless:
     - fish

@@ -55,6 +55,10 @@ export CHEZMOI_INITIAL_SETUP=1
 step 'Initializing dotfiles and machine settings'
 "$chezmoi" init --progress=true --recurse-submodules=false sahinakkaya
 source_dir="$("$chezmoi" source-path)"
+if ! command -v git >/dev/null 2>&1; then
+    step 'Installing Git for submodules and repository updates'
+    sh "$source_dir/.scripts/install-git.sh"
+fi
 headless="$("$chezmoi" execute-template '{{ .headless }}')"
 if [ "$headless" = false ]; then
     step 'Downloading dotfile submodules'
