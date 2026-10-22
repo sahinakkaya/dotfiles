@@ -4,6 +4,7 @@
 #
 
 alias cz=chezmoi
+alias czd="cd ~/.local/share/chezmoi"
 
 
 alias icat="kitten icat"
@@ -13,10 +14,10 @@ alias cf='cpyfile'
 alias sf='shrfile'
 alias s='git status .'
 alias d='git diff .'
-alias gdm='gd main'
+alias gdm='git diff main'
 
 alias lsl="clear; ls"
-alias lll="clear; ll"
+alias lll="clear; ls -l"
 alias ltr='ls -ltr'
 
 alias cd.="cd .."
