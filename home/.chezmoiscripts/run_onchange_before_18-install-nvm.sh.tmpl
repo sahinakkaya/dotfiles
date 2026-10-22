@@ -1,0 +1,33 @@
+{{ if and (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/bash
+set -eo pipefail
+
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+requested_node_version='lts/*'
+
+if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    release=$(curl --proto '=https' --tlsv1.2 -fsSL https://api.github.com/repos/nvm-sh/nvm/releases/latest)
+    version=$(printf '%s\n' "$release" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p')
+    if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        printf 'Could not determine the latest nvm release.\n' >&2
+        exit 1
+    fi
+
+    mkdir -p "$NVM_DIR"
+    installer=$(mktemp "${TMPDIR:-/tmp}/nvm-install.XXXXXXXX")
+    trap 'rm -f "$installer"' EXIT
+    trap 'exit 1' HUP INT TERM
+    curl --proto '=https' --tlsv1.2 -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/$version/install.sh" -o "$installer"
+    PROFILE=/dev/null METHOD=script bash "$installer"
+fi
+
+source "$NVM_DIR/nvm.sh" --no-use
+resolved=$(nvm version "$requested_node_version" || true)
+if [ "$resolved" = N/A ]; then
+    nvm install "$requested_node_version"
+    resolved=$(nvm version "$requested_node_version")
+fi
+if [ "$(nvm version default || true)" != "$resolved" ]; then
+    nvm alias default "$resolved"
+fi
+{{ end -}}
