@@ -42,6 +42,7 @@ packages:
     - ripgrep
     - jq
     - htop
+    - trash-cli
   debian_headless:
     - fish
     - vim
