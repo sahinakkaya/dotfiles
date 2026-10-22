@@ -12,6 +12,7 @@ packages:
     # - fuse3
     # - util-linux
   fedora_desktop:
+    - curl
     - neovim
     - btop
     - python3

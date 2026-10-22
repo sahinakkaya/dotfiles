@@ -1,0 +1,17 @@
+{{ if and (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/sh
+set -eu
+
+export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
+
+if cargo --version >/dev/null 2>&1 && rustc --version >/dev/null 2>&1; then
+    exit 0
+fi
+
+installer=$(mktemp "${TMPDIR:-/tmp}/rustup-init.XXXXXXXX")
+trap 'rm -f "$installer"' EXIT
+trap 'exit 1' HUP INT TERM
+
+curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs -o "$installer"
+sh "$installer" -y --profile minimal --default-toolchain stable --no-modify-path
+{{ end -}}
