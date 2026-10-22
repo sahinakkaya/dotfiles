@@ -18,7 +18,13 @@ if [ ! -e "$key" ]; then
     IFS= read -r answer <&3
     mkdir -p "$HOME/.ssh"
     chmod 700 "$HOME/.ssh"
-    ssh-keygen -t ed25519 -f "$key" -C "$(id -un)@$(hostname)" <&3 >&3 2>&3
+    key_user=$(id -un)
+    key_host=$(uname -n)
+    if [ -z "$key_host" ]; then
+        echo "Could not determine the hostname for the SSH key comment." >&3
+        exit 1
+    fi
+    ssh-keygen -t ed25519 -f "$key" -C "$key_user@$key_host" <&3 >&3 2>&3
 fi
 
 printf '\nAdd this public key to your account at:\nhttps://git.sahinakkaya.dev/user/settings/keys\n\n' >&3
