@@ -10,8 +10,8 @@ Bootstrap new machines with:
 sh -c "$(curl -fsSL sahinakkaya.dev/install)"
 ```
 
-These are my personal defaults, including my Git identity and services. If you're
-borrowing this setup, fork it and adapt those parts for your own machines.
+It will configure the shell, terminal, editor, and desktop, along with Git and SSH,
+using my personal defaults.
 
 ## Updates
 
