@@ -2,18 +2,26 @@
 
 set -o pipefail
 
-if [ -n "${1:-}" ]; then
+# With no path (or an explicit -), upload stdin as a temporary file.
+if [[ "${1:-}" == '-' ]] || { (( $# == 0 )) && [[ ! -t 0 ]]; }; then
+  file=$(mktemp "${TMPDIR:-/tmp}/shrfile.XXXXXX") || exit 1
+  trap 'rm -f "$file"' EXIT
+  cat > "$file" || exit 1
+  label='stdin'
+elif [ -n "${1:-}" ]; then
   file=$1
 elif command -v rofi >/dev/null 2>&1; then
   file=$(find . -maxdepth 1 -type f | cut -c 3- | rofi -i -dmenu -p 'Select file to share')
 else
-  printf 'Usage: %s file\n' "${0##*/}" >&2
+  printf 'Usage: %s [file|-] (or pipe content to stdin)\n' "${0##*/}" >&2
   exit 64
 fi
 
 if [ -z "$file" ]; then
   exit 0
 fi
+
+label=${label:-$file}
 
 if [ ! -r "$file" ]; then
   printf 'Cannot read file: %s\n' "$file" >&2
@@ -76,5 +84,5 @@ fi
 if [ "$(uname -s)" = Darwin ] && command -v osascript >/dev/null 2>&1; then
   osascript -e "display notification \"Link copied to clipboard\" with title \"shrout\"" >/dev/null 2>&1 || true
 elif command -v notify-send >/dev/null 2>&1; then
-  notify-send "Link to $file is copied to clipboard!" >/dev/null 2>&1 || true
+  notify-send "Link to $label is copied to clipboard!" >/dev/null 2>&1 || true
 fi

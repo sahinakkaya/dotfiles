@@ -1,34 +1,62 @@
 #!/usr/bin/env bash
 
-if [ "$#" -eq 0 ]; then
-  printf 'Usage: %s command [argument ...]\n' "${0##*/}" >&2
+set -o pipefail
+
+if (( $# == 0 )) && [[ -t 0 ]]; then
+  printf 'Usage: %s command [argument ...]\n       command | %s\n' "${0##*/}" "${0##*/}" >&2
   exit 64
 fi
 
 tmpfile=$(mktemp "${TMPDIR:-/tmp}/cmd-output.XXXXXX") || exit 1
 trap 'rm -f "$tmpfile"' EXIT HUP INT TERM
 
-printf '$ %s\n' "$*" | tee "$tmpfile"
+if (( $# == 0 )); then
+  tee "$tmpfile" || exit 1
+  command_status=0
+else
+  {
+    printf '$'
+    for argument in "$@"; do
+        case "$argument" in
+            ''|*[!a-zA-Z0-9_./,:=+@%-]*)
+                if [[ "$argument" == *"'"* || "$argument" == *$'\n'* || "$argument" == *$'\r'* || "$argument" == *$'\t'* ]]; then
+                    printf ' %q' "$argument"
+                else
+                    printf " '%s'" "$argument"
+                fi
+                ;;
+            *) printf ' %s' "$argument" ;;
+        esac
+    done
+    printf '\n'
+  } | tee "$tmpfile" || exit 1
 
-# macOS ships Bash 3.2, which does not understand Bash 4's `|&` shorthand.
-# Passing arguments directly also avoids treating command arguments as shell code.
-"$@" 2>&1 | tee -a "$tmpfile"
-pipeline_status=("${PIPESTATUS[@]}")
-command_status=${pipeline_status[0]}
-tee_status=${pipeline_status[1]}
+  # Capture both output streams while preserving the command's exit status.
+  "$@" 2>&1 | tee -a "$tmpfile"
+  pipeline_status=("${PIPESTATUS[@]}")
+  command_status=${pipeline_status[0]}
+  tee_status=${pipeline_status[1]}
 
-if [ "$tee_status" -ne 0 ]; then
-  printf 'Could not write command output to %s\n' "$tmpfile" >&2
-  exit "$tee_status"
+  if [ "$tee_status" -ne 0 ]; then
+    printf 'Could not write command output to %s\n' "$tmpfile" >&2
+    exit "$tee_status"
+  fi
 fi
 
-read -r -p 'Sharing output. [O]k, [e]dit, [d]iscard? ' -n 1 ans
-printf '\n'
+# Read confirmation from the terminal, since stdin may contain piped output.
+if ! { exec 3<> /dev/tty; } 2>/dev/null; then
+  printf 'Sharing requires a terminal for confirmation; use shrfile to upload directly.\n' >&2
+  exit 1
+fi
+printf 'Sharing output. [O]k, [e]dit, [d]iscard? ' >&3
+read -r -n 1 ans <&3 || exit 1
+printf '\n' >&3
+exec 3>&-
 
 case "$ans" in
   o|O) ;;
   e|E)
-    "${EDITOR:-vi}" "$tmpfile"
+    "${EDITOR:-vi}" "$tmpfile" </dev/tty || exit 1
     ;;
   d|D) exit "$command_status" ;;
   *) exit 1 ;;

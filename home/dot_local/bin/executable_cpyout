@@ -2,8 +2,8 @@
 
 set -o pipefail
 
-if (( $# == 0 )); then
-    printf 'Usage: %s command [argument ...]\n' "${0##*/}" >&2
+if (( $# == 0 )) && [[ -t 0 ]]; then
+    printf 'Usage: %s command [argument ...]\n       command | %s\n' "${0##*/}" "${0##*/}" >&2
     exit 64
 fi
 
@@ -36,16 +36,38 @@ fi
 tmpfile=$(mktemp "${TMPDIR:-/tmp}/cpyout.XXXXXX") || exit 1
 trap 'rm -f "$tmpfile"' EXIT
 
-# Print the command with shell-safe quoting.
-{
-    printf '$'
-    printf ' %q' "$@"
-    printf '\n'
-} | tee "$tmpfile"
+if (( $# == 0 )); then
+    # With no command arguments, capture piped or redirected input.
+    tee "$tmpfile" || exit 1
+    status=0
+else
+    # Print the command with shell-safe quoting.
+    {
+        printf '$'
+        for argument in "$@"; do
+            case "$argument" in
+                ''|*[!a-zA-Z0-9_./,:=+@%-]*)
+                    if [[ "$argument" == *"'"* || "$argument" == *$'\n'* || "$argument" == *$'\r'* || "$argument" == *$'\t'* ]]; then
+                        printf ' %q' "$argument"
+                    else
+                        printf " '%s'" "$argument"
+                    fi
+                    ;;
+                *) printf ' %s' "$argument" ;;
+            esac
+        done
+        printf '\n'
+    } | tee "$tmpfile" || exit 1
 
-# Execute the command, capturing stdout and stderr.
-"$@" 2>&1 | tee -a "$tmpfile"
-status=${PIPESTATUS[0]}
+    # Execute the command, capturing stdout and stderr.
+    "$@" 2>&1 | tee -a "$tmpfile"
+    pipeline_status=("${PIPESTATUS[@]}")
+    status=${pipeline_status[0]}
+    if (( pipeline_status[1] != 0 )); then
+        printf 'Failed to capture command output.\n' >&2
+        exit 1
+    fi
+fi
 
 # Copy captured output to the clipboard.
 if "${clipboard[@]}" < "$tmpfile"; then
