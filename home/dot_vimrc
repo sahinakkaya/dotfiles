@@ -1,0 +1,30 @@
+" Basic file editing, without plugins.
+set nocompatible
+syntax enable
+filetype plugin indent on
+
+set number
+set ruler
+set showcmd
+set wildmenu
+set laststatus=2
+
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set autoindent
+
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+set backspace=indent,eol,start
+set hidden
+set scrolloff=3
+set splitbelow
+set splitright
+
+" Clear search highlighting with Ctrl-L, then redraw.
+nnoremap <silent> <C-L> :nohlsearch<CR><C-L>

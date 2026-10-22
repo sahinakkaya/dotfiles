@@ -1,0 +1,16 @@
+{{ if .headless -}}
+#!/bin/sh
+set -eu
+
+fish_shell=$(command -v fish)
+user=$(id -un)
+case "$(uname -s)" in
+    Darwin) current_shell=$(dscl . -read "/Users/$user" UserShell | awk '{print $2}') ;;
+    *) current_shell=$(getent passwd "$user" | cut -d: -f7) ;;
+esac
+
+if [ "$current_shell" != "$fish_shell" ]; then
+    echo "Setting Fish as the login shell for $user."
+    chsh -s "$fish_shell"
+fi
+{{ end -}}

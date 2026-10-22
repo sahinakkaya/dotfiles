@@ -1,7 +1,5 @@
 packages:
   fedora:
-    - neovim
-    - zsh
     - direnv
     - zoxide
     - lsd
@@ -23,6 +21,8 @@ packages:
     # - fuse3
     # - util-linux
   fedora_desktop:
+    - neovim
+    - zsh
     - kitty
     - darkman
     - dmenu-wayland
@@ -30,5 +30,27 @@ packages:
     - flatpak
   fedora_personal:
     - gocryptfs # for encrypting joplin notes
+  fedora_headless:
+    - fish
+    - vim-enhanced
+  debian:
+    - git
+    - curl
+    - ca-certificates
+    - less
+    - ripgrep
+    - jq
+    - htop
+  debian_headless:
+    - fish
+    - vim
+  debian_desktop:
+    - zsh
+    - neovim
+  debian_personal:
+    - gocryptfs
   macports:
     - difftastic
+  macports_headless:
+    - fish
+    - vim

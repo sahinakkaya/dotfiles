@@ -3,11 +3,23 @@
 #!/bin/sh
 set -eu
 
-sudo dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}{{ if not .headless }}{{ range .packages.fedora_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.fedora_personal }} {{ . | quote }}{{ end }}{{ end }}
+sudo dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.fedora_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.fedora_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.fedora_personal }} {{ . | quote }}{{ end }}{{ end }}
+{{ else if eq .chezmoi.osRelease.id "debian" -}}
+#!/bin/sh
+set -eu
+
+# A fresh VPS may have only a root account, without sudo installed.
+if [ "$(id -u)" -eq 0 ]; then
+    set --
+else
+    set -- sudo
+fi
+"$@" apt-get update
+"$@" apt-get install -y{{ range .packages.debian }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.debian_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.debian_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.debian_personal }} {{ . | quote }}{{ end }}{{ end }}
 {{ end -}}
 {{ else if eq .chezmoi.os "darwin" -}}
 #!/bin/sh
 set -eu
 
-sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}
+sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}
 {{ end -}}

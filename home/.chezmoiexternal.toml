@@ -1,6 +1,8 @@
+{{ if not .headless -}}
 [".config/zsh"]
     type = "git-repo"
     url = "https://github.com/sahinakkaya/zsh-config.git"
     refreshPeriod = "168h"
     clone.args = ["--recurse-submodules", "--branch", "yolk"]
     pull.args = ["--ff-only", "--recurse-submodules"]
+{{ end -}}

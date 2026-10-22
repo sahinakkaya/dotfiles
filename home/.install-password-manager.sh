@@ -1,6 +1,14 @@
 #!/bin/sh
 set -eu
 
+run_as_root() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
+
 if ! command -v pass >/dev/null 2>&1 ||
    ! command -v gpg >/dev/null 2>&1 ||
    ! command -v git >/dev/null 2>&1 ||
@@ -8,11 +16,15 @@ if ! command -v pass >/dev/null 2>&1 ||
    ! command -v jq >/dev/null 2>&1; then
     case "$(uname -s)" in
     Linux)
-        if ! command -v dnf >/dev/null 2>&1; then
-            echo "This bootstrap currently supports Fedora Linux only." >&2
+        if command -v dnf >/dev/null 2>&1; then
+            run_as_root dnf install -y pass gnupg2 git pinentry jq
+        elif command -v apt-get >/dev/null 2>&1; then
+            run_as_root apt-get update
+            run_as_root apt-get install -y pass gnupg git pinentry-curses jq
+        else
+            echo "This bootstrap supports Fedora and Debian Linux." >&2
             exit 1
         fi
-        sudo dnf install -y pass gnupg2 git pinentry jq
         ;;
     Darwin)
         if ! command -v port >/dev/null 2>&1; then
@@ -30,7 +42,14 @@ fi
 
 if ! command -v python3 >/dev/null 2>&1; then
     case "$(uname -s)" in
-        Linux) sudo dnf install -y python3 ;;
+        Linux)
+            if command -v dnf >/dev/null 2>&1; then
+                run_as_root dnf install -y python3
+            else
+                run_as_root apt-get update
+                run_as_root apt-get install -y python3
+            fi
+            ;;
         Darwin)
             sudo port install python313
             sudo port select --set python3 python313
@@ -52,7 +71,22 @@ if [ ! -s "$NVM_DIR/nvm.sh" ]; then
     # curl is needed only when bootstrapping nvm.
     if ! command -v curl >/dev/null 2>&1; then
         case "$(uname -s)" in
-            Linux) sudo dnf install -y curl ;;
+            Linux)
+                if [[ $(id -u) -eq 0 ]]; then
+                    privilege=()
+                else
+                    privilege=(sudo)
+                fi
+                if command -v dnf >/dev/null 2>&1; then
+                    "${privilege[@]}" dnf install -y curl
+                elif command -v apt-get >/dev/null 2>&1; then
+                    "${privilege[@]}" apt-get update
+                    "${privilege[@]}" apt-get install -y curl
+                else
+                    echo "Unsupported Linux package manager." >&2
+                    exit 1
+                fi
+                ;;
             Darwin) sudo port install curl ;;
             *) echo "Unsupported operating system." >&2; exit 1 ;;
         esac

@@ -19,8 +19,12 @@ fi
 
 # Set up dependencies and credentials before rendering password-backed templates.
 export CHEZMOI_INITIAL_SETUP=1
-"$chezmoi" init sahinakkaya
+"$chezmoi" init --recurse-submodules=false sahinakkaya
 source_dir="$("$chezmoi" source-path)"
+headless="$("$chezmoi" execute-template '{{ .headless }}')"
+if [ "$headless" = false ]; then
+    "$chezmoi" git -- submodule update --init --recursive
+fi
 personal_secrets="$("$chezmoi" execute-template '{{ .personalSecrets }}')"
 sh "$source_dir/.bootstrap-password-manager.sh" "$personal_secrets"
 unset CHEZMOI_INITIAL_SETUP

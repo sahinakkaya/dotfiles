@@ -20,13 +20,16 @@ unlock = "auto"
 {{ end }}
 
 [merge]
-command = "nvim"
+command = "{{ if $headless }}vim{{ else }}nvim{{ end }}"
 args = [
     "-d",
     "{{ "{{ .Destination }}" }}",
     "{{ "{{ .Source }}" }}",
     "{{ "{{ .Target }}" }}"
 ]
+
+[update]
+recurseSubmodules = {{ not $headless }}
 
 {{ if and $personal (not $ephemeral) -}}
 [hooks.read-source-state.pre]

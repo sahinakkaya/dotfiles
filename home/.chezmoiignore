@@ -35,6 +35,10 @@ dot_local/share/symlink_darkman
 .config/btop/btop.log
 
 {{ if .headless }}
+.zshenv
+.config/zsh
+.config/zsh-paths.zsh
+.config/nvim
 .config/kitty
 .config/mpv
 .config/hypr
@@ -57,6 +61,9 @@ Library
 .local/bin/play
 .local/bin/joplin
 .local/bin/joplin-secure
+{{ else }}
+.vimrc
+.config/fish
 {{ end }}
 
 {{ if not .personalSecrets }}
