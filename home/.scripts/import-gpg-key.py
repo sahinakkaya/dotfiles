@@ -21,7 +21,6 @@ def main():
         capture_output=True,
     )
     if existing.returncode == 0 and b'sec:' in existing.stdout:
-        print('GPG private key already present; skipping Vaultwarden import.')
         return
     if existing.returncode not in (0, 2):
         raise RuntimeError('Could not inspect the GPG secret keyring')

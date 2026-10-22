@@ -17,8 +17,9 @@ else
   chezmoi=chezmoi
 fi
 
-# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
-script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
-# exec: replace current process with chezmoi init
-exec "$chezmoi" init --apply sahinakkaya
+# Set up dependencies and credentials before rendering password-backed templates.
+"$chezmoi" init sahinakkaya
+source_dir="$("$chezmoi" source-path)"
+sh "$source_dir/.bootstrap-password-manager.sh"
+exec "$chezmoi" apply
 

@@ -12,33 +12,38 @@ agent_config="$gpg_home/gpg-agent.conf"
 umask 077
 mkdir -p "$gpg_home"
 chmod 700 "$gpg_home"
-touch "$agent_config"
-chmod 600 "$agent_config"
-temporary_config=$(mktemp "$gpg_home/gpg-agent.conf.XXXXXX")
-trap 'rm -f "$temporary_config"' EXIT
-trap 'exit 1' HUP INT TERM
-
-# Preserve other settings and replace any active pinentry-program directives.
-PINENTRY_PROGRAM="$pinentry_program" awk '
+# Fast path: leave an already correct configuration untouched, without staging
+# a replacement file. Require exactly one canonical directive.
+if [ -f "$agent_config" ] && PINENTRY_PROGRAM="$pinentry_program" awk '
     /^[[:space:]]*pinentry-program[[:space:]]+/ {
-        if (!replaced++) print "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]
-        next
+        count++
+        if ($0 != "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]) invalid = 1
     }
-    { print }
-    END {
-        if (!replaced) print "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]
-    }
-' "$agent_config" > "$temporary_config"
-if jq -ne --rawfile current "$agent_config" --rawfile proposed "$temporary_config" \
-    '$current == $proposed' >/dev/null; then
-    : # Configuration is unchanged.
+    END { exit !(count == 1 && !invalid) }
+' "$agent_config"; then
+    :
 else
-    comparison_status=$?
-    if [ "$comparison_status" -ne 1 ]; then
-        echo "Could not compare GPG agent configuration." >&2
-        exit "$comparison_status"
+    temporary_config=$(mktemp "$gpg_home/gpg-agent.conf.XXXXXX")
+    trap 'rm -f "$temporary_config"' EXIT
+    trap 'exit 1' HUP INT TERM
+
+    # Preserve other settings and replace any active pinentry-program directives.
+    current_config="$agent_config"
+    if [ ! -e "$current_config" ]; then
+        current_config=/dev/null
     fi
+    PINENTRY_PROGRAM="$pinentry_program" awk '
+        /^[[:space:]]*pinentry-program[[:space:]]+/ {
+            if (!replaced++) print "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]
+            next
+        }
+        { print }
+        END {
+            if (!replaced) print "pinentry-program " ENVIRON["PINENTRY_PROGRAM"]
+        }
+    ' "$current_config" > "$temporary_config"
     cat "$temporary_config" > "$agent_config"
+    chmod 600 "$agent_config"
     gpgconf --kill gpg-agent
 fi
 
