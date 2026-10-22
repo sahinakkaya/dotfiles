@@ -1,6 +1,6 @@
 [".config/zsh"]
     type = "git-repo"
-    url = "git@github.com:sahinakkaya/zsh-config.git"
+    url = "https://github.com/sahinakkaya/zsh-config.git"
     refreshPeriod = "168h"
     clone.args = ["--recurse-submodules", "--branch", "yolk"]
     pull.args = ["--ff-only", "--recurse-submodules"]
