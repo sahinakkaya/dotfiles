@@ -5,6 +5,11 @@ if not set -q XDG_CONFIG_HOME
 end
 fish_add_path --path "$HOME/.local/bin"
 
+alias co cpyout
+alias so shrout
+alias cf cpyfile
+alias sf shrfile
+
 if status is-interactive
     set -g fish_greeting
 end
