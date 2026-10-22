@@ -7,7 +7,7 @@
 [init]
 	defaultBranch = main
 
-
+{{ if not .headless -}}
 [diff]
     ; tool = kitty
     ; guitool = kitty.gui
@@ -35,6 +35,10 @@
 # `git dlog` to show `git log -p` with difftastic.
 [alias]
         dlog = "-c diff.external=difft log -p --ext-diff"
+{{ else -}}
+[alias]
+        dlog = log -p
+{{ end -}}
 {{ if .personalSecrets -}}
 [gpg]
 	format = openpgp
