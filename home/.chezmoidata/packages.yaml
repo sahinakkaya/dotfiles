@@ -36,6 +36,12 @@ packages:
   flatpak_packages:
   - net.cozic.joplin_desktop
   - com.bitwarden.desktop
+  - app.zen_browser.zen
+
+  python_user_packages:
+  - subliminal
+  - neovim-remote
+
   debian:
     - git
     - curl

@@ -1,0 +1,17 @@
+{{ if and (not .headless) .packages.flatpak_packages -}}
+#!/bin/sh
+set -eu
+
+set --
+for app in{{ range .packages.flatpak_packages }} {{ . | quote }}{{ end }}; do
+    if ! flatpak info --user "$app" >/dev/null 2>&1 &&
+        ! flatpak info --system "$app" >/dev/null 2>&1; then
+        set -- "$@" "$app"
+    fi
+done
+
+if [ "$#" -gt 0 ]; then
+    flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    flatpak install --user --noninteractive -y flathub "$@"
+fi
+{{ end -}}
