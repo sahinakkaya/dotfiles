@@ -1,16 +1,19 @@
-{{ if .headless -}}
 #!/bin/sh
 set -eu
 
-fish_shell=$(command -v fish)
+shell_name={{ if .headless }}fish{{ else }}zsh{{ end }}
+login_shell=$(command -v "$shell_name") || {
+    printf 'Cannot set login shell: %s is not installed or not on PATH.\n' "$shell_name" >&2
+    exit 1
+}
 user=$(id -un)
 case "$(uname -s)" in
     Darwin) current_shell=$(dscl . -read "/Users/$user" UserShell | awk '{print $2}') ;;
     *) current_shell=$(getent passwd "$user" | cut -d: -f7) ;;
 esac
 
-if [ "$current_shell" != "$fish_shell" ]; then
-    echo "Setting Fish as the login shell for $user."
-    chsh -s "$fish_shell"
+if [ "$current_shell" != "$login_shell" ]; then
+    printf 'Setting %s as the login shell for %s.\n' "$shell_name" "$user"
+    chsh -s "$login_shell"
+    printf 'The new shell will be used on your next login.\n'
 fi
-{{ end -}}
