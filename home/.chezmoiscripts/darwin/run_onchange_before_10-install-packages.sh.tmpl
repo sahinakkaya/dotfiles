@@ -1,21 +1,40 @@
-{{- $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
-#!/bin/sh
-set -eu
+#!/bin/bash
 
-sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}{{ if $python }}{{ range .packages.macports_python }} {{ . | quote }}{{ end }}{{ end }}{{ if and (dig "features" "uosc" false .) (not .headless) (not .ephemeral) (not .work) }}{{ range .packages.macports_uosc }} {{ . | quote }}{{ end }}{{ end }}
-{{ if $python }}
-sudo port select --set python3 python313
-sudo port select --set pip3 pip313
+set -eufo pipefail
+
+{{ $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{ $ports := .packages.macports -}}
+{{ if .headless -}}
+{{   $ports = concat $ports .packages.macports_headless -}}
 {{ end -}}
-{{ if not .headless }}
-{{ range .packages.homebrew_formulae }}
-if ! brew list --formula {{ . | quote }} >/dev/null 2>&1; then
-    brew install --formula {{ . | quote }}
-fi
-{{ end }}
-{{ range .packages.homebrew_casks }}
-if ! brew list --cask {{ . | quote }} >/dev/null 2>&1; then
-    brew install --cask {{ . | quote }}
-fi
-{{ end }}
+{{ if $python -}}
+{{   $ports = concat $ports .packages.macports_python -}}
+{{ end -}}
+{{ if and (dig "features" "uosc" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{   $ports = concat $ports .packages.macports_uosc -}}
+{{ end -}}
+
+sudo port install \
+{{ range ($ports | sortAlpha | uniq) -}}
+    {{ . | quote }} \
+{{ end -}}
+    # End of MacPorts package list.
+
+{{ if $python -}}
+sudo port select --set python3 python314
+sudo port select --set python python314
+sudo port select --set pip3 pip314
+sudo port select --set pip pip314
+{{ end -}}
+{{ if not .headless -}}
+
+# Install missing Homebrew packages without upgrading existing installations.
+brew bundle --no-upgrade --file=/dev/stdin <<'EOF'
+{{ range (.packages.homebrew_formulae | sortAlpha | uniq) -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ range (.packages.homebrew_casks | sortAlpha | uniq) -}}
+cask {{ . | quote }}
+{{ end -}}
+EOF
 {{ end -}}
