@@ -1,0 +1,30 @@
+{{ if and (dig "features" "keymapper" false .) (eq .chezmoi.osRelease.id "fedora") (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/sh
+set -eu
+
+version={{ .installers.keymapper_version | quote }}
+case "$(uname -m)" in
+    aarch64|arm64) arch=arm64 ;;
+    x86_64) arch=x86_64 ;;
+    *) printf 'Unsupported keymapper architecture: %s\n' "$(uname -m)" >&2; exit 1 ;;
+esac
+
+if installed=$(rpm -q --queryformat '%{VERSION}' keymapper); then
+    if [ "$installed" = "$version" ]; then
+        exit 0
+    fi
+else
+    status=$?
+    if [ "$status" -ne 1 ]; then
+        exit "$status"
+    fi
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+    set --
+else
+    set -- sudo
+fi
+# Upstream RPMs are not signed by a Fedora-trusted key.
+"$@" dnf install -y --nogpgcheck "https://github.com/houmain/keymapper/releases/download/$version/keymapper-$version-Linux-$arch.rpm"
+{{ end -}}

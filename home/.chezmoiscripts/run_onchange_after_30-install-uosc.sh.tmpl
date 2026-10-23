@@ -1,0 +1,18 @@
+{{ if and (dig "features" "uosc" false .) (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/sh
+set -eu
+
+export MPV_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/mpv"
+if [ -f "$MPV_CONFIG_DIR/scripts/uosc/main.lua" ]; then
+    exit 0
+fi
+
+curl --version >/dev/null
+unzip -v >/dev/null
+installer=$(mktemp "${TMPDIR:-/tmp}/uosc-install.XXXXXXXX")
+trap 'rm -f "$installer"' EXIT
+trap 'exit 1' HUP INT TERM
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh -o "$installer"
+bash "$installer"
+test -f "$MPV_CONFIG_DIR/scripts/uosc/main.lua"
+{{ end -}}

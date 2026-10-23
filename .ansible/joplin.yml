@@ -1,0 +1,14 @@
+---
+- name: Configure Joplin encrypted profiles
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  gather_subset:
+    - min
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    joplin_password_entry: joplin
+    pass_store_dir: "{{ lookup('env', 'PASSWORD_STORE_DIR') | default(lookup('env', 'HOME') ~ '/.password-store', true) }}"
+  tasks:
+    - name: Set up Joplin encrypted storage
+      ansible.builtin.import_tasks: tasks/joplin.yml

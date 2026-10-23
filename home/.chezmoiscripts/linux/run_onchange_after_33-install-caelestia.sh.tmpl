@@ -1,0 +1,152 @@
+{{ if and (dig "features" "caelestia" false .) (eq .chezmoi.osRelease.id "fedora") (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/bash
+set -eo pipefail
+
+# Keep this stack separate from distro Qt plugins and existing user checkouts.
+data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-install"
+source_root="${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/sources"
+legacy_root="${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
+prefix="$data_dir/prefix"
+qml_dir="$prefix/lib64/qt6/qml"
+export CMAKE_BUILD_PARALLEL_LEVEL="${CMAKE_BUILD_PARALLEL_LEVEL:-2}"
+export PKG_CONFIG_PATH="$prefix/lib64/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+export CMAKE_PREFIX_PATH="$prefix${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+export QML_IMPORT_PATH="$qml_dir${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export LD_LIBRARY_PATH="$prefix/lib64:$qml_dir/Caelestia/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# Use the Fedora interpreter installed with this feature, rather than pyenv shims.
+/usr/bin/python3 -c 'import sys; assert sys.version_info >= (3, 13), "Caelestia CLI requires Python 3.13 or newer"'
+if ! pkg-config --atleast-version=6.9 Qt6Core; then
+    printf 'Caelestia requires Qt 6.9 or newer; update Fedora before installing.\n' >&2
+    exit 1
+fi
+pkg-config --atleast-version=1.41 wayland-protocols
+qt_version=$(pkg-config --modversion Qt6Core)
+
+# Relocate only directories created by the previous version of this installer.
+# Do this after preflight so a missing system dependency leaves them untouched.
+if [ -d "$legacy_root/caelestia/stamps" ]; then
+    if [ ! -e "$data_dir" ]; then
+        mkdir -p "$(dirname "$data_dir")"
+        mv "$legacy_root/caelestia" "$data_dir"
+    fi
+fi
+if [ -d "$data_dir/stamps" ] && [ -d "$legacy_root/sources/quickshell/.git" ] &&
+    [ -d "$legacy_root/sources/libcava/.git" ] && [ ! -e "$source_root" ]; then
+    mkdir -p "$(dirname "$source_root")"
+    mv "$legacy_root/sources" "$source_root"
+fi
+
+mkdir -p "$source_root" "$data_dir/stamps" "$prefix" "$HOME/.local/bin"
+for launcher in caelestia caelestia-shell; do
+    destination="$HOME/.local/bin/$launcher"
+    if { [ -e "$destination" ] || [ -L "$destination" ]; } &&
+        ! grep -q '^# Managed by chezmoi: Caelestia launcher$' "$destination"; then
+        printf 'Refusing to replace existing %s\n' "$destination" >&2
+        exit 1
+    fi
+done
+
+clone_source() {
+    local name=$1 repo=$2 branch=$3
+    local source="$source_root/$name"
+    if [ ! -e "$source" ]; then
+        git clone --recurse-submodules --branch "$branch" "$repo" "$source"
+    fi
+    # Deliberately do not pull/reset existing repositories or overwrite edits.
+    git -C "$source" rev-parse --is-inside-work-tree >/dev/null
+    git -C "$source" submodule update --init --recursive
+}
+
+fingerprint() {
+    printf '%s\n' "recipe-2-$prefix-qt-$qt_version-$(git -C "$source_root/$1" rev-parse HEAD)"
+}
+
+needs_build() {
+    [ ! -e "$2" ] || [ "$(cat "$data_dir/stamps/$1" 2>/dev/null || true)" != "$(fingerprint "$1")" ]
+}
+
+build_cmake() {
+    local name=$1 artifact=$2
+    shift 2
+    if needs_build "$name" "$artifact"; then
+        cmake --fresh -S "$source_root/$name" -B "$source_root/$name/build-chezmoi-v2" -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$prefix" \
+            -DCMAKE_INSTALL_LIBDIR=lib64 -DCMAKE_INSTALL_RPATH="$prefix/lib64" \
+            -DINSTALL_QMLDIR="$qml_dir" "$@"
+        cmake --build "$source_root/$name/build-chezmoi-v2"
+        cmake --install "$source_root/$name/build-chezmoi-v2"
+        test -e "$artifact"
+        fingerprint "$name" > "$data_dir/stamps/$name"
+    fi
+}
+
+clone_source libcava https://github.com/LukashonakV/cava.git master
+if needs_build libcava "$prefix/lib64/pkgconfig/libcava.pc"; then
+    build_dir="$source_root/libcava/build-chezmoi-v2"
+    if [ -f "$build_dir/build.ninja" ]; then
+        meson setup --reconfigure "$build_dir" "$source_root/libcava" \
+            --prefix="$prefix" --libdir=lib64 -Dbuild_target=lib
+    else
+        meson setup "$build_dir" "$source_root/libcava" \
+            --prefix="$prefix" --libdir=lib64 -Dbuild_target=lib
+    fi
+    meson compile -C "$build_dir" -j "$CMAKE_BUILD_PARALLEL_LEVEL"
+    meson install -C "$build_dir" --no-rebuild
+    pkg-config --exists libcava
+    fingerprint libcava > "$data_dir/stamps/libcava"
+fi
+
+clone_source quickshell https://git.outfoxxed.me/quickshell/quickshell.git master
+build_cmake quickshell "$prefix/bin/quickshell" -DCRASH_HANDLER=OFF
+
+clone_source m3shapes https://github.com/soramanew/m3shapes.git main
+build_cmake m3shapes "$qml_dir/M3Shapes/qmldir"
+
+clone_source caelestia-cli https://github.com/caelestia-dots/cli.git main
+if needs_build caelestia-cli "$data_dir/venv/bin/caelestia"; then
+    /usr/bin/python3 -m venv --clear "$data_dir/venv"
+    "$data_dir/venv/bin/python" -m pip install "$source_root/caelestia-cli"
+    test -x "$data_dir/venv/bin/caelestia"
+    fingerprint caelestia-cli > "$data_dir/stamps/caelestia-cli"
+fi
+
+clone_source caelestia-shell https://github.com/caelestia-dots/shell.git main
+build_cmake caelestia-shell "$prefix/etc/xdg/quickshell/caelestia/shell.qml" \
+    -DINSTALL_QSCONFDIR="$prefix/etc/xdg/quickshell/caelestia"
+
+font_dir="${XDG_DATA_HOME:-$HOME/.local/share}/fonts/caelestia"
+mkdir -p "$font_dir"
+download_font() {
+    if [ ! -s "$font_dir/$1" ]; then
+        curl --proto '=https' --tlsv1.2 -fsSL "$2" -o "$font_dir/$1.tmp"
+        mv "$font_dir/$1.tmp" "$font_dir/$1"
+    fi
+}
+download_font MaterialSymbolsRounded.ttf 'https://raw.githubusercontent.com/google/material-design-icons/master/variablefont/MaterialSymbolsRounded%5BFILL,GRAD,opsz,wght%5D.ttf'
+download_font Rubik.ttf 'https://raw.githubusercontent.com/google/fonts/main/ofl/rubik/Rubik%5Bwght%5D.ttf'
+fc-cache "$font_dir"
+
+# Both launchers pass the private libraries/configuration to their children.
+for launcher in caelestia caelestia-shell; do
+    destination="$HOME/.local/bin/$launcher"
+    cat > "$destination" <<'LAUNCHER'
+#!/bin/sh
+# Managed by chezmoi: Caelestia launcher
+data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-install"
+prefix="$data_dir/prefix"
+export PATH="$prefix/bin:$data_dir/venv/bin:$PATH"
+export QML_IMPORT_PATH="$prefix/lib64/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export LD_LIBRARY_PATH="$prefix/lib64:$prefix/lib64/qt6/qml/Caelestia/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export XDG_CONFIG_DIRS="$prefix/etc/xdg:${XDG_CONFIG_DIRS:-/etc/xdg}"
+export CAELESTIA_LIB_DIR="$prefix/lib64/caelestia"
+case "$0" in
+    *caelestia-shell) exec "$prefix/bin/quickshell" -c caelestia "$@" ;;
+    *) exec "$data_dir/venv/bin/caelestia" "$@" ;;
+esac
+LAUNCHER
+    chmod 755 "$destination"
+done
+
+printf 'Caelestia installed. In your Hyprland session, run: caelestia shell -d\n'
+{{ end -}}

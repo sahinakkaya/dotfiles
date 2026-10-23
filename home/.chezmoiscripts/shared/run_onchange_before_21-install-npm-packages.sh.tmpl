@@ -1,0 +1,18 @@
+{{- $selected := dig "selectedPackages" "node" (list) . -}}
+{{ if and (dig "features" "node" false .) (not .headless) (not .ephemeral) (not .work) $selected -}}
+#!/bin/bash
+set -eo pipefail
+
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+source "$NVM_DIR/nvm.sh" --no-use
+nvm use --silent default
+missing=()
+for package in{{ range $selected }} {{ . | quote }}{{ end }}; do
+    if ! npm list --global --depth=0 "$package" >/dev/null 2>&1; then
+        missing+=("$package")
+    fi
+done
+if [ "${#missing[@]}" -gt 0 ]; then
+    npm install --global "${missing[@]}"
+fi
+{{ end -}}

@@ -1,3 +1,7 @@
+{{- $desktopTools := and (not .headless) (not .ephemeral) (not .work) -}}
+{{- $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{- $flatpak := and (dig "features" "flatpak" false .) (not .headless) -}}
+{{- $bootstrap := and (or (dig "features" "rust" false .) (dig "features" "node" false .)) (not .headless) (not .ephemeral) (not .work) -}}
 {{ if eq .chezmoi.osRelease.id "fedora" -}}
 #!/bin/sh
 set -eu
@@ -8,7 +12,7 @@ if [ "$(id -u)" -eq 0 ]; then
 else
     set -- sudo
 fi
-"$@" dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.fedora_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.fedora_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.fedora_personal }} {{ . | quote }}{{ end }}{{ end }}
+"$@" dnf install -y{{ range .packages.fedora }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.fedora_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.fedora_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if $python }}{{ range .packages.fedora_python }} {{ . | quote }}{{ end }}{{ end }}{{ if $flatpak }}{{ range .packages.fedora_flatpak }} {{ . | quote }}{{ end }}{{ end }}{{ if $bootstrap }} "curl"{{ end }}{{ if .personalSecrets }}{{ range .packages.fedora_personal }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools (dig "features" "uosc" false .) }}{{ range .packages.fedora_uosc }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools (dig "features" "sptlrx" false .) }}{{ range .packages.fedora_sptlrx }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools (dig "features" "caelestia" false .) }}{{ range .packages.fedora_caelestia }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools .personalSecrets (dig "features" "joplin" false .) }}{{ range .packages.fedora_joplin }} {{ . | quote }}{{ end }}{{ end }}
 {{ else if eq .chezmoi.osRelease.id "debian" -}}
 #!/bin/sh
 set -eu
@@ -20,5 +24,5 @@ else
     set -- sudo
 fi
 "$@" apt-get update
-"$@" apt-get install -y{{ range .packages.debian }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.debian_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.debian_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.debian_personal }} {{ . | quote }}{{ end }}{{ end }}
+"$@" apt-get install -y{{ range .packages.debian }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.debian_headless }} {{ . | quote }}{{ end }}{{ else }}{{ range .packages.debian_desktop }} {{ . | quote }}{{ end }}{{ end }}{{ if $python }}{{ range .packages.debian_python }} {{ . | quote }}{{ end }}{{ end }}{{ if $flatpak }}{{ range .packages.debian_flatpak }} {{ . | quote }}{{ end }}{{ end }}{{ if .personalSecrets }}{{ range .packages.debian_personal }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools (dig "features" "uosc" false .) }}{{ range .packages.debian_uosc }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools (dig "features" "sptlrx" false .) }}{{ range .packages.debian_sptlrx }} {{ . | quote }}{{ end }}{{ end }}{{ if and $desktopTools .personalSecrets (dig "features" "joplin" false .) }}{{ range .packages.debian_joplin }} {{ . | quote }}{{ end }}{{ end }}
 {{ end -}}

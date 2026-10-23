@@ -1,0 +1,119 @@
+---
+- name: Check for running Joplin applications before setup
+  ansible.builtin.command:
+    argv: [pgrep, -u, "{{ ansible_facts['user_uid'] | string }}", -fi, '(^|/)([j]oplin|[J]oplin)([ /]|$)|[n]et[.]cozic[.]joplin_desktop']
+  register: joplin_processes
+  changed_when: false
+  failed_when: joplin_processes.rc not in [0, 1]
+  check_mode: false
+
+- name: Require Joplin to be closed during setup
+  ansible.builtin.assert:
+    that: joplin_processes.rc == 1
+    fail_msg: Close Joplin Desktop and CLI before running Joplin setup.
+
+- name: Create private Joplin storage directories
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.local/share/{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - joplin-encrypted
+    - joplin-unlocked
+
+- name: Check whether Joplin encrypted storage is initialized
+  ansible.builtin.stat:
+    path: "{{ ansible_facts['user_dir'] }}/.local/share/joplin-encrypted/gocryptfs.conf"
+  register: joplin_gocryptfs_config
+
+- name: Initialize Joplin encrypted storage
+  when:
+    - not joplin_gocryptfs_config.stat.exists
+    - not ansible_check_mode
+  block:
+    - name: Read Joplin password from password store
+      ansible.builtin.command:
+        argv: [pass, show, "{{ joplin_password_entry }}"]
+      environment:
+        PASSWORD_STORE_DIR: "{{ pass_store_dir }}"
+      register: joplin_password
+      changed_when: false
+      no_log: true
+
+    - name: Require a nonempty Joplin password
+      ansible.builtin.assert:
+        that:
+          - joplin_password.stdout.split('\n')[0] | length > 0
+      no_log: true
+
+    - name: Initialize gocryptfs with the Joplin password
+      ansible.builtin.command:
+        argv:
+          - gocryptfs
+          - -init
+          - -passfile
+          - /dev/stdin
+          - "{{ ansible_facts['user_dir'] }}/.local/share/joplin-encrypted"
+        stdin: "{{ joplin_password.stdout.split('\n')[0] }}"
+        creates: "{{ ansible_facts['user_dir'] }}/.local/share/joplin-encrypted/gocryptfs.conf"
+      no_log: true
+
+- name: Check whether Joplin storage is mounted
+  ansible.builtin.command:
+    argv:
+      - mountpoint
+      - -q
+      - "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked"
+  register: joplin_mountpoint
+  changed_when: false
+  failed_when: joplin_mountpoint.rc not in [0, 32]
+  when: not ansible_check_mode
+
+- name: Mount Joplin encrypted storage
+  when:
+    - not ansible_check_mode
+    - joplin_mountpoint.rc == 32
+  block:
+    - name: Read Joplin mount password from password store
+      ansible.builtin.command:
+        argv: [pass, show, "{{ joplin_password_entry }}"]
+      environment:
+        PASSWORD_STORE_DIR: "{{ pass_store_dir }}"
+      register: joplin_mount_password
+      changed_when: false
+      no_log: true
+
+    - name: Require a nonempty Joplin mount password
+      ansible.builtin.assert:
+        that:
+          - joplin_mount_password.stdout.split('\n')[0] | length > 0
+      no_log: true
+
+    - name: Mount gocryptfs with the Joplin password
+      ansible.builtin.command:
+        argv:
+          - gocryptfs
+          - -passfile
+          - /dev/stdin
+          - "{{ ansible_facts['user_dir'] }}/.local/share/joplin-encrypted"
+          - "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked"
+        stdin: "{{ joplin_mount_password.stdout.split('\n')[0] }}"
+      no_log: true
+
+- name: Configure Joplin profiles while unlocked
+  when: not ansible_check_mode
+  block:
+    - name: Configure each Joplin profile
+      ansible.builtin.include_tasks: joplin-profile.yml
+      loop: [joplin-desktop, joplin]
+      loop_control:
+        loop_var: joplin_profile
+
+  always:
+    - name: Unmount storage mounted by this playbook
+      ansible.builtin.command:
+        argv:
+          - fusermount3
+          - -u
+          - "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked"
+      when: joplin_mountpoint.rc == 32

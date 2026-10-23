@@ -1,0 +1,29 @@
+{{ if and (dig "features" "sptlrx" false .) (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/sh
+set -eu
+
+if command -v sptlrx >/dev/null 2>&1; then
+    exit 0
+fi
+
+source_dir="$HOME/GitRepos/sptlrx"
+if [ ! -e "$source_dir" ]; then
+    mkdir -p "$HOME/GitRepos"
+    git clone https://github.com/raitonoberu/sptlrx.git "$source_dir"
+fi
+if [ ! -x "$source_dir/sptlrx" ]; then
+    # Build from go.mod without changing the checkout's dependency versions.
+    (cd "$source_dir" && go build -mod=readonly -ldflags '-w -s' -o sptlrx .)
+fi
+
+mkdir -p "$HOME/.local/bin"
+destination="$HOME/.local/bin/sptlrx"
+if [ -e "$destination" ] || [ -L "$destination" ]; then
+    if [ "$(readlink "$destination" 2>/dev/null || true)" != "$source_dir/sptlrx" ]; then
+        printf 'Refusing to replace existing %s\n' "$destination" >&2
+        exit 1
+    fi
+else
+    ln -s "$source_dir/sptlrx" "$destination"
+fi
+{{ end -}}

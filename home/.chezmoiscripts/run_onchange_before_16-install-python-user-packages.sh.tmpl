@@ -1,6 +1,0 @@
-{{ if and (not .headless) (not .ephemeral) (not .work) .packages.python_user_packages -}}
-#!/bin/sh
-set -eu
-
-pip3 install --user{{ range .packages.python_user_packages }} {{ . | quote }}{{ end }}
-{{ end -}}

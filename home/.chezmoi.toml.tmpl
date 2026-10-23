@@ -3,6 +3,58 @@
 {{- $work := promptBoolOnce . "work" "Is this a work machine?" false -}}{{/* true if this machine is a work machine */}}
 {{- $headless := promptBoolOnce . "headless" "Is this a headless machine (no local screen and keyboard)?" false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $personal := promptBoolOnce . "personal" "Should this machine have access to personal secrets?" false -}}{{/* true if this machine should have personal secrets */}}
+{{- $runtimes := list "python" "rust" "node" -}}
+{{- $choices := concat $runtimes (list "flatpak" "uosc" "sptlrx" "keymapper" "caelestia" "joplin") -}}
+{{- $features := dict -}}
+{{- if hasKey . "features" -}}
+{{- range $runtimes -}}
+{{- $_ := set $features . (get $.features . | default false) -}}
+{{- end -}}
+{{- else -}}
+{{- $selected := promptMultichoice "Runtimes to install (none selected by default)" $runtimes (list) -}}
+{{- range $runtimes -}}
+{{- $_ := set $features . (has . $selected) -}}
+{{- end -}}
+{{- end -}}
+{{- $existing := get . "features" | default dict -}}
+{{- $_ := set $features "flatpak" (promptBoolOnce $existing "flatpak" "Install Flatpak applications?" false) -}}
+{{- $supportedTools := list "uosc" -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{- $supportedTools = append $supportedTools "sptlrx" -}}
+{{- if and $personal (not $ephemeral) -}}
+{{- $supportedTools = append $supportedTools "joplin" -}}
+{{- end -}}
+{{- if eq .chezmoi.osRelease.id "fedora" -}}
+{{- $supportedTools = concat $supportedTools (list "keymapper" "caelestia") -}}
+{{- end -}}
+{{- end -}}
+{{- $missingTools := list -}}
+{{- range $supportedTools -}}
+{{- if not (hasKey $existing .) -}}
+{{- $missingTools = append $missingTools . -}}
+{{- end -}}
+{{- end -}}
+{{- $selectedTools := list -}}
+{{- if and $missingTools (not $headless) (not $ephemeral) (not $work) -}}
+{{- $selectedTools = promptMultichoice "Optional desktop tools (none selected by default)" $missingTools (list) -}}
+{{- end -}}
+{{- range list "uosc" "sptlrx" "keymapper" "caelestia" "joplin" -}}
+{{- $enabled := has . $selectedTools -}}
+{{- if hasKey $existing . -}}{{- $enabled = get $existing . -}}{{- end -}}
+{{- $_ := set $features . $enabled -}}
+{{- end -}}
+{{- $catalog := (include ".chezmoidata/packages.yaml" | fromYaml).packages -}}
+{{- $packageChoices := dict "python" $catalog.python_user_packages "rust" $catalog.cargo_packages "node" $catalog.npm_global_packages -}}
+{{- $savedPackages := get . "selectedPackages" | default dict -}}
+{{- $selectedPackages := dict -}}
+{{- range $runtime := $runtimes -}}
+{{- $selected := get $savedPackages $runtime | default (list) -}}
+{{- $available := get $packageChoices $runtime -}}
+{{- if and (get $features $runtime) (not $headless) (not $ephemeral) (not $work) $available (not (hasKey $savedPackages $runtime)) -}}
+{{- $selected = promptMultichoice (printf "Optional %s packages (none selected by default)" $runtime) $available (list) -}}
+{{- end -}}
+{{- $_ := set $selectedPackages $runtime $selected -}}
+{{- end -}}
 {{- "" -}}
 # Prompt before replacing pre-existing files, including during chezmoi update.
 lessInteractive = true
@@ -15,6 +67,16 @@ headless = {{ $headless }}
 personal = {{ $personal }}
 personalSecrets = {{ and $personal (not $ephemeral) }}
 
+# Optional installers; false stops installation without uninstalling anything.
+[data.features]
+{{ range $choices -}}
+{{ . }} = {{ get $features . }}
+{{ end }}
+# Package selections do not enable their runtime automatically.
+[data.selectedPackages]
+{{ range $runtimes -}}
+{{ . }} = {{ get $selectedPackages . | toJson }}
+{{ end }}
 [add]
 secrets = "error"
 

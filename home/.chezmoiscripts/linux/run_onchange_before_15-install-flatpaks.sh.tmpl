@@ -1,4 +1,4 @@
-{{ if and (not .headless) .packages.flatpak_packages -}}
+{{ if and (dig "features" "flatpak" false .) (not .headless) .packages.flatpak_packages -}}
 #!/bin/sh
 set -eu
 

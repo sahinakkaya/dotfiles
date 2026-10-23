@@ -1,0 +1,7 @@
+{{- $selected := dig "selectedPackages" "python" (list) . -}}
+{{ if and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) $selected -}}
+#!/bin/sh
+set -eu
+
+pip3 install --user{{ range $selected }} {{ . | quote }}{{ end }}
+{{ end -}}

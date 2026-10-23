@@ -1,0 +1,10 @@
+{{- $selected := dig "selectedPackages" "rust" (list) . -}}
+{{ if and (dig "features" "rust" false .) (not .headless) (not .ephemeral) (not .work) $selected -}}
+#!/bin/sh
+set -eu
+
+export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
+{{ range $selected }}
+cargo install {{ . | quote }}
+{{ end -}}
+{{ end -}}

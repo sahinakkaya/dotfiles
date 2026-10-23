@@ -1,4 +1,9 @@
+{{- $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
 #!/bin/sh
 set -eu
 
-sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}
+sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .headless }}{{ range .packages.macports_headless }} {{ . | quote }}{{ end }}{{ end }}{{ if $python }}{{ range .packages.macports_python }} {{ . | quote }}{{ end }}{{ end }}{{ if and (dig "features" "uosc" false .) (not .headless) (not .ephemeral) (not .work) }}{{ range .packages.macports_uosc }} {{ . | quote }}{{ end }}{{ end }}
+{{ if $python }}
+sudo port select --set python3 python313
+sudo port select --set pip3 pip313
+{{ end -}}

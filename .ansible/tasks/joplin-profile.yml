@@ -1,0 +1,75 @@
+---
+- name: Inspect existing profile and backup
+  ansible.builtin.stat:
+    path: "{{ ansible_facts['user_dir'] }}/.config/{{ item }}"
+    follow: false
+  loop:
+    - "{{ joplin_profile }}"
+    - "{{ joplin_profile }}.backup"
+  register: joplin_profile_paths
+
+- name: Check profile can be safely configured
+  ansible.builtin.assert:
+    that:
+      - >-
+        not joplin_profile_paths.results[0].stat.exists or
+        (joplin_profile_paths.results[0].stat.islnk | default(false)) or
+        (joplin_profile_paths.results[0].stat.isdir | default(false))
+      - >-
+        not (joplin_profile_paths.results[0].stat.islnk | default(false)) or
+        joplin_profile_paths.results[0].stat.lnk_source ==
+        ansible_facts['user_dir'] ~ '/.local/share/joplin-unlocked/' ~ joplin_profile
+      - >-
+        not (joplin_profile_paths.results[0].stat.isdir | default(false)) or
+        not joplin_profile_paths.results[1].stat.exists
+    fail_msg: "Refusing to overwrite {{ joplin_profile }} or its backup; resolve the conflicting paths first."
+
+- name: Create encrypted profile directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked/{{ joplin_profile }}"
+    state: directory
+    mode: "0700"
+
+- name: Migrate existing plaintext profile
+  when: joplin_profile_paths.results[0].stat.isdir | default(false)
+  vars:
+    joplin_source: "{{ ansible_facts['user_dir'] }}/.config/{{ joplin_profile }}"
+    joplin_target: "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked/{{ joplin_profile }}"
+  block:
+    - name: Check whether encrypted profile is empty
+      ansible.builtin.command:
+        argv: [find, "{{ joplin_target }}", -mindepth, '1', -maxdepth, '1', -print, -quit]
+      register: joplin_target_contents
+      changed_when: false
+
+    - name: Copy plaintext profile into empty encrypted profile
+      ansible.builtin.command:
+        argv: [cp, -a, "{{ joplin_source }}/.", "{{ joplin_target }}/"]
+      when: joplin_target_contents.stdout == ''
+
+    - name: Keep the migrated profile directory private
+      ansible.builtin.file:
+        path: "{{ joplin_target }}"
+        state: directory
+        mode: "0700"
+
+    - name: Verify encrypted copy matches plaintext profile
+      ansible.builtin.command:
+        argv: [diff, -qr, "{{ joplin_source }}", "{{ joplin_target }}"]
+      changed_when: false
+
+    - name: Preserve original plaintext profile as backup
+      ansible.builtin.command:
+        argv: [mv, -T, --no-clobber, "{{ joplin_source }}", "{{ joplin_source }}.backup"]
+
+- name: Create configuration parent directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config"
+    state: directory
+
+- name: Link profile to encrypted storage
+  ansible.builtin.file:
+    src: "{{ ansible_facts['user_dir'] }}/.local/share/joplin-unlocked/{{ joplin_profile }}"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/{{ joplin_profile }}"
+    state: link
+    follow: false

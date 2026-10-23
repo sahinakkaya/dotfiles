@@ -29,7 +29,7 @@ MOUNTED_BY_US=false
 if ! mountpoint -q "$UNLOCKED"; then
     gocryptfs \
       -extpass "$HOME/.local/bin/joplin-password" \
-      "$ENCRYPTED" "$UNLOCKED"
+      "$ENCRYPTED" "$UNLOCKED" 9>&-
     MOUNTED_BY_US=true
 fi
 

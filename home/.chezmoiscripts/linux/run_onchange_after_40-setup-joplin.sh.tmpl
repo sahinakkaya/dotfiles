@@ -1,0 +1,17 @@
+{{ if and (dig "features" "joplin" false .) .personalSecrets (not .headless) (not .ephemeral) (not .work) -}}
+#!/bin/sh
+set -eu
+
+# Rerun when the playbook or either unchanged Ansible task changes.
+# playbook: {{ include (joinPath .chezmoi.workingTree ".ansible/joplin.yml") | sha256sum }}
+# storage: {{ include (joinPath .chezmoi.workingTree ".ansible/tasks/joplin.yml") | sha256sum }}
+# profiles: {{ include (joinPath .chezmoi.workingTree ".ansible/tasks/joplin-profile.yml") | sha256sum }}
+
+if [ -f "$HOME/.local/share/joplin-encrypted/gocryptfs.conf" ] &&
+    [ "$(readlink "$HOME/.config/joplin" 2>/dev/null || true)" = "$HOME/.local/share/joplin-unlocked/joplin" ] &&
+    [ "$(readlink "$HOME/.config/joplin-desktop" 2>/dev/null || true)" = "$HOME/.local/share/joplin-unlocked/joplin-desktop" ]; then
+    exit 0
+fi
+
+ansible-playbook -i localhost, {{ joinPath .chezmoi.workingTree ".ansible/joplin.yml" | quote }}
+{{ end -}}

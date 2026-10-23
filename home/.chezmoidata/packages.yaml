@@ -12,20 +12,14 @@ packages:
     # - fuse3
     # - util-linux
   fedora_desktop:
-    - curl
     - neovim
     - btop
-    - python3
-    - python3-pip
-    - cmake
-    - golang
     - difftastic
     - direnv
     - zsh
     - kitty
     - darkman
     - dmenu-wayland
-    - flatpak
   fedora_personal:
     - gocryptfs # for encrypting joplin notes
     - zenity # to get a password ui
@@ -43,6 +37,10 @@ packages:
   - subliminal
   - neovim-remote
 
+  cargo_packages: []
+  npm_global_packages:
+  - joplin
+
   debian:
     - git
     - curl
@@ -58,9 +56,6 @@ packages:
   debian_desktop:
     - zsh
     - neovim
-    - flatpak
-    - python3
-    - python3-pip
   debian_personal:
     - gocryptfs
   macports:
@@ -69,3 +64,112 @@ packages:
   macports_headless:
     - fish
     - vim
+
+  fedora_python:
+    - python3
+    - python3-pip
+  debian_python:
+    - python3
+    - python3-pip
+  macports_python:
+    - python313
+    - py313-pip
+  fedora_flatpak:
+    - flatpak
+  debian_flatpak:
+    - flatpak
+
+  fedora_uosc:
+    - mpv
+    - curl
+    - unzip
+  debian_uosc:
+    - mpv
+    - curl
+    - unzip
+  macports_uosc:
+    - mpv
+    - curl
+    - unzip
+  fedora_sptlrx:
+    - golang
+  debian_sptlrx:
+    - golang-go
+  fedora_caelestia:
+    # Shell, Quickshell, M3Shapes, libcava, and the CLI.
+    - git
+    - curl
+    - gcc
+    - gcc-c++
+    - cmake
+    - meson
+    - ninja-build
+    - cli11-devel
+    - pkgconf-pkg-config
+    - qt6-qtbase-devel
+    - qt6-qtbase-private-devel
+    - qt6-qtdeclarative-devel
+    - qt6-qtwayland-devel
+    - qt6-qtshadertools-devel
+    - qt6-qtmultimedia-devel
+    - qt6-qtimageformats
+    - qt6-qtsvg
+    - qt6-qt5compat
+    - libqalculate-devel
+    - aubio-devel
+    - fftw-devel
+    - iniparser-devel
+    - pipewire-devel
+    - lm_sensors-devel
+    - wayland-devel
+    - wayland-protocols-devel
+    - libdrm-devel
+    - mesa-libgbm-devel
+    - mesa-libEGL-devel
+    - vulkan-headers
+    - libxcb-devel
+    - xcb-util-wm-devel
+    - libxkbcommon-devel
+    - pam-devel
+    - polkit-devel
+    - jemalloc-devel
+    - python3
+    - python3-devel
+    - python3-pip
+    - hyprland
+    - ddcutil
+    - brightnessctl
+    - NetworkManager
+    - lm_sensors
+    - ppd-service # Accept tuned-ppd or power-profiles-daemon without replacing either.
+    - swappy
+    - fish
+    - libnotify
+    - grim
+    - wl-clipboard
+    - slurp
+    - cliphist
+    - fuzzel
+    - ffmpeg-free
+    - fontconfig
+    - google-rubik-fonts
+    - cascadia-code-nf-fonts
+
+  fedora_joplin:
+    - ansible-core
+    - gocryptfs
+    - zenity
+    - pass
+    - fuse3
+    - util-linux
+    - procps-ng
+    - diffutils
+  debian_joplin:
+    - ansible-core
+    - gocryptfs
+    - zenity
+    - pass
+    - fuse3
+    - util-linux
+    - procps
+    - diffutils
