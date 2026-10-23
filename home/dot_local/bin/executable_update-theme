@@ -12,9 +12,10 @@ fi
 
 echo "$theme" > "$HOME/.theme"
 
-export YOLK_DIR="$HOME/dotfiles"
-$HOME/.cargo/bin/yolk sync
+chezmoi apply --skip-secrets --exclude=scripts
 
+# todo: consider moving below into a run_after script.. we are excluding
+# scripts above so this is not straightforward for now.
 kitty_socket_base='/tmp/mykitty'
 kitten_bin=/opt/homebrew/bin/kitten
 
