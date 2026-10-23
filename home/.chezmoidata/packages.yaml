@@ -36,6 +36,8 @@ packages:
   python_user_packages:
   - subliminal
   - neovim-remote
+  - cryptography
+
 
   cargo_packages: []
   npm_global_packages:

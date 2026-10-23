@@ -1,0 +1,37 @@
+{{ if eq .chezmoi.os "darwin" -}}
+# Added by OrbStack: 'orb' SSH host for Linux machines
+# This only works if it's at the top of ssh_config (before any Host blocks).
+# This won't be added again if you remove it.
+Include ~/.orbstack/ssh/config
+
+
+Host fedora
+  HostName localhost
+  Port 3333
+  User root
+{{ end  }}
+
+
+Host *
+  ServerAliveInterval 120
+  ServerAliveCountMax 30
+  TCPKeepAlive no
+  AddKeysToAgent yes
+
+Host arch
+  Hostname 192.168.1.103
+  RequestTTY yes
+  RemoteCommand ZDOTDIR=/home/sahin/.config/zsh zsh
+
+Host sahinakkaya.dev
+  Port 2242
+  User sahin
+  ForwardAgent yes
+  AddKeysToAgent yes
+  UseKeychain yes
+
+Host git.sahinakkaya.dev
+  IdentityFile ~/.ssh/id_rsa_secondary
+  Port 2242
+
+

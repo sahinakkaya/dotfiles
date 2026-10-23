@@ -1,33 +1,34 @@
 [user]
-	email = sahin@sahinakkaya.dev
-	name = Şahin Akkaya
-{{ if .personalSecrets -}}
-	signingkey = sahin@sahinakkaya.dev
-{{ end -}}
+	  email = sahin@sahinakkaya.dev
+	  name = Şahin Akkaya
+    {{- if .personalSecrets }}
+	  signingkey = sahin@sahinakkaya.dev
+    {{- end }}
+
 [init]
-	defaultBranch = main
+	  defaultBranch = main
 
 {{ if not .headless -}}
 [diff]
-    ; tool = kitty
-    ; guitool = kitty.gui
+    tool = kitty
+    guitool = kitty.gui
 [difftool]
-    ; prompt = false
-    ; trustExitCode = true
+    prompt = false
+    trustExitCode = true
 [difftool "kitty"]
     cmd = kitten diff $LOCAL $REMOTE
 [difftool "kitty.gui"]
     cmd = kitten diff $LOCAL $REMOTE
 
-[diff]
-        tool = difftastic
-        external = difft
-
-[difftool]
-        prompt = false
-
-[difftool "difftastic"]
-        cmd = difft "$LOCAL" "$REMOTE"
+; [diff]
+;         tool = difftastic
+;         external = difft
+; 
+; [difftool]
+;         prompt = false
+; 
+; [difftool "difftastic"]
+;         cmd = difft "$LOCAL" "$REMOTE"
 
 [pager]
         difftool = true
