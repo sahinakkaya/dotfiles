@@ -6,6 +6,9 @@ step() {
   printf '\n==> %s\n' "$*" >&2
 }
 
+
+export PATH="$PATH:/opt/local/bin:/$HOME/.local/bin"
+
 if [ ! "$(command -v chezmoi)" ]; then
   bin_dir="$HOME/.local/bin"
   chezmoi="$bin_dir/chezmoi"
@@ -30,6 +33,7 @@ else
   chezmoi=chezmoi
   step 'Using the installed chezmoi'
 fi
+
 
 # Set up dependencies and credentials before rendering password-backed templates.
 export CHEZMOI_INITIAL_SETUP=1
