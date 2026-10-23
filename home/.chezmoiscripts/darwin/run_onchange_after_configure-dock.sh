@@ -5,7 +5,7 @@ set -eufo pipefail
 trap 'killall Dock' EXIT
 
 declare -a remove_labels=(
-	Launchpad
+	Apps
 	Safari
 	Messages
 	Maps
@@ -15,7 +15,6 @@ declare -a remove_labels=(
 	Calendar
 	Contacts
 	Notes
-	Freeform
 	TV
 	Music
 	Keynote
