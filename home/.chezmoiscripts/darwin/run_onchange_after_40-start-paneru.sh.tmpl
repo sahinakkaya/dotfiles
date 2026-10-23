@@ -1,0 +1,8 @@
+{{ if not .headless -}}
+#!/bin/sh
+set -eu
+
+# Register the current user's launch agent and start Paneru.
+paneru install
+paneru start
+{{ end -}}

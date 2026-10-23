@@ -69,6 +69,7 @@ packages:
     - vim
   homebrew_formulae:
     - dockutil
+    - paneru
   homebrew_casks:
     - karabiner-elements
 
