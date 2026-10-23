@@ -3,9 +3,9 @@
 set -eu
 
 # Rerun when the playbook or either unchanged Ansible task changes.
-# playbook: {{ include (joinPath .chezmoi.workingTree ".ansible/joplin.yml") | sha256sum }}
-# storage: {{ include (joinPath .chezmoi.workingTree ".ansible/tasks/joplin.yml") | sha256sum }}
-# profiles: {{ include (joinPath .chezmoi.workingTree ".ansible/tasks/joplin-profile.yml") | sha256sum }}
+# playbook: {{ include (joinPath .chezmoi.workingTree "home/.ansible/joplin.yml") | sha256sum }}
+# storage: {{ include (joinPath .chezmoi.workingTree "home/.ansible/tasks/joplin.yml") | sha256sum }}
+# profiles: {{ include (joinPath .chezmoi.workingTree "home/.ansible/tasks/joplin-profile.yml") | sha256sum }}
 
 if [ -f "$HOME/.local/share/joplin-encrypted/gocryptfs.conf" ] &&
     [ "$(readlink "$HOME/.config/joplin" 2>/dev/null || true)" = "$HOME/.local/share/joplin-unlocked/joplin" ] &&
@@ -13,5 +13,5 @@ if [ -f "$HOME/.local/share/joplin-encrypted/gocryptfs.conf" ] &&
     exit 0
 fi
 
-ansible-playbook -i localhost, {{ joinPath .chezmoi.workingTree ".ansible/joplin.yml" | quote }}
+ansible-playbook -i localhost, {{ joinPath .chezmoi.workingTree "home/.ansible/joplin.yml" | quote }}
 {{ end -}}
