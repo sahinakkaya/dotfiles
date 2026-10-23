@@ -3,4 +3,28 @@ export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
 
 {{ if eq .chezmoi.os "darwin" -}}
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+export PNPM_HOME="$HOME/Library/pnpm"
+export DYLD_LIBRARY_PATH=/opt/homebrew/lib
+export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+
+eval $(/opt/homebrew/bin/brew shellenv)
+
+
+fpath=(
+  /Applications/Postgres.app/Contents/Versions/latest/bin
+  /opt/homebrew/share/zsh/site-functions
+  $fpath
+)
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 {{ end -}}
+
+# export SSH_AUTH_SOCK="$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock"
