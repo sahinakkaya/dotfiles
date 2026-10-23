@@ -7,3 +7,10 @@ sudo port install{{ range .packages.macports }} {{ . | quote }}{{ end }}{{ if .h
 sudo port select --set python3 python313
 sudo port select --set pip3 pip313
 {{ end -}}
+{{ if not .headless }}
+{{ range .packages.homebrew_casks }}
+if ! brew list --cask {{ . | quote }} >/dev/null 2>&1; then
+    brew install --cask {{ . | quote }}
+fi
+{{ end }}
+{{ end -}}

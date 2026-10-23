@@ -63,9 +63,12 @@ packages:
   macports:
     - git
     - difftastic
+    - ttf-nerd-fonts-symbols
   macports_headless:
     - fish
     - vim
+  homebrew_casks:
+    - karabiner-elements
 
   fedora_python:
     - python3
