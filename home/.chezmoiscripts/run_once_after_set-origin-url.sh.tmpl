@@ -4,4 +4,17 @@
 set -eufo pipefail
 
 git -C "${CHEZMOI_WORKING_TREE}" remote set-url origin git@github.com:sahinakkaya/dotfiles.git
+
+# Keep the submodule's local clone URL and its existing origin on SSH.
+git -C "${CHEZMOI_WORKING_TREE}" config submodule.dot_config/external_nvim.url git@github.com:sahinakkaya/nvim-config.git
+nvim_repo="${CHEZMOI_WORKING_TREE}/home/dot_config/external_nvim"
+if [ -e "$nvim_repo/.git" ]; then
+    git -C "$nvim_repo" remote set-url origin git@github.com:sahinakkaya/nvim-config.git
+fi
+
+# Zsh is a chezmoi external Git repository in the destination directory.
+zsh_repo={{ joinPath .chezmoi.destDir ".config/zsh" | quote }}
+if [ -e "$zsh_repo/.git" ]; then
+    git -C "$zsh_repo" remote set-url origin git@github.com:sahinakkaya/zsh-config.git
+fi
 {{ end -}}
