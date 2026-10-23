@@ -34,8 +34,8 @@ local languages = {
 --          for the functioning of the script!
 --          If you use any of these services, simply uncomment it
 --          and replace 'USERNAME' and 'PASSWORD' with your own:
-local addic7ed_password = "{{ if .personalSecrets }}{{ pass "addic7ed.com" }}{{ end }}"
-local opensubtitles_password = "{{ if .personalSecrets }}{{ pass "opensubtitles.org" }}{{ end }}"
+local addic7ed_password = "{{ if .personalSecrets }}{{ (bitwarden "item" "addic7ed.com").login.password }}{{ end }}"
+local opensubtitles_password = "{{ if .personalSecrets }}{{ (bitwarden "item" "opensubtitles.org").login.password }}{{ end }}"
 local logins = {
          { '--addic7ed', 'Sahin', addic7ed_password },
 --          { '--legendastv', 'USERNAME', 'PASSWORD' },

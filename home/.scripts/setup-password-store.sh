@@ -1,5 +1,5 @@
 #!/bin/sh
-# Configure GPG pinentry and prepare the store before rendering templates.
+# Configure GPG pinentry and prepare the store after applying templates.
 set -eu
 
 config=$1
