@@ -23,7 +23,7 @@ defaults write -g AppleShowAllExtensions -int 1
 defaults write -g InitialKeyRepeat -int 10
 
 # Key repeat interval; lower values repeat faster.
-defaults write -g KeyRepeat -int 2
+defaults write -g KeyRepeat -int 5
 
 # Disable automatic capitalization.
 defaults write -g NSAutomaticCapitalizationEnabled -int 0
