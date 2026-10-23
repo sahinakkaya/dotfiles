@@ -8,6 +8,11 @@ sudo port select --set python3 python313
 sudo port select --set pip3 pip313
 {{ end -}}
 {{ if not .headless }}
+{{ range .packages.homebrew_formulae }}
+if ! brew list --formula {{ . | quote }} >/dev/null 2>&1; then
+    brew install --formula {{ . | quote }}
+fi
+{{ end }}
 {{ range .packages.homebrew_casks }}
 if ! brew list --cask {{ . | quote }} >/dev/null 2>&1; then
     brew install --cask {{ . | quote }}

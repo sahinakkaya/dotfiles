@@ -67,6 +67,8 @@ packages:
   macports_headless:
     - fish
     - vim
+  homebrew_formulae:
+    - dockutil
   homebrew_casks:
     - karabiner-elements
 
