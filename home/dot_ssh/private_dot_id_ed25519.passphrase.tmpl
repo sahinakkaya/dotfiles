@@ -1,7 +1,5 @@
-{{- if and (has .chezmoi.os (list "darwin" "linux")) .personalSecrets -}}
-{{- $keyPath := joinPath .chezmoi.homeDir ".ssh/id_ed25519" -}}
+{{- $keyPath := joinPath .home ".ssh/id_ed25519" -}}
 {{- if not (lstat $keyPath) -}}
-{{- $prefix := ternary "macos" "fedora" (eq .chezmoi.os "darwin") -}}
+{{- $prefix := ternary "macos" "fedora" .is_macos -}}
 {{ (bitwarden "item" (printf "%s-ssh-passphrase" $prefix)).login.password | b64enc }}
-{{- end -}}
 {{- end -}}

@@ -46,7 +46,7 @@ news.version=2.6.0
 color.calendar.holiday=black on yellow
 
 {{  $dark := false -}}
-{{- $themeFile := joinPath .chezmoi.homeDir ".theme" -}}
+{{- $themeFile := joinPath .home ".theme" -}}
 {{- if stat $themeFile -}}
 {{- $dark = eq (include $themeFile | trim) "dark" -}}
 {{- end -}}

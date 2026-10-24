@@ -1,4 +1,4 @@
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if .is_macos -}}
 # Added by OrbStack: 'orb' SSH host for Linux machines
 # This only works if it's at the top of ssh_config (before any Host blocks).
 # This won't be added again if you remove it.
@@ -9,7 +9,7 @@ Host fedora
   HostName localhost
   Port 3333
   User root
-{{- else if eq .chezmoi.os "linux" -}}
+{{- else if .is_linux -}}
 Host arch
   Hostname 192.168.1.103
   RequestTTY yes
@@ -23,6 +23,7 @@ Host *
   TCPKeepAlive no
   AddKeysToAgent yes
 
+{{ if .personal }}
 Host sahinakkaya
   HostName sahinakkaya.dev
 
@@ -44,5 +45,7 @@ Host home.ts.net
 Host git.sahinakkaya.dev
   IdentityFile ~/.ssh/id_ed25519
   Port 2242
+
+{{ end -}}
 
 

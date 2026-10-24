@@ -3,15 +3,15 @@
 .config/kitty/dirty
 example
 
-{{ if ne .chezmoi.os "darwin" }}
+{{ if not .is_macos }}
 .chezmoiscripts/darwin/**
 {{ end }}
 
-{{ if ne .chezmoi.os "linux" }}
+{{ if not .is_linux }}
 .chezmoiscripts/linux/**
 {{ end }}
 
-{{ if ne .chezmoi.os "darwin" }}
+{{ if not .is_macos }}
 .config/karabiner
 .config/yabai
 .config/paneru
@@ -20,7 +20,7 @@ Library
 {{ end }}
 
 
-{{ if ne .chezmoi.os "linux" }}
+{{ if not .is_linux }}
 .config/keymapper
 .config/hypr
 .config/darkman
@@ -74,7 +74,9 @@ Library
 .config/fish
 {{ end }}
 
-{{ if not .personalSecrets }}
+{{ if not .personal }}
+.gnupg
+.ssh/id_ed25519*
 .config/mpv/scripts/autosub.lua
 .local/bin/joplin
 .local/bin/joplin-secure
