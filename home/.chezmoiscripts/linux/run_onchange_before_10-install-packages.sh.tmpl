@@ -1,5 +1,5 @@
 {{- $desktopTools := and (not .headless) (not .ephemeral) (not .work) -}}
-{{- $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{- $python := or .personalSecrets (and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work)) -}}
 {{- $flatpak := and (dig "features" "flatpak" false .) (not .headless) -}}
 {{- $bootstrap := and (or (dig "features" "rust" false .) (dig "features" "node" false .)) (not .headless) (not .ephemeral) (not .work) -}}
 {{ if eq .chezmoi.osRelease.id "fedora" -}}

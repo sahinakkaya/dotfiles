@@ -2,13 +2,16 @@
 
 set -eufo pipefail
 
-{{ $python := and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{ $python := or .personalSecrets (and (dig "features" "python" false .) (not .headless) (not .ephemeral) (not .work)) -}}
 {{ $ports := .packages.macports -}}
 {{ if .headless -}}
 {{   $ports = concat $ports .packages.macports_headless -}}
 {{ end -}}
 {{ if $python -}}
 {{   $ports = concat $ports .packages.macports_python -}}
+{{ end -}}
+{{ if .personalSecrets -}}
+{{   $ports = concat $ports .packages.macports_personal -}}
 {{ end -}}
 {{ if and (dig "features" "uosc" false .) (not .headless) (not .ephemeral) (not .work) -}}
 {{   $ports = concat $ports .packages.macports_uosc -}}

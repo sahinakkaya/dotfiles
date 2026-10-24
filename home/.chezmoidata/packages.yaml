@@ -21,6 +21,8 @@ packages:
     - darkman
     - dmenu-wayland
   fedora_personal:
+    - python3-bcrypt # required for OpenSSH private-key encryption
+    - python3-cryptography # required to encrypt the SSH private key
     - gocryptfs # for encrypting joplin notes
     - zenity # to get a password ui
   fedora_headless:
@@ -59,6 +61,8 @@ packages:
     - zsh
     - neovim
   debian_personal:
+    - python3-bcrypt # required for OpenSSH private-key encryption
+    - python3-cryptography # required to encrypt the SSH private key
     - gocryptfs
   macports:
     - git
@@ -85,6 +89,9 @@ packages:
   macports_python:
     - python314
     - py314-pip
+  macports_personal:
+    - py314-bcrypt # required for OpenSSH private-key encryption
+    - py314-cryptography # required to encrypt the SSH private key
   fedora_flatpak:
     - flatpak
   debian_flatpak:
