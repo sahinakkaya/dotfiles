@@ -4,7 +4,7 @@
 #* Themes should be placed in "../share/btop/themes" relative to binary or "$HOME/.config/btop/themes"
 
 {{  $dark := false -}}
-{{- $themeFile := joinPath .chezmoi.homeDir ".theme" -}}
+{{- $themeFile := joinPath .home ".theme" -}}
 {{- if stat $themeFile -}}
 {{- $dark = eq (include $themeFile | trim) "dark" -}}
 {{- end -}}

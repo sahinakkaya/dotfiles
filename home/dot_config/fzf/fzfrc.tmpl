@@ -1,5 +1,5 @@
 {{- $dark := false -}}
-{{- $themeFile := joinPath .chezmoi.homeDir ".theme" -}}
+{{- $themeFile := joinPath .home ".theme" -}}
 {{- if stat $themeFile -}}
 {{- $dark = eq (include $themeFile | trim) "dark" -}}
 {{- end -}}

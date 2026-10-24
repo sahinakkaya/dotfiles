@@ -1,3 +1,5 @@
+{{- $is_linux := eq .chezmoi.os "linux" -}}
+{{- $is_macos := eq .chezmoi.os "darwin" -}}
 {{/* boolean feature tags */}}
 {{- $ephemeral := promptBoolOnce . "ephemeral" "Is this machine temporary (a disposable VM or cloud instance)?" false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $work := promptBoolOnce . "work" "Is this a work machine?" false -}}{{/* true if this machine is a work machine */}}
@@ -19,7 +21,7 @@
 {{- $existing := get . "features" | default dict -}}
 {{- $_ := set $features "flatpak" (promptBoolOnce $existing "flatpak" "Install Flatpak applications?" false) -}}
 {{- $supportedTools := list "uosc" -}}
-{{- if eq .chezmoi.os "linux" -}}
+{{- if $is_linux -}}
 {{- $supportedTools = append $supportedTools "sptlrx" -}}
 {{- if and $personal (not $ephemeral) -}}
 {{- $supportedTools = append $supportedTools "joplin" -}}
@@ -61,6 +63,9 @@ lessInteractive = true
 progress = true
 
 [data]
+home = {{ .chezmoi.homeDir | quote }}
+is_linux = {{ $is_linux }}
+is_macos = {{ $is_macos }}
 ephemeral = {{ $ephemeral }}
 work = {{ $work }}
 headless = {{ $headless }}

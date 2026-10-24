@@ -1,12 +1,12 @@
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
 
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if .is_macos -}}
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 export PNPM_HOME="$HOME/Library/pnpm"
-export DYLD_LIBRARY_PATH=/opt/homebrew/lib
-export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+# the following line breaks pinentry-mac, i don't know why it ended up in my config
+# export DYLD_LIBRARY_PATH=/opt/homebrew/lib
 
 case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
@@ -26,6 +26,17 @@ fpath=(
 # This won't be added again if you remove it.
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
-{{ else -}}
+{{ end -}}
+{{ if and .personal .is_macos -}}
+export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+{{- else if and .personal .is_linux -}}
 export SSH_AUTH_SOCK="$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock"
+{{- else -}}
+
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval `ssh-agent`
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+
 {{ end -}}

@@ -23,7 +23,7 @@
 #: placement_strategy to prevent the rounded corners from clipping
 #: text. Or use titlebar-and-corners.
 
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if .is_macos -}}
 font_size 18.0
 focus_follows_mouse yes
 enable_audio_bell no

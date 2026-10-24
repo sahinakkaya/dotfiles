@@ -3,7 +3,7 @@
 # ---------
 
 
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if .is_macos -}}
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
 fi

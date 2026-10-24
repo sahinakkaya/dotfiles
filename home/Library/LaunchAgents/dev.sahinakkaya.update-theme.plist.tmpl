@@ -10,7 +10,7 @@
   <array>
     <string>/opt/homebrew/bin/dark-notify</string>
     <string>-c</string>
-    <string>/Users/sahin/.local/bin/update-theme</string>
+    <string>{{ joinPath .home ".local/bin/update-theme" | html }}</string>
   </array>
 
   <key>RunAtLoad</key>
