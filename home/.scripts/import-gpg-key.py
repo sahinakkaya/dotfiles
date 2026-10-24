@@ -78,7 +78,8 @@ if __name__ == '__main__':
     except subprocess.CalledProcessError as exc:
         print(f'Key import failed at {exc.cmd[0]} {exc.cmd[1]} (exit {exc.returncode}). Check connectivity, credentials and two-factor settings if login failed.', file=sys.stderr)
         sys.exit(1)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        print(e)
         print('Key import requires bw and gpg on PATH.', file=sys.stderr)
         sys.exit(1)
     except OSError:

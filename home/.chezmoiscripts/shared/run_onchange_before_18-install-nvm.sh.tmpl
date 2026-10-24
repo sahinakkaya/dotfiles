@@ -1,4 +1,4 @@
-{{ if and (dig "features" "node" false .) (not .headless) (not .ephemeral) (not .work) -}}
+{{ if or .personalSecrets (and (dig "features" "node" false .) (not .headless) (not .ephemeral) (not .work)) -}}
 #!/bin/bash
 set -eo pipefail
 

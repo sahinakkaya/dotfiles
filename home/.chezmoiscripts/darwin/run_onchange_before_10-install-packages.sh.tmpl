@@ -29,6 +29,7 @@ sudo port select --set pip pip314
 {{ if not .headless -}}
 
 # Install missing Homebrew packages without upgrading existing installations.
+brew trust --formula jorgelbg/tap/pinentry-touchid
 brew bundle --no-upgrade --file=/dev/stdin <<'EOF'
 {{ range (.packages.homebrew_formulae | sortAlpha | uniq) -}}
 brew {{ . | quote }}

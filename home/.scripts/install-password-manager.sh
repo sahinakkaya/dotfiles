@@ -1,87 +1,38 @@
 #!/bin/sh
 set -eu
 
-run_as_root() {
-    if [ "$(id -u)" -eq 0 ]; then
-        "$@"
-    else
-        sudo "$@"
-    fi
-}
-
-case "$(uname -s)" in
-Darwin)
-    pinentry_available=false
-    if command -v pinentry-mac >/dev/null 2>&1 ||
-       [ -x /Applications/MacPorts/pinentry-mac.app/Contents/MacOS/pinentry-mac ]; then
-        pinentry_available=true
-    fi
-    ;;
-*)
-    pinentry_available=false
-    if command -v pinentry >/dev/null 2>&1; then
-        pinentry_available=true
-    fi
-    ;;
-esac
-
-if ! command -v pass >/dev/null 2>&1 ||
-   ! command -v gpg >/dev/null 2>&1 ||
-   ! command -v git >/dev/null 2>&1 ||
-   [ "$pinentry_available" != true ] ||
-   ! command -v jq >/dev/null 2>&1; then
-    case "$(uname -s)" in
-    Linux)
-        if command -v dnf >/dev/null 2>&1; then
-            run_as_root dnf install -y pass gnupg2 git pinentry jq
-        elif command -v apt-get >/dev/null 2>&1; then
-            run_as_root apt-get update
-            run_as_root apt-get install -y pass gnupg git pinentry-curses jq
-        else
-            echo "This bootstrap supports Fedora and Debian Linux." >&2
-            exit 1
-        fi
-        ;;
-    Darwin)
-        if ! command -v port >/dev/null 2>&1; then
-            echo "Install MacPorts first and add /opt/local/bin to PATH." >&2
-            exit 1
-        fi
-        sudo port install pass gnupg2 git pinentry-mac jq
-        ;;
-    *)
-        echo "Unsupported operating system." >&2
-        exit 1
-        ;;
-    esac
-fi
-
-if ! command -v python3 >/dev/null 2>&1; then
+# jq is used by login-bitwarden.sh to read configuration and CLI status.
+if ! command -v jq >/dev/null 2>&1; then
     case "$(uname -s)" in
         Linux)
-            if command -v dnf >/dev/null 2>&1; then
-                run_as_root dnf install -y python3
+            if [ "$(id -u)" -eq 0 ]; then
+                set --
             else
-                run_as_root apt-get update
-                run_as_root apt-get install -y python3
+                set -- sudo
+            fi
+            if command -v dnf >/dev/null 2>&1; then
+                "$@" dnf install -y jq
+            elif command -v apt-get >/dev/null 2>&1; then
+                "$@" apt-get update
+                "$@" apt-get install -y jq
+            else
+                echo "No supported package manager found for jq." >&2
+                exit 1
             fi
             ;;
-        Darwin)
-            sudo port install python313
-            sudo port select --set python3 python313
-            ;;
+        Darwin) brew install jq ;;
         *) echo "Unsupported operating system." >&2; exit 1 ;;
     esac
 fi
 
-if command -v bw >/dev/null 2>&1; then
-    exit 0
-fi
-
-# nvm is a Bash function; the chezmoi hook invokes this script with sh.
+# nvm is a Bash function; bootstrap invokes this script with sh.
 bash <<'BASH'
 set -eo pipefail
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+bw_available=false
+if command -v bw >/dev/null 2>&1; then
+    bw_available=true
+fi
 
 if [ ! -s "$NVM_DIR/nvm.sh" ]; then
     # curl is needed only when bootstrapping nvm.
@@ -132,6 +83,9 @@ if ! command -v bw >/dev/null 2>&1; then
     npm install -g @bitwarden/cli
 fi
 bw --version
+if [ "$bw_available" = true ]; then
+    exit 0
+fi
 
 # A symlink alone would still require Node to be on the caller's PATH.
 mkdir -p "$HOME/.local/bin"

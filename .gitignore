@@ -1,1 +1,3 @@
 staging/
+simulate-fresh-install.sh
+simulate-password-manager-bootstrap.sh

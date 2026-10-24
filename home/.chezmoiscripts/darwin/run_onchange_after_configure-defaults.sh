@@ -17,9 +17,8 @@ defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
 defaults write -g AppleShowAllExtensions -int 1
 
 
-# i am not sure which one of the following settings should be set
-# leaving it here to come back to it later
-# defaults write org.gpgtools.pinentry-mac UseKeychain -bool NO
+# pinentry-touchid owns the GnuPG Keychain item and guards access with Touch ID.
+# Its pinentry-mac fallback is used only for the one-time passphrase bootstrap.
 defaults write org.gpgtools.common DisableKeychain -bool yes
 
 # Enlarge the pointer when shaking the mouse to locate it (0 enables this).

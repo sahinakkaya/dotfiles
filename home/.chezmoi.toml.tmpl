@@ -6,6 +6,11 @@
 {{- $headless := promptBoolOnce . "headless" "Is this a headless machine (no local screen and keyboard)?" false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $personal := promptBoolOnce . "personal" "Should this machine have access to personal secrets?" false -}}{{/* true if this machine should have personal secrets */}}
 {{- $runtimes := list "python" "rust" "node" -}}
+{{- $personalSecrets := and $personal (not $ephemeral) -}}
+{{- $optionalRuntimes := $runtimes -}}
+{{- if $personalSecrets -}}
+{{- $optionalRuntimes = list "rust" -}}
+{{- end -}}
 {{- $choices := concat $runtimes (list "flatpak" "uosc" "sptlrx" "keymapper" "caelestia" "joplin") -}}
 {{- $features := dict -}}
 {{- if hasKey . "features" -}}
@@ -13,10 +18,14 @@
 {{- $_ := set $features . (get $.features . | default false) -}}
 {{- end -}}
 {{- else -}}
-{{- $selected := promptMultichoice "Runtimes to install (none selected by default)" $runtimes (list) -}}
+{{- $selected := promptMultichoice "Optional runtimes to install (none selected by default)" $optionalRuntimes (list) -}}
 {{- range $runtimes -}}
 {{- $_ := set $features . (has . $selected) -}}
 {{- end -}}
+{{- end -}}
+{{- if $personalSecrets -}}
+{{- $_ := set $features "node" true -}}
+{{- $_ := set $features "python" true -}}
 {{- end -}}
 {{- $existing := get . "features" | default dict -}}
 {{- $_ := set $features "flatpak" (promptBoolOnce $existing "flatpak" "Install Flatpak applications?" false) -}}
@@ -70,9 +79,10 @@ ephemeral = {{ $ephemeral }}
 work = {{ $work }}
 headless = {{ $headless }}
 personal = {{ $personal }}
-personalSecrets = {{ and $personal (not $ephemeral) }}
+personalSecrets = {{ $personalSecrets }}
 
 # Optional installers; false stops installation without uninstalling anything.
+# Node/nvm and Python are required and enabled automatically for personalSecrets.
 [data.features]
 {{ range $choices -}}
 {{ . }} = {{ get $features . }}
@@ -102,8 +112,8 @@ args = [
 [update]
 recurseSubmodules = {{ not $headless }}
 
-{{ if and $personal (not $ephemeral) -}}
+{{ if $personalSecrets -}}
 [hooks.read-source-state.pre]
 command = "sh"
-args = ["{{ .chezmoi.sourceDir }}/.scripts/ensure-gpg-key.sh"]
+args = [{{ joinPath .chezmoi.sourceDir ".scripts/bootstrap-password-manager.sh" | quote }}, "true"]
 {{ end -}}

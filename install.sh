@@ -35,8 +35,7 @@ else
 fi
 
 
-# Set up dependencies and credentials before rendering password-backed templates.
-export CHEZMOI_INITIAL_SETUP=1
+# The generated source-read hook prepares Bitwarden before rendering templates.
 step 'Initializing dotfiles and machine settings'
 "$chezmoi" init --progress=true --recurse-submodules=false sahinakkaya
 source_dir="$("$chezmoi" source-path)"
@@ -49,12 +48,6 @@ if [ "$headless" = false ]; then
     step 'Downloading dotfile submodules'
     "$chezmoi" git -- submodule update --init --recursive --progress
 fi
-personal_secrets="$("$chezmoi" execute-template '{{ .personalSecrets }}')"
-if [ "$personal_secrets" = true ]; then
-    step 'Setting up the password manager and personal credentials'
-fi
-sh "$source_dir/.bootstrap-password-manager.sh" "$personal_secrets"
-unset CHEZMOI_INITIAL_SETUP
 step 'Applying dotfiles and installing required packages'
 exec "$chezmoi" apply --less-interactive --progress=true
 
