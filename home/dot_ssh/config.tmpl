@@ -9,6 +9,11 @@ Host fedora
   HostName localhost
   Port 3333
   User root
+{{- else if eq .chezmoi.os "linux" -}}
+Host arch
+  Hostname 192.168.1.103
+  RequestTTY yes
+  RemoteCommand ZDOTDIR=/home/sahin/.config/zsh zsh
 {{ end  }}
 
 
@@ -18,17 +23,23 @@ Host *
   TCPKeepAlive no
   AddKeysToAgent yes
 
-Host arch
-  Hostname 192.168.1.103
-  RequestTTY yes
-  RemoteCommand ZDOTDIR=/home/sahin/.config/zsh zsh
+Host sahinakkaya
+  HostName sahinakkaya.dev
 
 Host sahinakkaya.dev
+  IdentityFile ~/.ssh/id_ed25519
   Port 2242
   User sahin
   ForwardAgent yes
   AddKeysToAgent yes
   UseKeychain yes
+
+Host home.ts.net
+  IdentityFile ~/.ssh/id_ed25519
+  ForwardAgent yes
+  AddKeysToAgent yes
+  UseKeychain yes
+
 
 Host git.sahinakkaya.dev
   IdentityFile ~/.ssh/id_ed25519

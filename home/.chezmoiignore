@@ -1,6 +1,7 @@
 .config/kitty/__pycache__
 .config/kitty/**/__pycache__
 .config/kitty/dirty
+example
 
 {{ if ne .chezmoi.os "darwin" }}
 .chezmoiscripts/darwin/**

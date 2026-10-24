@@ -1,0 +1,10 @@
+{{- if eq .chezmoi.os "darwin" -}}
+# macOS-specific content
+{{- else if eq .chezmoi.os "linux" -}}
+# Linux-specific content
+{{- else -}}
+# Content for every other operating system
+{{- end -}}
+
+# The current user's home directory:
+{{ .chezmoi.homeDir }}
