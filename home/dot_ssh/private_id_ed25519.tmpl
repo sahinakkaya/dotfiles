@@ -1,0 +1,7 @@
+{{- $key := joinPath .chezmoi.homeDir ".ssh/id_ed25519" -}}
+{{- if stat $key -}}
+{{ include $key }}
+{{- else if has .chezmoi.os (list "darwin" "linux") -}}
+{{- $prefix := ternary "macos" "fedora" (eq .chezmoi.os "darwin") -}}
+{{ (bitwarden "item" (printf "%s-ssh-key" $prefix)).sshKey.privateKey }}
+{{- end -}}

@@ -20,10 +20,10 @@ defaults write -g AppleShowAllExtensions -int 1
 # defaults write -g CGDisableCursorLocationMagnification -int 0
 
 # Delay before a held key starts repeating; lower values start sooner.
-defaults write -g InitialKeyRepeat -int 10
+defaults write -g InitialKeyRepeat -int 12
 
 # Key repeat interval; lower values repeat faster.
-defaults write -g KeyRepeat -int 5
+defaults write -g KeyRepeat -int 2
 
 # Disable automatic capitalization.
 defaults write -g NSAutomaticCapitalizationEnabled -int 0

@@ -74,8 +74,6 @@ Library
 {{ end }}
 
 {{ if not .personalSecrets }}
-.ssh/id_rsa_secondary
-.ssh/id_rsa_secondary.pub
 .config/mpv/scripts/autosub.lua
 .local/bin/joplin
 .local/bin/joplin-secure

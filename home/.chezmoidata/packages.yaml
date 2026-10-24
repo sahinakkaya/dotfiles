@@ -80,8 +80,8 @@ packages:
     - python3
     - python3-pip
   macports_python:
-    - python313
-    - py313-pip
+    - python314
+    - py314-pip
   fedora_flatpak:
     - flatpak
   debian_flatpak:
