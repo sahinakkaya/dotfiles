@@ -5,7 +5,21 @@ set -eu
 config=$1
 remote=$(jq -er '.pass_git_remote | select(type == "string" and length > 0)' "$config")
 key_id=$(jq -er '.pass_gpg_id | select(type == "string" and length > 0)' "$config")
-pinentry_program=$(command -v pinentry)
+case "$(uname -s)" in
+Darwin)
+    pinentry_program=$(command -v pinentry-mac || true)
+    if [ -z "$pinentry_program" ] && [ -x /Applications/MacPorts/pinentry-mac.app/Contents/MacOS/pinentry-mac ]; then
+        pinentry_program=/Applications/MacPorts/pinentry-mac.app/Contents/MacOS/pinentry-mac
+    fi
+    ;;
+*)
+    pinentry_program=$(command -v pinentry || true)
+    ;;
+esac
+if [ -z "$pinentry_program" ]; then
+    echo "No suitable pinentry program is installed." >&2
+    exit 1
+fi
 gpg_home=${GNUPGHOME:-"$HOME/.gnupg"}
 agent_config="$gpg_home/gpg-agent.conf"
 

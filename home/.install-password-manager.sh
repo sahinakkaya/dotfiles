@@ -9,10 +9,26 @@ run_as_root() {
     fi
 }
 
+case "$(uname -s)" in
+Darwin)
+    pinentry_available=false
+    if command -v pinentry-mac >/dev/null 2>&1 ||
+       [ -x /Applications/MacPorts/pinentry-mac.app/Contents/MacOS/pinentry-mac ]; then
+        pinentry_available=true
+    fi
+    ;;
+*)
+    pinentry_available=false
+    if command -v pinentry >/dev/null 2>&1; then
+        pinentry_available=true
+    fi
+    ;;
+esac
+
 if ! command -v pass >/dev/null 2>&1 ||
    ! command -v gpg >/dev/null 2>&1 ||
    ! command -v git >/dev/null 2>&1 ||
-   ! command -v pinentry >/dev/null 2>&1 ||
+   [ "$pinentry_available" != true ] ||
    ! command -v jq >/dev/null 2>&1; then
     case "$(uname -s)" in
     Linux)
@@ -31,7 +47,7 @@ if ! command -v pass >/dev/null 2>&1 ||
             echo "Install MacPorts first and add /opt/local/bin to PATH." >&2
             exit 1
         fi
-        sudo port install pass gnupg2 git pinentry jq
+        sudo port install pass gnupg2 git pinentry-mac jq
         ;;
     *)
         echo "Unsupported operating system." >&2
