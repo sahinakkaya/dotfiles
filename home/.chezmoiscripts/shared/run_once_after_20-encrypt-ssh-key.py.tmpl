@@ -1,5 +1,4 @@
 {{- if and (has .chezmoi.os (list "darwin" "linux")) .personalSecrets -}}
-{{- $prefix := ternary "macos" "fedora" (eq .chezmoi.os "darwin") -}}
 {{ if eq .chezmoi.os "darwin" -}}
 #!/opt/local/bin/python3
 {{ else -}}
@@ -7,7 +6,6 @@
 {{ end -}}
 import base64
 import os
-import subprocess
 import tempfile
 from pathlib import Path
 
@@ -21,10 +19,10 @@ if not key_path.is_file():
     raise RuntimeError(f"SSH key does not exist at {key_path}")
 
 
-# The private-key template has written the unencrypted key. Only the
-# passphrase is retrieved here, after confirming encryption is required.
+# The private-key template has written the unencrypted key. The preceding
+# private passphrase template supplies this short-lived, base64-encoded file.
 private_key = key_path.read_bytes()
-passphrase_item = "{{ printf "%s-ssh-passphrase" $prefix }}"
+passphrase_path = key_path.with_name(f".{key_path.name}.passphrase")
 
 
 try:
@@ -36,14 +34,13 @@ except TypeError as exc:
         raise SystemExit(0)
     raise
 
-# Pass the template as an argument, rather than stdin, so `bw unlock` keeps
-# access to the terminal for its interactive password prompt.
-passphrase_template = (
-    '{{ "{{" }} (bitwarden "item" "' + passphrase_item + '").login.password | b64enc {{ "}}" }}'
-)
-passphrase = base64.b64decode(subprocess.check_output(
-    ["chezmoi", "execute-template", passphrase_template]
-).strip())
+try:
+    passphrase = base64.b64decode(passphrase_path.read_bytes())
+finally:
+    try:
+        passphrase_path.unlink()
+    except FileNotFoundError:
+        pass
 if not passphrase:
     raise RuntimeError("SSH key passphrase is empty")
 
