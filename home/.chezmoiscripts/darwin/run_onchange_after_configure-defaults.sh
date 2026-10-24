@@ -16,6 +16,7 @@ defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
 # Show all filename extensions in Finder.
 defaults write -g AppleShowAllExtensions -int 1
 
+
 # Enlarge the pointer when shaking the mouse to locate it (0 enables this).
 # defaults write -g CGDisableCursorLocationMagnification -int 0
 
@@ -46,8 +47,10 @@ defaults write -g NSAutomaticSpellingCorrectionEnabled -int 0
 # Disable additional automatic text correction; support varies by app/version.
 defaults write -g NSAutomaticTextCorrectionEnabled -int 0
 
-# Disable some automatic window animations in supporting apps. idk what this does, let see if i notice a change
-defaults write -g NSAutomaticWindowAnimationsEnabled -int 0
+# Disable some automatic window animations in supporting apps.
+# idk what this does, let see if i notice a change
+# yeap, i notice change. it should be left as enabled (which is default i guess)
+defaults write -g NSAutomaticWindowAnimationsEnabled -int 1
 
 # Default to local storage instead of iCloud for new documents in supporting apps.
 defaults write -g NSDocumentSaveNewDocumentsToCloud -int 0
