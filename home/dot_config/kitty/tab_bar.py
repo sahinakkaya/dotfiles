@@ -1,5 +1,13 @@
 import math
-from kitty.fast_data_types import Screen, add_timer, get_boss, get_options
+from kitty.fast_data_types import (
+    Screen,
+    SingleKey,
+    add_timer,
+    get_boss,
+    get_options,
+    remove_timer,
+    wakeup_main_loop,
+)
 from kitty.tab_bar import (
     DrawData,
     ExtraData,
@@ -7,6 +15,7 @@ from kitty.tab_bar import (
     as_rgb,
     draw_tab_with_powerline,
 )
+from kitty.types import human_repr_of_single_key
 
 opts = get_options()
 
@@ -19,13 +28,36 @@ layout_icon = ""
 
 active_tab_layout_name = ""
 active_tab_num_windows = 1
-prefix_refresh_timer_pending = False
+
+
+def prefix_status() -> str:
+    modes = get_boss().mappings.keyboard_mode_stack
+    for index, mode in enumerate(modes):
+        if mode.name == "kitty_prefix":
+            keys = [
+                human_repr_of_single_key(
+                    SingleKey(event.mods, False, event.key), opts.kitty_mod
+                )
+                for nested_mode in modes[index + 1 :]
+                for event in (nested_mode.sequence_keys or ())
+            ]
+            return " + ".join(["PREFIX", *keys])
+    return ""
 
 
 def redraw_tab_bar(_: int | None) -> None:
-    tm = get_boss().active_tab_manager
-    if tm is not None:
+    global timer_id
+    boss = get_boss()
+    # The mode is global: refresh even a window that lost focus meanwhile.
+    for tm in boss.os_window_map.values():
         tm.mark_tab_bar_dirty()
+    # Timer callbacks can run after the render pass. Dirty flags alone do not
+    # schedule another pass when the terminal has no output or cursor activity.
+    wakeup_main_loop()
+    if not prefix_status():
+        if timer_id is not None:
+            remove_timer(timer_id)
+            timer_id = None
 
 
 layout_symbols = {
@@ -67,9 +99,9 @@ def _draw_right_status(screen: Screen, is_last: bool) -> int:
     if not is_last:
         return screen.cursor.x
 
-    prefix_is_active = get_boss().mappings.current_keyboard_mode_name == "kitty_prefix"
-    if prefix_is_active and timer_id is None:
-        timer_id = add_timer(redraw_tab_bar, 0.5, True)
+    prefix_text = prefix_status()
+    if prefix_text and timer_id is None:
+        timer_id = add_timer(redraw_tab_bar, 0.05, True)
     cells = [
         # layout name
         (
@@ -88,8 +120,8 @@ def _draw_right_status(screen: Screen, is_last: bool) -> int:
             ),
         ),
     ]
-    if prefix_is_active:
-        cells.append((screen.cursor.bg, status_accent, "  PREFIX "))
+    if prefix_text:
+        cells.append((screen.cursor.bg, status_accent, f"  {prefix_text} "))
 
     # calculate leading spaces to separate tabs from right status
     right_status_length = 0
