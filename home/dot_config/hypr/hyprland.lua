@@ -3,7 +3,7 @@
 
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
-hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x1107", scale = 2.0 })
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x1107", scale = 1.5 })
 
 hl.env("XCURSOR_SIZE", "24")
 
@@ -24,7 +24,7 @@ hl.config({
             active_border = { colors = { "rgba(F9DEA9ee)", "rgba(F2C294ee)" }, angle = 45 },
             inactive_border = "rgba(595959aa)",
         },
-        layout = "master",
+        layout = "scrolling",
         allow_tearing = false,
     },
 })
@@ -65,8 +65,25 @@ hl.config({
 })
 
 hl.config({
+    scrolling = {
+        fullscreen_on_one_column = false,
+        column_width = 0.5,
+        focus_fit_method = 0,
+        follow_focus = true,
+        explicit_column_widths = "0.50, 0.60, 0.70, 0.80, 0.90, 1.00",
+        wrap_focus = false,
+        wrap_swapcol = false,
+        direction = "right",
+    },
+})
+
+hl.config({
     gestures = {
         workspace_swipe_cancel_ratio = 0.20,
+        scrolling = {
+            move_snap_to_grid = true,
+            move_snap_cursor = true,
+        },
     },
 })
 
@@ -79,7 +96,7 @@ hl.config({
 hl.config({
     binds = {
         workspace_back_and_forth = true,
-        allow_workspace_cycles = true,
+        allow_workspace_cycles = false,
     },
 })
 
@@ -87,16 +104,17 @@ hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } 
 hl.curve("overshot", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.1 } } })
 hl.curve("easeOutBack", { type = "bezier", points = { { 0.075, 0.82 }, { 0.165, 1 } } })
 hl.curve("easeInBack", { type = "bezier", points = { { 0.075, 0.82 }, { 0.165, 1 } } })
-hl.animation({ leaf = "windows", enabled = true, speed = 5, bezier = "default" })
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 5, bezier = "default", style = "slide" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 4, bezier = "easeInBack", style = "slide" })
+hl.animation({ leaf = "windows", enabled = true, speed = 5, bezier = "default", style="slidevert" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 5, bezier = "default", style = "slidevert" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 4, bezier = "easeInBack", style = "slidevert" })
 hl.animation({ leaf = "border", enabled = true, speed = 10, bezier = "overshot" })
 hl.animation({ leaf = "borderangle", enabled = true, speed = 10, bezier = "default", style = "once" })
 hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "default" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 4, bezier = "default", style = "slide" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 4, bezier = "default", style = "slidevert" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "easeOutBack", style = "slidefadevert" })
 
-hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
+hl.gesture({ fingers = 4, direction = "vertical", action = "workspace" })
+hl.gesture({ fingers = 4, direction = "horizontal", action = "scroll_move" })
 
 hl.device({ name = "epic-mouse-v1", sensitivity = -0.5 })
 
@@ -124,6 +142,87 @@ hl.window_rule({
 
 -- Preserve duplicate bindings: some keys intentionally perform multiple actions.
 
+local function swap_column_to_edge(direction)
+    local workspace = hl.get_active_special_workspace() or hl.get_active_workspace()
+    if not workspace then
+        return
+    end
+
+    -- Scrolling has no direct first/last swap. With wrap_swapcol disabled,
+    -- extra swaps become no-ops after the column reaches the requested edge.
+    local windows = hl.get_windows({ workspace = workspace }) or {}
+    for _ = 1, #windows do
+        hl.dispatch(hl.dsp.layout("swapcol " .. direction))
+    end
+end
+
+local function focus_column_at_edge(direction)
+    local workspace = hl.get_active_special_workspace() or hl.get_active_workspace()
+    if not workspace then
+        return
+    end
+
+    local windows = hl.get_windows({ workspace = workspace }) or {}
+    for _ = 1, #windows do
+        hl.dispatch(hl.dsp.layout("focus " .. direction))
+    end
+end
+
+local function adjacent_workspace(step)
+    local active = hl.get_active_workspace()
+    if not active then
+        return nil
+    end
+
+    local workspaces = {}
+    for _, workspace in pairs(hl.get_workspaces() or {}) do
+        if workspace.id and workspace.id > 0 then
+            table.insert(workspaces, workspace)
+        end
+    end
+    table.sort(workspaces, function(a, b) return a.id < b.id end)
+
+    for index, workspace in ipairs(workspaces) do
+        if workspace.id == active.id then
+            return workspaces[index + step]
+        end
+    end
+
+    return nil
+end
+
+local function focus_adjacent_workspace(step)
+    local target = adjacent_workspace(step)
+    if target then
+        hl.dispatch(hl.dsp.focus({ workspace = tostring(target.id) }))
+    end
+end
+
+local function move_to_adjacent_workspace(step, follow)
+    local target = adjacent_workspace(step)
+    if target then
+        hl.dispatch(hl.dsp.window.move({ workspace = tostring(target.id), follow = follow }))
+    end
+end
+
+local function balance_columns()
+    local window = hl.get_active_window()
+    local monitor = hl.get_active_monitor()
+    if not window or not monitor or window.floating then
+        return
+    end
+
+    local window_width = window.size and (window.size.x or window.size[1])
+    local monitor_width = monitor.width or (monitor.size and (monitor.size.x or monitor.size[1]))
+    if not window_width or not monitor_width or monitor_width == 0 then
+        return
+    end
+
+    local logical_monitor_width = monitor_width / (monitor.scale or 1)
+    local width = math.max(0.1, math.min(1.0, window_width / logical_monitor_width))
+    hl.dispatch(hl.dsp.layout("colresize all " .. tostring(width)))
+end
+
 hl.bind("SUPER + tab", hl.dsp.focus({ workspace = "previous" }))
 hl.bind("SUPER + return", hl.dsp.exec_cmd("kitty --single-instance"))
 hl.bind("SUPER + q", hl.dsp.window.close())
@@ -138,29 +237,29 @@ hl.bind("SUPER + o", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + y", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + v", hl.dsp.exec_cmd("rofi-tailscale --toggle"))
 hl.bind("SUPER + y", hl.dsp.window.pin())
-hl.bind("SUPER + t", hl.dsp.group.toggle())
-hl.bind("SUPER + s", hl.dsp.layout("togglesplit"))
+hl.bind("SUPER + CONTROL + t", hl.dsp.group.toggle())
+hl.bind("SUPER + t", hl.dsp.layout("center"))
+hl.bind("SUPER + SHIFT + t", hl.dsp.layout("fit_into_view"))
+hl.bind("SUPER + b", balance_columns)
 hl.bind("SUPER + m", hl.dsp.window.fullscreen({ mode = "maximized" }))
-hl.bind("SUPER + e", hl.dsp.layout("swapwithmaster master"))
-hl.bind("SUPER + space", hl.dsp.layout("orientationnext"))
 hl.bind("SUPER + SHIFT + m", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind("SUPER + SHIFT + n", hl.dsp.exec_cmd("swaync-client -t -sw"))
-hl.bind("SUPER + h", hl.dsp.focus({ direction = "left" }))
-hl.bind("SUPER + l", hl.dsp.focus({ direction = "right" }))
-hl.bind("SUPER + k", hl.dsp.focus({ direction = "up" }))
-hl.bind("SUPER + j", hl.dsp.focus({ direction = "down" }))
+hl.bind("SUPER + h", hl.dsp.layout("focus l"))
+hl.bind("SUPER + l", hl.dsp.layout("focus r"))
+hl.bind("SUPER + k", function() focus_adjacent_workspace(-1) end)
+hl.bind("SUPER + j", function() focus_adjacent_workspace(1) end)
 hl.bind("SUPER + SHIFT + h", hl.dsp.window.swap({ direction = "left" }))
 hl.bind("SUPER + SHIFT + l", hl.dsp.window.swap({ direction = "right" }))
-hl.bind("SUPER + SHIFT + k", hl.dsp.window.swap({ direction = "up" }))
-hl.bind("SUPER + SHIFT + j", hl.dsp.window.swap({ direction = "down" }))
+hl.bind("SUPER + SHIFT + k", function() move_to_adjacent_workspace(-1, true) end)
+hl.bind("SUPER + SHIFT + j", function() move_to_adjacent_workspace(1, true) end)
 hl.bind("SUPER + left", hl.dsp.window.move({ direction = "left" }))
 hl.bind("SUPER + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind("SUPER + down", hl.dsp.window.move({ direction = "down" }))
 hl.bind("SUPER + up", hl.dsp.window.move({ direction = "up" }))
-hl.bind("SUPER + CONTROL + h", hl.dsp.window.resize({ x = -20, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + CONTROL + l", hl.dsp.window.resize({ x = 20, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + CONTROL + k", hl.dsp.window.resize({ x = 0, y = -20, relative = true }), { repeating = true })
-hl.bind("SUPER + CONTROL + j", hl.dsp.window.resize({ x = 0, y = 20, relative = true }), { repeating = true })
+hl.bind("SUPER + CONTROL + h", hl.dsp.layout("colresize -conf"), { repeating = true })
+hl.bind("SUPER + CONTROL + l", hl.dsp.layout("colresize +conf"), { repeating = true })
+hl.bind("SUPER + CONTROL + k", function() move_to_adjacent_workspace(-1, false) end)
+hl.bind("SUPER + CONTROL + j", function() move_to_adjacent_workspace(1, false) end)
 hl.bind("SUPER + p", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind("SUPER + n", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind("SUPER + a", hl.dsp.focus({ workspace = "1" }))
@@ -177,8 +276,22 @@ hl.bind("SUPER + 6", hl.dsp.focus({ workspace = "6" }))
 hl.bind("SUPER + 7", hl.dsp.focus({ workspace = "7" }))
 hl.bind("SUPER + 8", hl.dsp.focus({ workspace = "8" }))
 hl.bind("SUPER + 9", hl.dsp.focus({ workspace = "9" }))
-hl.bind("SUPER + comma", hl.dsp.window.swap({ prev = true }))
-hl.bind("SUPER + period", hl.dsp.window.swap({ next = true }))
+hl.bind("SUPER + CONTROL + 1", hl.dsp.window.move({ workspace = "1", follow = false }))
+hl.bind("SUPER + CONTROL + 2", hl.dsp.window.move({ workspace = "2", follow = false }))
+hl.bind("SUPER + CONTROL + 3", hl.dsp.window.move({ workspace = "3", follow = false }))
+hl.bind("SUPER + CONTROL + 4", hl.dsp.window.move({ workspace = "4", follow = false }))
+hl.bind("SUPER + CONTROL + 5", hl.dsp.window.move({ workspace = "5", follow = false }))
+hl.bind("SUPER + CONTROL + 6", hl.dsp.window.move({ workspace = "6", follow = false }))
+hl.bind("SUPER + CONTROL + 7", hl.dsp.window.move({ workspace = "7", follow = false }))
+hl.bind("SUPER + CONTROL + 8", hl.dsp.window.move({ workspace = "8", follow = false }))
+hl.bind("SUPER + CONTROL + 9", hl.dsp.window.move({ workspace = "9", follow = false }))
+hl.bind("SUPER + CONTROL + 0", hl.dsp.window.move({ workspace = "10", follow = false }))
+hl.bind("SUPER + comma", hl.dsp.layout("swapcol l"))
+hl.bind("SUPER + period", hl.dsp.layout("swapcol r"))
+hl.bind("SUPER + SHIFT + comma", function() swap_column_to_edge("l") end)
+hl.bind("SUPER + SHIFT + period", function() swap_column_to_edge("r") end)
+hl.bind("SUPER + minus", function() focus_column_at_edge("l") end)
+hl.bind("SUPER + equal", function() focus_column_at_edge("r") end)
 hl.bind("SUPER + SHIFT + a", hl.dsp.window.move({ workspace = "1" }))
 hl.bind("SUPER + SHIFT + s", hl.dsp.window.move({ workspace = "2" }))
 hl.bind("SUPER + SHIFT + d", hl.dsp.window.move({ workspace = "3" }))
@@ -208,11 +321,6 @@ hl.bind("F4", hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | swappy -f -"), { locked 
 hl.bind("SUPER + x", hl.dsp.exec_cmd("grim - | swappy -f -"), { locked = true, repeating = true })
 hl.bind("switch:off:Apple SMC power/lid events", hl.dsp.exec_cmd("$HOME/.local/bin/hypr-lid open"), { locked = true })
 hl.bind("switch:on:Apple SMC power/lid events", hl.dsp.exec_cmd("$HOME/.local/bin/hypr-lid close"), { locked = true })
-hl.bind("SUPER + j", hl.dsp.group.prev())
-hl.bind("SUPER + k", hl.dsp.group.next())
-hl.bind("SUPER + h", hl.dsp.group.prev())
-hl.bind("SUPER + l", hl.dsp.group.next())
-
 hl.on("hyprland.start", function()
     hl.exec_cmd("ashell")
     hl.exec_cmd("$HOME/.config/glava/glava")
