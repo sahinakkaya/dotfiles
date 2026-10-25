@@ -10,6 +10,7 @@ from kitty.key_encoding import KeyEvent, EventType
 from kitty.options.utils import KeyboardMode
 from kitty.types import WindowGeometry, human_repr_of_single_key
 from keybindings import guide_metadata, load_bindings
+from which_key_pending import PendingGuide
 
 
 class GuideLayout:
@@ -120,7 +121,7 @@ def normalize_repeat_permissions(boss, previous_peers):
                     passwords[password] = ('action',)
 
 
-def show_guide(boss, target_window_id):
+def show_guide(boss, target_window_id, initial_state=None, display_delay=None):
     window = boss.window_id_map.get(target_window_id)
     if window is None:
         return
@@ -136,6 +137,8 @@ def show_guide(boss, target_window_id):
     opts = get_options()
     config = load_bindings()
     show_delay = config['settings'].get('show_delay', 0.35)
+    if display_delay is not None:
+        show_delay = display_delay
     metadata, prefixes = guide_metadata(config, 'kitty_prefix', opts.kitty_mod)
     entries = []
     for definitions in mode.keymap.values():
@@ -192,6 +195,7 @@ def show_guide(boss, target_window_id):
                 'prefixes': prefixes,
                 'target_window_id': target_window_id,
                 'show_delay': show_delay,
+                'initial_state': initial_state,
             }), window=window, custom_callback=finish,
             action_on_removal=cleanup,
         )
@@ -201,7 +205,7 @@ def show_guide(boss, target_window_id):
             for mode in saved_modes:
                 mappings._push_keyboard_mode(mode)
         else:
-            guide_layout = GuideLayout(original_layout, overlay, tab, visibility, visible=show_delay == 0)
+            guide_layout = GuideLayout(original_layout, overlay, tab, visibility, visible=False)
             tab.current_layout = guide_layout
             tab.relayout()
     except Exception:
@@ -213,6 +217,17 @@ def show_guide(boss, target_window_id):
 
 @result_handler(no_ui=True)
 def handle_result(args, data, target_window_id, boss):
+    previous = getattr(boss, '_which_key_pending', None)
+    if previous is not None:
+        previous.stop()
     refresh_prefix_bindings(boss)
     boss.mappings.push_keyboard_mode('kitty_prefix')
-    show_guide(boss, target_window_id)
+    config = load_bindings()
+    delay = config['settings'].get('show_delay', 0.35)
+    if delay > 0:
+        opts = get_options()
+        metadata, _ = guide_metadata(config, 'kitty_prefix', opts.kitty_mod)
+        boss._which_key_pending = PendingGuide(boss, target_window_id, delay,
+                                               metadata, opts.kitty_mod, show_guide)
+    else:
+        show_guide(boss, target_window_id)

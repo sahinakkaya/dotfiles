@@ -109,13 +109,21 @@ after changing commands or keys, or reopen the guide to refresh prefix mappings.
 ## Guide and command execution
 
 `which_key.py` reads the live Kitty mappings and attaches descriptions from TOML.
-The UI in `which_key_ui.py` collects a key sequence; after the guide closes, it
-replays that sequence through Kitty's native mapping dispatcher. Ordinary
-non-exiting commands reopen the guide at its root; one-shot commands exit the
-prefix mode.
+With a positive `show_delay`, `which_key_pending.py` initially lets Kitty's native
+mapping dispatcher execute shortcuts, without starting a UI process. A completed
+one-shot shortcut cancels the pending display timer. Temporary dispatch handling
+preserves submenu repeat state and supports Backspace/cancellation; it is removed
+when the session ends or hands over to the UI.
 
-Bindings with a positive `repeat_timeout` instead execute while the guide stays
-open. The custom kitten receives an inherited remote-control file descriptor
+If the delay expires, the UI in `which_key_ui.py` opens with the current submenu
+and any remaining repeat deadline. It collects subsequent keys, then replays the
+complete sequence through Kitty's native dispatcher after closing. Already-run
+actions are not replayed. Once the UI is open, ordinary non-exiting commands
+reopen it at the root; one-shot commands exit the prefix mode.
+
+Bindings with a positive `repeat_timeout` execute immediately in both phases.
+Before the UI opens, native sequence state is retained so the next press remains
+in the same submenu. Once open, the custom kitten receives an inherited remote-control file descriptor
 restricted to the `action` command. It invokes `repeat_action.py` against the
 original pane, preserving the guide's input mode even if the command includes
 `pop_keyboard_mode`. No global remote-control listener is needed. Keeping the
@@ -131,13 +139,13 @@ pane dimensions. Its bottom panel uses snapshots of visible pane text as a
 backdrop. The backdrop is static while the guide is open. Closing the guide
 restores the layout before executing commands against the original pane.
 
-With a positive `show_delay`, the guide starts as an active but invisible input
-window. The layout preserves the original panes and borders while keys are
-handled. A quick completed shortcut closes the guide without displaying it.
-After the delay, `reveal_guide.py` reveals the current submenu through the same
-scoped action channel used for repeats. Display timers are cancelled on exit.
-The delay is measured from UI initialization; it is separate from repeat and
-mapping timeouts. Timed repeat sessions can execute while the UI is hidden.
+When needed, the guide starts as an invisible input window while it initializes.
+The layout preserves the original panes and borders. The kitten declares a ready
+handshake so Kitty buffers keys arriving during process startup. Once its first
+frame is written, `reveal_guide.py` reveals it through the scoped action channel.
+Input readiness and visual visibility are independent. `show_delay` is measured
+from prefix activation, independently of repeat and mapping timeouts; setting it
+to zero starts the guide immediately. Display timers are cancelled on exit.
 
 Keys that begin longer sequences are discovered from the live mappings; the
 `[prefixes]` table supplies their names. Submenus use a `+` marker, italics, and

@@ -4,6 +4,7 @@ import json
 import os
 import shlex
 import sys
+from time import monotonic
 
 from kittens.tui.handler import Handler, kitten_ui, result_handler
 from kittens.tui.loop import Loop
@@ -69,13 +70,18 @@ def choices(entries, depth, prefixes=None):
 
 
 class Guide(Handler):
+    # Kitty buffers keys during startup and releases them after the TUI has
+    # initialized. This handshake is separate from the visual display delay.
+    overlay_ready_report_needed = True
+
     def __init__(self, entries, background=(), prefixes=None, run_repeat=None,
-                 show_delay=0, show_overlay=None):
+                 show_delay=0, show_overlay=None, initial_state=None):
         self.entries = entries
         self.background = background
         self.prefixes = prefixes or {}
-        self.path = []
-        self.events = []
+        initial_state = initial_state or {}
+        self.path = list(initial_state.get('path', []))
+        self.events = list(initial_state.get('events', []))
         self.result = None
         self.page = 0
         self.run_repeat = run_repeat
@@ -85,6 +91,9 @@ class Guide(Handler):
         self.show_delay = show_delay
         self.show_overlay = show_overlay
         self.show_timer = None
+        self.reveal_when_written = False
+        self.initial_repeat_deadline = initial_state.get('repeat_deadline', 0)
+        self.initial_repeat_timeout = initial_state.get('repeat_timeout', 0)
 
     def cancel_repeat(self):
         if self.repeat_timer is not None:
@@ -94,6 +103,7 @@ class Guide(Handler):
 
     def finalize(self):
         self.cancel_repeat()
+        self.reveal_when_written = False
         if self.show_timer is not None:
             self.show_timer.cancel()
             self.show_timer = None
@@ -108,9 +118,25 @@ class Guide(Handler):
                 if entry['keys'][:len(self.path)] == self.path]
 
     def initialize(self):
+        if self.initial_repeat_deadline:
+            remaining = self.initial_repeat_deadline - monotonic()
+            if remaining <= 0:
+                self.quit_loop(0)
+                return
+            self.repeat_timeout = self.initial_repeat_timeout
+            self.repeat_timer = self.asyncio_loop.call_later(remaining, self.expire_repeat)
         self.draw()
         if self.show_delay > 0:
             self.show_timer = self.asyncio_loop.call_later(self.show_delay, self.reveal)
+        elif self.show_overlay is not None:
+            # When handed off from native dispatch, the delay has elapsed.
+            # Wait only for the first frame/ready notification to be written.
+            self.reveal_when_written = True
+
+    def on_writing_finished(self):
+        if self.reveal_when_written:
+            self.reveal_when_written = False
+            self.reveal()
 
     def reveal(self):
         self.show_timer = None
@@ -259,11 +285,12 @@ def main(args):
 
     guide = Guide(data['entries'], data['background'], data.get('prefixes'), run_repeat,
                   show_delay=data.get('show_delay', 0),
-                  show_overlay=lambda: remote_action('kitten reveal_guide.py', os.environ['KITTY_WINDOW_ID']))
+                  show_overlay=lambda: remote_action('kitten reveal_guide.py', os.environ['KITTY_WINDOW_ID']),
+                  initial_state=data.get('initial_state'))
     Loop().loop(guide)
     return guide.result
 
 
-@result_handler()
+@result_handler(has_ready_notification=True)
 def handle_result(args, data, target_window_id, boss):
     pass
