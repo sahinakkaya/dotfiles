@@ -1,0 +1,1264 @@
+# Source of truth for Kitty mappings and the prefix guide.
+# See KEYBINDINGS.md for the format. Reload Kitty after editing.
+version = 1
+
+[settings]
+kitty_mod = "alt+shift+cmd+ctrl"
+map_timeout = 0
+show_delay = 0.35
+clear_all_shortcuts = true
+
+[aliases]
+kitty_scrollback_nvim = "kitten $HOME/.local/share/nvim/lazy/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py"
+launch_tab = "launch --type=tab --cwd=current"
+
+[[modes]]
+name = "kitty_prefix"
+key = "f18"
+timeout = 0
+
+[prefixes]
+b = "Background opacity"
+f = "Font"
+t = "Tabs"
+g = "Extras"
+"g>s" = "Scrollback"
+"g>w" = "Create panes"
+";" = "Kitty commands"
+";>c" = "Clipboard and selection"
+";>s" = "Scrollback and command output"
+";>s>o" = "Command output"
+";>w" = "Panes"
+";>w>f" = "Focus a pane"
+";>o" = "OS windows and application"
+";>o>m" = "macOS window controls"
+";>f" = "Fonts and colors"
+";>i" = "Insert files and paths"
+";>k" = "Configuration and documentation"
+";>x" = "Terminal clearing and mouse actions"
+";>c>b" = "Copy and paste buffers"
+";>s>p" = "Shell prompt position"
+";>w>c" = "Close panes"
+";>w>m" = "Move and detach panes"
+";>w>r" = "Resize panes"
+";>t" = "Tabs"
+";>l" = "Layouts"
+";>m" = "Markers"
+";>r" = "Sessions"
+";>d" = "Debugging"
+";>a" = "Advanced commands"
+";>x>m" = "Mouse pointer actions"
+i = "Copy text"
+o = "Open text"
+y = "Copy to clipboard"
+
+[[groups]]
+name = "Global"
+mode = ""
+
+[[groups.actions]]
+name = "Open prefix shortcut guide"
+bindings = [
+  { keys = ["f18"], action = "kitten which_key.py" },
+]
+
+[[groups.actions]]
+name = "Open editor in a new tab"
+bindings = [
+  { keys = ["f1"], action = "launch_tab ${EDITOR}" },
+]
+
+[[groups]]
+name = "Clipboard"
+mode = ""
+
+[[groups.actions]]
+name = "Copy selection or interrupt"
+bindings = [
+  { keys = ["ctrl+c"], action = "copy_and_clear_or_interrupt" },
+]
+
+[[groups.actions]]
+name = "Copy to clipboard"
+bindings = [
+  { keys = ["cmd+c"], action = "copy_to_clipboard" },
+]
+
+[[groups.actions]]
+name = "Paste from clipboard"
+bindings = [
+  { keys = ["cmd+v"], action = "paste_from_clipboard" },
+]
+
+[[groups]]
+name = "Pane navigation"
+mode = ""
+
+[[groups.actions]]
+name = "Focus pane or navigate in Vim"
+keys_label = "ctrl+hjkl"
+bindings = [
+  { keys = ["ctrl+h"], label = "Left", action = "kitten pass_keys.py neighboring_window left   ctrl+h" },
+  { keys = ["ctrl+j"], label = "Down", action = "kitten pass_keys.py neighboring_window bottom ctrl+j" },
+  { keys = ["ctrl+k"], label = "Up", action = "kitten pass_keys.py neighboring_window top    ctrl+k" },
+  { keys = ["ctrl+l"], label = "Right", action = "kitten pass_keys.py neighboring_window right  ctrl+l" },
+]
+
+[[groups]]
+name = "Tabs"
+mode = ""
+
+[[groups.actions]]
+name = "Return to previous tab"
+bindings = [
+  { keys = ["ctrl+s>'"], action = "goto_tab -1" },
+]
+
+[[groups]]
+name = "Prefix"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Close shortcut guide"
+bindings = [
+  { keys = ["escape", "f18"], action = "pop_keyboard_mode" },
+]
+
+[[groups.actions]]
+name = "Search all Kitty actions"
+bindings = [
+  { keys = ["/"], action = "combine : pop_keyboard_mode : command_palette" },
+]
+
+[[groups]]
+name = "Clipboard"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Paste from clipboard"
+bindings = [
+  { keys = ["v"], action = "combine : pop_keyboard_mode : paste_from_clipboard", show = false },
+]
+
+[[groups]]
+name = "Scrolling"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Scroll lines"
+bindings = [
+  { keys = ["g>s>j"], label = "Down", action = "scroll_line_down" },
+  { keys = ["g>s>k"], label = "Up", action = "scroll_line_up" },
+]
+
+[[groups.actions]]
+name = "Scroll pages"
+bindings = [
+  { keys = ["d", "page_down"], label = "Down", action = "scroll_page_down" },
+  { keys = ["u", "page_up"], label = "Up", action = "scroll_page_up" },
+]
+
+[[groups.actions]]
+name = "Jump to start or end of scrollback"
+bindings = [
+  { keys = ["home"], label = "Start", action = "scroll_home" },
+  { keys = ["end"], label = "End", action = "scroll_end" },
+]
+
+[[groups.actions]]
+name = "Jump between shell prompts"
+bindings = [
+  { keys = ["g>s>z"], label = "Previous", action = "scroll_to_prompt -1" },
+  { keys = ["g>s>x"], label = "Next", action = "scroll_to_prompt 1" },
+]
+
+[[groups.actions]]
+name = "Open scrollback in Neovim"
+bindings = [
+  { keys = ["g>s>h"], action = "combine : pop_keyboard_mode : kitty_scrollback_nvim" },
+]
+
+[[groups.actions]]
+name = "Open last command output in Neovim"
+bindings = [
+  { keys = ["g>s>g"], action = "combine : pop_keyboard_mode : kitty_scrollback_nvim --config ksb_builtin_last_cmd_output" },
+]
+
+[[groups]]
+name = "Panes"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Split current pane"
+bindings = [
+  { keys = ["c"], label = "Side by side", action = "combine : pop_keyboard_mode : launch --cwd=current --location=vsplit" },
+  { keys = ["shift+c"], label = "Above and below", action = "combine : pop_keyboard_mode : launch --cwd=current --location=hsplit" },
+]
+
+[[groups.actions]]
+name = "Create a pane"
+bindings = [
+  { keys = ["g>w>b"], label = "Next to current", action = "combine : pop_keyboard_mode : launch --location=neighbor" },
+  { keys = ["g>w>f"], label = "First position", action = "combine : pop_keyboard_mode : launch --location=first" },
+]
+
+[[groups.actions]]
+name = "Close current pane"
+bindings = [
+  { keys = ["q"], action = "combine : pop_keyboard_mode : close_window", show=false },
+]
+
+[[groups.actions]]
+name = "Move current pane"
+bindings = [
+  { keys = ["."], label = "Forward", action = "move_window_forward" },
+  { keys = [","], label = "Backward", action = "move_window_backward" },
+]
+
+[[groups.actions]]
+name = "Move pane to first position"
+bindings = [
+  { keys = ["a"], action = "combine : pop_keyboard_mode : move_window_to_top" },
+]
+
+[[groups.actions]]
+name = "Resize pane or resize in Vim"
+keys_label = "ctrl+hjkl"
+bindings = [
+  { keys = ["ctrl+h"], label = "Left", action = "kitten pass_keys.py relative_resize left  3 alt+h" },
+  { keys = ["ctrl+j"], label = "Down", action = "kitten pass_keys.py relative_resize down  3 alt+j" },
+  { keys = ["ctrl+k"], label = "Up", action = "kitten pass_keys.py relative_resize up    3 alt+k" },
+  { keys = ["ctrl+l"], label = "Right", action = "kitten pass_keys.py relative_resize right 3 alt+l" },
+]
+
+[[groups.actions]]
+name = "Choose a pane to focus"
+bindings = [
+  { keys = ["s"], action = "combine : pop_keyboard_mode : focus_visible_window" },
+]
+
+[[groups.actions]]
+name = "Choose a pane to swap with"
+bindings = [
+  { keys = ["ctrl+s"], action = "combine : pop_keyboard_mode : swap_with_window" },
+]
+
+[[groups]]
+name = "Tabs"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Switch tabs"
+bindings = [
+  { keys = ["n"], label = "Next", action = "next_tab", show=false },
+  { keys = ["p"], label = "Previous", action = "previous_tab", show=false },
+]
+
+[[groups.actions]]
+name = "Create a tab"
+bindings = [
+  { keys = ["t>t"], label = "Beside current", action = "combine : pop_keyboard_mode : new_tab !neighbor" },
+  { keys = ["t>n"], label = "At the end", action = "combine : pop_keyboard_mode : new_tab" },
+]
+
+[[groups.actions]]
+name = "Close current tab"
+bindings = [
+  { keys = ["t>q"], action = "combine : pop_keyboard_mode : close_tab" },
+]
+
+[[groups.actions]]
+name = "Move current tab"
+bindings = [
+  { keys = ["t>."], label = "Forward", action = "move_tab_forward" },
+  { keys = ["t>,"], label = "Backward", action = "move_tab_backward" },
+]
+
+[[groups.actions]]
+name = "Rename current tab"
+bindings = [
+  { keys = ["t>r"], action = "combine : pop_keyboard_mode : set_tab_title" },
+]
+
+[[groups.actions]]
+name = "Return to previous tab"
+bindings = [
+  { keys = ["tab"], action = "combine : pop_keyboard_mode : goto_tab -1" },
+]
+
+[[groups.actions]]
+name = "Go to tab 1–9"
+keys_label = "1–9"
+bindings = [
+  { keys = ["1"], action = "combine : pop_keyboard_mode : goto_tab 1" },
+  { keys = ["2"], action = "combine : pop_keyboard_mode : goto_tab 2" },
+  { keys = ["3"], action = "combine : pop_keyboard_mode : goto_tab 3" },
+  { keys = ["4"], action = "combine : pop_keyboard_mode : goto_tab 4" },
+  { keys = ["5"], action = "combine : pop_keyboard_mode : goto_tab 5" },
+  { keys = ["6"], action = "combine : pop_keyboard_mode : goto_tab 6" },
+  { keys = ["7"], action = "combine : pop_keyboard_mode : goto_tab 7" },
+  { keys = ["8"], action = "combine : pop_keyboard_mode : goto_tab 8" },
+  { keys = ["9"], action = "combine : pop_keyboard_mode : goto_tab 9" },
+]
+
+[[groups]]
+name = "Layouts"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Cycle pane layouts"
+bindings = [
+  { keys = ["space"], action = "next_layout" },
+]
+
+[[groups.actions]]
+name = "Return to previous layout"
+bindings = [
+  { keys = ["shift+space", "ctrl+space"], action = "combine : pop_keyboard_mode : last_used_layout" },
+]
+
+[[groups.actions]]
+name = "Toggle zoomed pane (stack layout)"
+bindings = [
+  { keys = ["m"], action = "combine : pop_keyboard_mode : toggle_layout stack", show=false },
+]
+
+[[groups]]
+name = "Font"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Adjust font size"
+bindings = [
+  { keys = ["f>equal", "f>plus", "f>kp_add"], label = "Larger", action = "change_font_size all +0.5" },
+  { keys = ["f>minus", "f>kp_subtract"], label = "Smaller", action = "change_font_size all -0.5" },
+]
+
+[[groups.actions]]
+name = "Reset font size"
+bindings = [
+  { keys = ["f>0"], action = "combine : pop_keyboard_mode : change_font_size all 0" },
+]
+
+[[groups]]
+name = "Open text"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Choose and open a URL"
+bindings = [
+  { keys = ["o>u"], action = "combine : pop_keyboard_mode : open_url_with_hints" },
+]
+
+[[groups.actions]]
+name = "Open a path"
+bindings = [
+  { keys = ["o>f"], action = "combine : pop_keyboard_mode : kitten hints --type path" },
+]
+
+[[groups.actions]]
+name = "Open a file at a line number"
+bindings = [
+  { keys = ["o>n"], action = "combine : pop_keyboard_mode : kitten hints --type linenum" },
+]
+
+[[groups.actions]]
+name = "Open a hyperlink"
+bindings = [
+  { keys = ["o>h", "o>l"], action = "combine : pop_keyboard_mode : kitten hints --type hyperlink" },
+]
+
+[[groups]]
+name = "Copy text"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Copy a path"
+bindings = [
+  { keys = ["i>f"], action = "combine : pop_keyboard_mode : kitten hints --type path --alphabet hjklfdsagtyrueiwoqpbnvmcxz1234567890 --program -" },
+]
+
+[[groups.actions]]
+name = "Copy a line"
+bindings = [
+  { keys = ["i>l"], action = "combine : pop_keyboard_mode : kitten hints --type line --program -" },
+]
+
+[[groups.actions]]
+name = "Copy a word"
+bindings = [
+  { keys = ["i>w"], action = "combine : pop_keyboard_mode : kitten hints --type word --program -" },
+]
+
+[[groups.actions]]
+name = "Copy a hash"
+bindings = [
+  { keys = ["i>h"], action = "combine : pop_keyboard_mode : kitten hints --type hash --program -" },
+]
+
+[[groups]]
+name = "Copy to clipboard"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Copy a hash to clipboard"
+bindings = [
+  { keys = ["y>h"], action = "combine : pop_keyboard_mode : kitten hints --type hash --program @" },
+]
+
+[[groups]]
+name = "Terminal"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Insert a Unicode character"
+bindings = [
+  { keys = ["shift+u"], action = "combine : pop_keyboard_mode : kitten unicode_input" },
+]
+
+[[groups.actions]]
+name = "Open Kitty debug shell"
+bindings = [
+  { keys = ["shift+escape"], action = "combine : pop_keyboard_mode : kitty_shell window" },
+]
+
+[[groups.actions]]
+name = "Reset terminal and clear scrollback"
+bindings = [
+  { keys = ["delete", "backspace"], action = "combine : pop_keyboard_mode : clear_terminal reset active" },
+]
+
+[[groups.actions]]
+name = "Clear screen (send Ctrl+L)"
+bindings = [
+  { keys = ["l"], action = "combine : pop_keyboard_mode : send_key ctrl+l" },
+]
+
+[[groups]]
+name = "Appearance"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Adjust background opacity"
+bindings = [
+  { keys = ["b>i"], label = "More opaque", action = "set_background_opacity +0.1", repeat_timeout = 2.0 },
+  { keys = ["b>d"], label = "More transparent", action = "set_background_opacity -0.1", repeat_timeout = 2.0 },
+]
+
+[[groups.actions]]
+name = "Make background fully opaque"
+bindings = [
+  { keys = ["b>f"], action = "combine : pop_keyboard_mode : set_background_opacity 1" },
+]
+
+[[groups.actions]]
+name = "Reset background opacity"
+bindings = [
+  { keys = ["b>r"], action = "combine : pop_keyboard_mode : set_background_opacity default" },
+]
+
+[[mouse]]
+name = "Select text or follow link"
+gesture = "left click ungrabbed"
+action = "mouse_handle_click selection link prompt"
+
+[[mouse]]
+name = "Select command output"
+gesture = "right press ungrabbed"
+action = "mouse_select_command_output"
+
+[[mouse]]
+name = "Open selected command output in Neovim"
+gesture = "kitty_mod+right press ungrabbed"
+action = "combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output"
+
+# Kitty action catalog (Kitty 0.47.1). Existing shortcuts above remain unchanged.
+# An ellipsis means the action opens an argument prompt before running.
+
+[[groups]]
+name = "Kitty: Clipboard"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Copy selection or pass through"
+bindings = [
+  { keys = [";>c>c"], action = "combine | pop_keyboard_mode | copy_or_noop" },
+]
+
+[[groups.actions]]
+name = "Paste primary selection"
+bindings = [
+  { keys = [";>c>p"], action = "combine | pop_keyboard_mode | paste_from_selection" },
+]
+
+[[groups.actions]]
+name = "Open selected text with default program"
+bindings = [
+  { keys = [";>c>o"], action = "combine | pop_keyboard_mode | pass_selection_to_program" },
+]
+
+[[groups.actions]]
+name = "Clear selection"
+bindings = [
+  { keys = [";>c>x"], action = "combine | pop_keyboard_mode | clear_selection" },
+]
+
+[[groups.actions]]
+name = "Copy selection with ANSI formatting"
+bindings = [
+  { keys = [";>c>a"], action = "combine | pop_keyboard_mode | copy_ansi_to_clipboard" },
+]
+
+[[groups.actions]]
+name = "Copy last command output"
+bindings = [
+  { keys = [";>c>l"], action = "combine | pop_keyboard_mode | copy_last_command_output" },
+]
+
+[[groups.actions]]
+name = "Copy selection or interrupt"
+bindings = [
+  { keys = [";>c>i"], action = "combine | pop_keyboard_mode | copy_or_interrupt" },
+]
+
+[[groups.actions]]
+name = "Copy selection or last command output"
+bindings = [
+  { keys = [";>c>s"], action = "combine | pop_keyboard_mode | copy_selection_or_last_command_output" },
+]
+
+[[groups.actions]]
+name = "Paste custom text …"
+bindings = [
+  { keys = [";>c>t"], action = "combine | pop_keyboard_mode | kitten action_prompt.py paste" },
+]
+
+[[groups.actions]]
+name = "Copy selection to named buffer …"
+bindings = [
+  { keys = [";>c>b>c"], action = "combine | pop_keyboard_mode | kitten action_prompt.py copy_to_buffer" },
+]
+
+[[groups.actions]]
+name = "Paste from named buffer …"
+bindings = [
+  { keys = [";>c>b>p"], action = "combine | pop_keyboard_mode | kitten action_prompt.py paste_from_buffer" },
+]
+
+[[groups.actions]]
+name = "Paste selection or clipboard"
+bindings = [
+  { keys = [";>c>v"], action = "combine | pop_keyboard_mode | paste_selection_or_clipboard" },
+]
+
+[[groups]]
+name = "Kitty: Scrolling"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Smooth scroll up"
+bindings = [
+  { keys = [";>s>k"], action = "combine | pop_keyboard_mode | scroll_line_up smooth" },
+]
+
+[[groups.actions]]
+name = "Smooth scroll down"
+bindings = [
+  { keys = [";>s>j"], action = "combine | pop_keyboard_mode | scroll_line_down smooth" },
+]
+
+[[groups.actions]]
+name = "Browse scrollback in pager"
+bindings = [
+  { keys = [";>s>b"], action = "combine | pop_keyboard_mode | show_scrollback" },
+]
+
+[[groups.actions]]
+name = "Browse last command output"
+bindings = [
+  { keys = [";>s>o>l"], action = "combine | pop_keyboard_mode | show_last_command_output" },
+]
+
+[[groups.actions]]
+name = "Search scrollback"
+bindings = [
+  { keys = [";>s>/"], action = "combine | pop_keyboard_mode | search_scrollback" },
+]
+
+[[groups.actions]]
+name = "Move prompt to bottom"
+bindings = [
+  { keys = [";>s>p>b"], action = "combine | pop_keyboard_mode | scroll_prompt_to_bottom" },
+]
+
+[[groups.actions]]
+name = "Move prompt to top"
+bindings = [
+  { keys = [";>s>p>t"], action = "combine | pop_keyboard_mode | scroll_prompt_to_top" },
+]
+
+[[groups.actions]]
+name = "Browse first command output on screen"
+bindings = [
+  { keys = [";>s>o>f"], action = "combine | pop_keyboard_mode | show_first_command_output_on_screen" },
+]
+
+[[groups.actions]]
+name = "Browse last nonempty command output"
+bindings = [
+  { keys = [";>s>o>n"], action = "combine | pop_keyboard_mode | show_last_non_empty_command_output" },
+]
+
+[[groups.actions]]
+name = "Browse last visited command output"
+bindings = [
+  { keys = [";>s>o>v"], action = "combine | pop_keyboard_mode | show_last_visited_command_output" },
+]
+
+[[groups.actions]]
+name = "Jump to prompt with custom offset …"
+bindings = [
+  { keys = [";>s>p>g"], action = "combine | pop_keyboard_mode | kitten action_prompt.py scroll_to_prompt" },
+]
+
+[[groups]]
+name = "Kitty: Panes"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "New pane"
+bindings = [
+  { keys = [";>w>n"], action = "combine | pop_keyboard_mode | new_window" },
+]
+
+[[groups.actions]]
+name = "Focus next pane"
+bindings = [
+  { keys = [";>w>f>n"], action = "combine | pop_keyboard_mode | next_window" },
+]
+
+[[groups.actions]]
+name = "Focus previous pane"
+bindings = [
+  { keys = [";>w>f>p"], action = "combine | pop_keyboard_mode | previous_window" },
+]
+
+[[groups.actions]]
+name = "Resize pane interactively"
+bindings = [
+  { keys = [";>w>r>r"], action = "combine | pop_keyboard_mode | start_resizing_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 1"
+bindings = [
+  { keys = [";>w>f>1"], action = "combine | pop_keyboard_mode | first_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 2"
+bindings = [
+  { keys = [";>w>f>2"], action = "combine | pop_keyboard_mode | second_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 3"
+bindings = [
+  { keys = [";>w>f>3"], action = "combine | pop_keyboard_mode | third_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 4"
+bindings = [
+  { keys = [";>w>f>4"], action = "combine | pop_keyboard_mode | fourth_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 5"
+bindings = [
+  { keys = [";>w>f>5"], action = "combine | pop_keyboard_mode | fifth_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 6"
+bindings = [
+  { keys = [";>w>f>6"], action = "combine | pop_keyboard_mode | sixth_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 7"
+bindings = [
+  { keys = [";>w>f>7"], action = "combine | pop_keyboard_mode | seventh_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 8"
+bindings = [
+  { keys = [";>w>f>8"], action = "combine | pop_keyboard_mode | eighth_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 9"
+bindings = [
+  { keys = [";>w>f>9"], action = "combine | pop_keyboard_mode | ninth_window" },
+]
+
+[[groups.actions]]
+name = "Focus pane 10"
+bindings = [
+  { keys = [";>w>f>0"], action = "combine | pop_keyboard_mode | tenth_window" },
+]
+
+[[groups.actions]]
+name = "Rename pane"
+bindings = [
+  { keys = [";>w>t"], action = "combine | pop_keyboard_mode | set_window_title" },
+]
+
+[[groups.actions]]
+name = "Close other panes in tab"
+bindings = [
+  { keys = [";>w>c>o"], action = "combine | pop_keyboard_mode | close_other_windows_in_tab" },
+]
+
+[[groups.actions]]
+name = "Move pane in a direction …"
+bindings = [
+  { keys = [";>w>m>m"], action = "combine | pop_keyboard_mode | kitten action_prompt.py move_window" },
+]
+
+[[groups.actions]]
+name = "Focus left neighbor"
+bindings = [
+  { keys = [";>w>f>h"], action = "combine | pop_keyboard_mode | neighboring_window left" },
+]
+
+[[groups.actions]]
+name = "Focus bottom neighbor"
+bindings = [
+  { keys = [";>w>f>j"], action = "combine | pop_keyboard_mode | neighboring_window bottom" },
+]
+
+[[groups.actions]]
+name = "Focus top neighbor"
+bindings = [
+  { keys = [";>w>f>k"], action = "combine | pop_keyboard_mode | neighboring_window top" },
+]
+
+[[groups.actions]]
+name = "Focus right neighbor"
+bindings = [
+  { keys = [";>w>f>l"], action = "combine | pop_keyboard_mode | neighboring_window right" },
+]
+
+[[groups.actions]]
+name = "Focus pane by index or history …"
+bindings = [
+  { keys = [";>w>f>g"], action = "combine | pop_keyboard_mode | kitten action_prompt.py nth_window" },
+]
+
+[[groups.actions]]
+name = "Reset pane sizes"
+bindings = [
+  { keys = [";>w>r>x"], action = "combine | pop_keyboard_mode | reset_window_sizes" },
+]
+
+[[groups.actions]]
+name = "Resize pane by amount …"
+bindings = [
+  { keys = [";>w>r>s"], action = "combine | pop_keyboard_mode | kitten action_prompt.py resize_window" },
+]
+
+[[groups.actions]]
+name = "Close pane with confirmation"
+bindings = [
+  { keys = [";>w>c>c"], action = "combine | pop_keyboard_mode | close_window_with_confirmation" },
+]
+
+[[groups.actions]]
+name = "Detach pane to new OS window"
+bindings = [
+  { keys = [";>w>m>d"], action = "combine | pop_keyboard_mode | detach_window" },
+]
+
+[[groups.actions]]
+name = "New pane in current directory"
+bindings = [
+  { keys = [";>w>shift+n"], action = "combine | pop_keyboard_mode | new_window_with_cwd" },
+]
+
+[[groups.actions]]
+name = "Toggle pane title bars"
+bindings = [
+  { keys = [";>w>b"], action = "combine | pop_keyboard_mode | toggle_window_title_bars" },
+]
+
+[[groups]]
+name = "Kitty: OS windows"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "New OS window"
+bindings = [
+  { keys = [";>o>n"], action = "combine | pop_keyboard_mode | new_os_window" },
+]
+
+[[groups.actions]]
+name = "Close current OS window"
+bindings = [
+  { keys = [";>o>q"], action = "combine | pop_keyboard_mode | close_os_window" },
+]
+
+[[groups.actions]]
+name = "Toggle fullscreen"
+bindings = [
+  { keys = [";>o>f"], action = "combine | pop_keyboard_mode | toggle_fullscreen" },
+]
+
+[[groups.actions]]
+name = "Toggle maximized"
+bindings = [
+  { keys = [";>o>z"], action = "combine | pop_keyboard_mode | toggle_maximized" },
+]
+
+[[groups.actions]]
+name = "Toggle secure keyboard entry (macOS)"
+bindings = [
+  { keys = [";>o>m>s"], action = "combine | pop_keyboard_mode | toggle_macos_secure_keyboard_entry" },
+]
+
+[[groups.actions]]
+name = "Next OS window (macOS)"
+bindings = [
+  { keys = [";>o>m>n"], action = "combine | pop_keyboard_mode | macos_cycle_through_os_windows" },
+]
+
+[[groups.actions]]
+name = "Previous OS window (macOS)"
+bindings = [
+  { keys = [";>o>m>p"], action = "combine | pop_keyboard_mode | macos_cycle_through_os_windows_backwards" },
+]
+
+[[groups.actions]]
+name = "Hide Kitty (macOS)"
+bindings = [
+  { keys = [";>o>m>h"], action = "combine | pop_keyboard_mode | hide_macos_app" },
+]
+
+[[groups.actions]]
+name = "Hide other applications (macOS)"
+bindings = [
+  { keys = [";>o>m>o"], action = "combine | pop_keyboard_mode | hide_macos_other_apps" },
+]
+
+[[groups.actions]]
+name = "Minimize OS window (macOS)"
+bindings = [
+  { keys = [";>o>m>z"], action = "combine | pop_keyboard_mode | minimize_macos_window" },
+]
+
+[[groups.actions]]
+name = "Quit Kitty"
+bindings = [
+  { keys = [";>o>shift+q"], action = "combine | pop_keyboard_mode | quit" },
+]
+
+[[groups.actions]]
+name = "Close other OS windows"
+bindings = [
+  { keys = [";>o>c"], action = "combine | pop_keyboard_mode | close_other_os_windows" },
+]
+
+[[groups.actions]]
+name = "New OS window in current directory"
+bindings = [
+  { keys = [";>o>shift+n"], action = "combine | pop_keyboard_mode | new_os_window_with_cwd" },
+]
+
+[[groups.actions]]
+name = "Focus OS window by index or history …"
+bindings = [
+  { keys = [";>o>g"], action = "combine | pop_keyboard_mode | kitten action_prompt.py nth_os_window" },
+]
+
+[[groups]]
+name = "Kitty: Fonts and colors"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Increase font size by 2 points"
+bindings = [
+  { keys = [";>f>i"], action = "combine | pop_keyboard_mode | change_font_size all +2.0" },
+]
+
+[[groups.actions]]
+name = "Decrease font size by 2 points"
+bindings = [
+  { keys = [";>f>d"], action = "combine | pop_keyboard_mode | change_font_size all -2.0" },
+]
+
+[[groups.actions]]
+name = "Configure ligatures …"
+bindings = [
+  { keys = [";>f>l"], action = "combine | pop_keyboard_mode | kitten action_prompt.py disable_ligatures_in" },
+]
+
+[[groups.actions]]
+name = "Change terminal colors …"
+bindings = [
+  { keys = [";>f>c"], action = "combine | pop_keyboard_mode | kitten action_prompt.py set_colors" },
+]
+
+[[groups.actions]]
+name = "Set precise background opacity …"
+bindings = [
+  { keys = [";>f>o"], action = "combine | pop_keyboard_mode | kitten action_prompt.py set_background_opacity" },
+]
+
+[[groups.actions]]
+name = "Set precise font size …"
+bindings = [
+  { keys = [";>f>s"], action = "combine | pop_keyboard_mode | kitten action_prompt.py change_font_size" },
+]
+
+[[groups]]
+name = "Kitty: Insert files"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Insert selected path (default alphabet)"
+bindings = [
+  { keys = [";>i>p"], action = "combine | pop_keyboard_mode | kitten hints --type path --program -" },
+]
+
+[[groups.actions]]
+name = "Choose a file to insert"
+bindings = [
+  { keys = [";>i>f"], action = "combine | pop_keyboard_mode | kitten choose-files" },
+]
+
+[[groups.actions]]
+name = "Choose a directory to insert"
+bindings = [
+  { keys = [";>i>d"], action = "combine | pop_keyboard_mode | kitten choose-files --mode=dir" },
+]
+
+[[groups.actions]]
+name = "Insert Unicode character"
+bindings = [
+  { keys = [";>i>u"], action = "combine | pop_keyboard_mode | input_unicode_character" },
+]
+
+[[groups]]
+name = "Kitty: Configuration"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Open Kitty documentation"
+bindings = [
+  { keys = [";>k>h"], action = "combine | pop_keyboard_mode | show_kitty_doc overview" },
+]
+
+[[groups.actions]]
+name = "Edit kitty.conf"
+bindings = [
+  { keys = [";>k>e"], action = "combine | pop_keyboard_mode | edit_config_file" },
+]
+
+[[groups.actions]]
+name = "Reload Kitty configuration"
+bindings = [
+  { keys = [";>k>r"], action = "combine | pop_keyboard_mode | load_config_file" },
+]
+
+[[groups.actions]]
+name = "Show effective Kitty configuration"
+bindings = [
+  { keys = [";>k>d"], action = "combine | pop_keyboard_mode | debug_config" },
+]
+
+[[groups.actions]]
+name = "Open Kitty website"
+bindings = [
+  { keys = [";>k>w"], action = "combine | pop_keyboard_mode | open_url https://sw.kovidgoyal.net/kitty/" },
+]
+
+[[groups]]
+name = "Kitty: Terminal and mouse"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Erase above cursor / prompt"
+bindings = [
+  { keys = [";>x>u"], action = "combine | pop_keyboard_mode | clear_terminal to_cursor active" },
+]
+
+[[groups.actions]]
+name = "Erase scrollback"
+bindings = [
+  { keys = [";>x>b"], action = "combine | pop_keyboard_mode | clear_terminal scrollback active" },
+]
+
+[[groups.actions]]
+name = "Erase last command and output"
+bindings = [
+  { keys = [";>x>l"], action = "combine | pop_keyboard_mode | clear_terminal last_command active" },
+]
+
+[[groups.actions]]
+name = "Move above-prompt text to scrollback"
+bindings = [
+  { keys = [";>x>s"], action = "combine | pop_keyboard_mode | clear_terminal to_cursor_scroll active" },
+]
+
+[[groups.actions]]
+name = "Open URL under mouse pointer"
+bindings = [
+  { keys = [";>x>m>o"], action = "combine | pop_keyboard_mode | mouse_click_url" },
+]
+
+[[groups.actions]]
+name = "Open URL under mouse if no selection"
+bindings = [
+  { keys = [";>x>m>s"], action = "combine | pop_keyboard_mode | mouse_click_url_or_select" },
+]
+
+[[groups.actions]]
+name = "Clear terminal with custom scope …"
+bindings = [
+  { keys = [";>x>c"], action = "combine | pop_keyboard_mode | kitten action_prompt.py clear_terminal" },
+]
+
+[[groups]]
+name = "Kitty: Debugging"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Inspect screen and scrollback line attributes"
+bindings = [
+  { keys = [";>d>l"], action = "combine | pop_keyboard_mode | dump_lines_with_attrs" },
+]
+
+[[groups.actions]]
+name = "Close shared SSH connections"
+bindings = [
+  { keys = [";>d>s"], action = "combine | pop_keyboard_mode | close_shared_ssh_connections" },
+]
+
+[[groups.actions]]
+name = "Show Kitty environment variables"
+bindings = [
+  { keys = [";>d>e"], action = "combine | pop_keyboard_mode | show_kitty_env_vars" },
+]
+
+[[groups.actions]]
+name = "Simulate OS color scheme preference …"
+bindings = [
+  { keys = [";>d>c"], action = "combine | pop_keyboard_mode | kitten action_prompt.py simulate_color_scheme_preference_change" },
+]
+
+[[groups.actions]]
+name = "Start test mouse drag (mouse context)"
+bindings = [
+  { keys = [";>d>m"], action = "combine | pop_keyboard_mode | test_dragging" },
+]
+
+[[groups.actions]]
+name = "Show a custom error dialog …"
+bindings = [
+  { keys = [";>d>r"], action = "combine | pop_keyboard_mode | kitten action_prompt.py show_error" },
+]
+
+[[groups]]
+name = "Kitty: Markers"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Remove marker"
+bindings = [
+  { keys = [";>m>x"], action = "combine | pop_keyboard_mode | remove_marker" },
+]
+
+[[groups.actions]]
+name = "Jump to next mark"
+bindings = [
+  { keys = [";>m>j"], action = "combine | pop_keyboard_mode | scroll_to_mark next" },
+]
+
+[[groups.actions]]
+name = "Jump to previous mark"
+bindings = [
+  { keys = [";>m>k"], action = "combine | pop_keyboard_mode | scroll_to_mark prev" },
+]
+
+[[groups.actions]]
+name = "Set or toggle marker …"
+bindings = [
+  { keys = [";>m>t"], action = "combine | pop_keyboard_mode | kitten action_prompt.py toggle_marker" },
+]
+
+[[groups.actions]]
+name = "Create marker interactively"
+bindings = [
+  { keys = [";>m>n"], action = "combine | pop_keyboard_mode | create_marker" },
+]
+
+[[groups]]
+name = "Kitty: Advanced"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Send custom text to terminal …"
+bindings = [
+  { keys = [";>a>t"], action = "combine | pop_keyboard_mode | kitten action_prompt.py send_text" },
+]
+
+[[groups.actions]]
+name = "Signal foreground process …"
+bindings = [
+  { keys = [";>a>s"], action = "combine | pop_keyboard_mode | kitten action_prompt.py signal_child" },
+]
+
+[[groups.actions]]
+name = "Grab OS keyboard shortcuts"
+bindings = [
+  { keys = [";>a>g"], action = "combine | pop_keyboard_mode | grab_keyboard" },
+]
+
+[[groups.actions]]
+name = "Release OS keyboard shortcuts"
+bindings = [
+  { keys = [";>a>u"], action = "combine | pop_keyboard_mode | ungrab_keyboard" },
+]
+
+[[groups.actions]]
+name = "Run Kitty remote control command …"
+bindings = [
+  { keys = [";>a>r"], action = "combine | pop_keyboard_mode | kitten action_prompt.py remote_control" },
+]
+
+[[groups.actions]]
+name = "Run remote control script …"
+bindings = [
+  { keys = [";>a>x"], action = "combine | pop_keyboard_mode | kitten action_prompt.py remote_control_script" },
+]
+
+[[groups.actions]]
+name = "Pause Kitty event processing …"
+bindings = [
+  { keys = [";>a>z"], action = "combine | pop_keyboard_mode | kitten action_prompt.py sleep" },
+]
+
+[[groups.actions]]
+name = "Do nothing (no-op)"
+bindings = [
+  { keys = [";>a>n"], action = "combine | pop_keyboard_mode | kitten action_prompt.py no_op" },
+]
+
+[[groups.actions]]
+name = "Launch a program with options …"
+bindings = [
+  { keys = [";>a>l"], action = "combine | pop_keyboard_mode | kitten action_prompt.py launch" },
+]
+
+[[groups.actions]]
+name = "Run a kitten with arguments …"
+bindings = [
+  { keys = [";>a>k"], action = "combine | pop_keyboard_mode | kitten action_prompt.py kitten" },
+]
+
+[[groups.actions]]
+name = "Send custom keys to terminal …"
+bindings = [
+  { keys = [";>a>i"], action = "combine | pop_keyboard_mode | kitten action_prompt.py send_key" },
+]
+
+[[groups.actions]]
+name = "Combine multiple Kitty actions …"
+bindings = [
+  { keys = [";>a>c"], action = "combine | pop_keyboard_mode | kitten action_prompt.py combine" },
+]
+
+[[groups.actions]]
+name = "Enter a named keyboard mode …"
+bindings = [
+  { keys = [";>a>p"], action = "combine | pop_keyboard_mode | kitten action_prompt.py push_keyboard_mode" },
+]
+
+[[groups]]
+name = "Kitty: Tabs"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Toggle tab by match expression …"
+bindings = [
+  { keys = [";>t>g"], action = "combine | pop_keyboard_mode | kitten action_prompt.py toggle_tab" },
+]
+
+[[groups.actions]]
+name = "Close other tabs"
+bindings = [
+  { keys = [";>t>o"], action = "combine | pop_keyboard_mode | close_other_tabs_in_os_window" },
+]
+
+[[groups.actions]]
+name = "Detach tab to OS window"
+bindings = [
+  { keys = [";>t>d"], action = "combine | pop_keyboard_mode | detach_tab" },
+]
+
+[[groups.actions]]
+name = "New tab in current directory"
+bindings = [
+  { keys = [";>t>n"], action = "combine | pop_keyboard_mode | new_tab_with_cwd" },
+]
+
+[[groups.actions]]
+name = "Select tab interactively"
+bindings = [
+  { keys = [";>t>s"], action = "combine | pop_keyboard_mode | select_tab" },
+]
+
+[[groups.actions]]
+name = "Go to tab by number or history …"
+bindings = [
+  { keys = [";>t>t"], action = "combine | pop_keyboard_mode | kitten action_prompt.py goto_tab" },
+]
+
+[[groups]]
+name = "Kitty: Layouts"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Switch to named layout …"
+bindings = [
+  { keys = [";>l>g"], action = "combine | pop_keyboard_mode | kitten action_prompt.py goto_layout" },
+]
+
+[[groups.actions]]
+name = "Run layout-specific action …"
+bindings = [
+  { keys = [";>l>a"], action = "combine | pop_keyboard_mode | kitten action_prompt.py layout_action" },
+]
+
+[[groups]]
+name = "Kitty: Sessions"
+mode = "kitty_prefix"
+
+[[groups.actions]]
+name = "Close a session"
+bindings = [
+  { keys = [";>r>c"], action = "combine | pop_keyboard_mode | close_session" },
+]
+
+[[groups.actions]]
+name = "Switch to or create session"
+bindings = [
+  { keys = [";>r>g"], action = "combine | pop_keyboard_mode | goto_session" },
+]
+
+[[groups.actions]]
+name = "Save current state as session"
+bindings = [
+  { keys = [";>r>s"], action = "combine | pop_keyboard_mode | save_as_session" },
+]
