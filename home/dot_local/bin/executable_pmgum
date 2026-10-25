@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# Interactive Podman helpers. Requires Bash 4+, Gum, and Podman.
+set -euo pipefail
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+usage() {
+    cat <<'EOF'
+Usage: podman-gum [create|shell|start|stop|commit|remove|list|images]
+With no action, opens a menu. Ctrl-C cancels a prompt.
+Individual commands: pm-create, pm-shell, pm-start, pm-stop,
+                     pm-commit, pm-remove, pm-list, pm-images
+EOF
+}
+for tool in gum podman; do
+    command -v "$tool" >/dev/null || die "Missing dependency: $tool"
+done
+
+# Never hide a failed Podman query inside a process substitution.
+container() {
+    local rows selection
+    rows=$(podman ps "$@" --format '{{.ID}}  {{.Names}}  [{{.Status}}]')
+    [[ -n $rows ]] || die 'No matching containers.'
+    selection=$(printf '%s\n' "$rows" | gum filter --placeholder 'Select a container')
+    [[ -n $selection ]] || exit 130
+    printf '%s\n' "${selection%% *}"
+}
+input() {
+    local value
+    value=$(gum input --header "$1" --value "${2:-}")
+    [[ -n $value ]] || die 'A value is required.'
+    printf '%s\n' "$value"
+}
+run() {
+    printf '\n$' >&2
+    printf ' %q' podman "$@" >&2
+    printf '\n\n' >&2
+    podman "$@"
+}
+ensure_running() {
+    local running
+    running=$(podman inspect --format '{{.State.Running}}' "$1")
+    if [[ $running != true ]]; then
+        gum confirm 'Start this container to open a shell?' || exit 0
+        run start "$1"
+    fi
+}
+action=${1:-}
+[[ $# -le 1 ]] || { usage >&2; exit 2; }
+if [[ ${0##*/} == pm-* ]]; then action=${0##*/pm-}; fi
+if [[ -z $action ]]; then
+    action=$(gum choose create shell start stop commit remove list images quit)
+fi
+case $action in
+    -h|--help|help) usage ;;
+    quit) exit 0 ;;
+    list) run ps --all ;;
+    images) run images ;;
+    create)
+        source=$(gum choose 'Local image' 'Pull an image')
+        if [[ $source == 'Local image' ]]; then
+            rows=$(podman images --format '{{.Repository}}:{{.Tag}}' --filter dangling=false)
+            [[ -n $rows ]] || die 'No tagged local images. Choose Pull an image instead.'
+            image=$(printf '%s\n' "$rows" | sort -u | gum filter --placeholder 'Select a base image')
+            [[ -n $image ]] || exit 130
+        else
+            image=$(input 'Fully qualified image (example: registry.fedoraproject.org/fedora:44)')
+            [[ $image != -* && $image != *[[:space:]]* ]] || die 'Invalid image reference.'
+            run pull "$image"
+        fi
+        name=$(input 'New container name (example: chezmoi-test)')
+        [[ $name =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]] || die 'Invalid container name.'
+        printf 'Creating a persistent test container as root inside the container.\n'
+        printf 'The image must contain /bin/sh and sleep. No host directories are mounted.\n'
+        run run --detach --name "$name" --user root --entrypoint /bin/sh "$image" -c 'while :; do sleep 3600; done'
+        printf 'Ready. Use pm-shell to connect.\n'
+        ;;
+    shell)
+        id=$(container --all)
+        ensure_running "$id"
+        passwd=$(podman exec --user root "$id" cat /etc/passwd)
+        users=$(printf '%s\n' "$passwd" | cut -d: -f1)
+        user=$(printf '%s\n' "$users" | gum filter --placeholder 'Select an existing container user')
+        [[ -n $user ]] || exit 130
+        home=''
+        while IFS=: read -r login _ _ _ _ directory _; do
+            if [[ $login == "$user" ]]; then home=$directory; break; fi
+        done <<< "$passwd"
+        shell=$(gum choose /bin/bash /bin/zsh /bin/sh)
+        args=(exec -it --user "$user")
+        if [[ -n $home && $home == /* ]]; then
+            args+=(--env "HOME=$home" --workdir "$home")
+        fi
+        run "${args[@]}" "$id" "$shell"
+        ;;
+    start) id=$(container --all --filter status=exited --filter status=created); run start "$id" ;;
+    stop) id=$(container --filter status=running); run stop "$id" ;;
+    commit)
+        id=$(container --all)
+        image=$(input 'Save as image (example: localhost/dotfiles-test:v1)')
+        [[ $image != -* && $image != *[[:space:]]* ]] || die 'Invalid image reference.'
+        if podman image exists "$image"; then
+            gum confirm "Image $image already exists. Move its tag to this snapshot?" || exit 0
+        fi
+        run commit "$id" "$image"
+        ;;
+    remove)
+        id=$(container --all)
+        gum confirm "Remove container $id and its writable layer?" || exit 0
+        running=$(podman inspect --format '{{.State.Running}}' "$id")
+        if [[ $running == true ]]; then run stop "$id"; fi
+        run rm "$id"
+        ;;
+    *) usage >&2; exit 2 ;;
+esac
