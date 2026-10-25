@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+
+case "${1:-}" in
+    close)
+        monitors=$(hyprctl monitors -j)
+        external_count=$(printf '%s\n' "$monitors" | jq '[.[] | select(.name != "eDP-1")] | length')
+        if [ "$external_count" -gt 0 ]; then
+            hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = true })'
+        else
+            # swaylock -f returns after the lock is ready; suspend only on success.
+            swaylock -f
+            systemctl suspend
+        fi
+        ;;
+    open)
+        hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x1107", scale = 2.0 })'
+        ;;
+    *)
+        echo "Usage: hypr-lid open|close" >&2
+        exit 2
+        ;;
+esac
