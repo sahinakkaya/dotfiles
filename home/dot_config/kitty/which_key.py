@@ -1,6 +1,7 @@
 """Open the prefix guide, then replay selections through Kitty's real mappings."""
 
 import json
+import importlib
 from pathlib import Path
 
 from kittens.tui.handler import result_handler
@@ -9,8 +10,17 @@ from kitty.fast_data_types import add_timer, get_options, viewport_for_window
 from kitty.key_encoding import KeyEvent, EventType
 from kitty.options.utils import KeyboardMode
 from kitty.types import WindowGeometry, human_repr_of_single_key
-from keybindings import guide_metadata, load_bindings
-from which_key_pending import PendingGuide
+import keybindings as _keybindings
+import which_key_pending as _which_key_pending
+
+# Kitty is a long-running Python process and retains imported helper modules
+# across kitten invocations. Reload local helpers so a config apply that changes
+# the TOML schema and its parser cannot leave the two at different versions.
+importlib.reload(_keybindings)
+importlib.reload(_which_key_pending)
+guide_metadata = _keybindings.guide_metadata
+load_bindings = _keybindings.load_bindings
+PendingGuide = _which_key_pending.PendingGuide
 
 
 class GuideLayout:

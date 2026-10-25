@@ -52,8 +52,8 @@ bindings = [
   advertise hidden keys. Visibility edits take effect when reopening the guide.
 - `repeat_timeout` is an optional nonnegative number of seconds, defaulting to
   `0` (ordinary dispatch). A positive value executes the action immediately,
-  keeps its submenu open, and closes the guide after that many seconds without
-  another repeatable action. Each repeat restarts the timer. The timer begins
+  keeps its submenu open, suppresses a pending guide display, and exits after
+  that many seconds without another repeatable action. Each repeat restarts the timer. The timer begins
   only after the first repeatable action, not when entering the prefix/submenu.
   For example:
   `{ keys = ["b>i"], action = "set_background_opacity +0.1", repeat_timeout = 2.0 }`.

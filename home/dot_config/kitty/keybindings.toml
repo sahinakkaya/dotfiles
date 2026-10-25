@@ -250,8 +250,8 @@ mode = "kitty_prefix"
 [[groups.actions]]
 name = "Switch tabs"
 bindings = [
-  { keys = ["n"], label = "Next", action = "next_tab", show=false },
-  { keys = ["p"], label = "Previous", action = "previous_tab", show=false },
+  { keys = ["n"], label = "Next", action = "next_tab", show=false, repeat_timeout=0.6 },
+  { keys = ["p"], label = "Previous", action = "previous_tab", show=false, repeat_timeout=0.6 },
 ]
 
 [[groups.actions]]
@@ -441,8 +441,8 @@ mode = "kitty_prefix"
 [[groups.actions]]
 name = "Adjust background opacity"
 bindings = [
-  { keys = ["b>i"], label = "More opaque", action = "set_background_opacity +0.1", repeat_timeout = 2.0 },
-  { keys = ["b>d"], label = "More transparent", action = "set_background_opacity -0.1", repeat_timeout = 2.0 },
+  { keys = ["b>i"], label = "More opaque", action = "set_background_opacity +0.1", repeat_timeout = 1.0 },
+  { keys = ["b>d"], label = "More transparent", action = "set_background_opacity -0.1", repeat_timeout = 1.0 },
 ]
 
 [[groups.actions]]

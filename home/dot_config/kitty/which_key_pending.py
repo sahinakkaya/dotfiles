@@ -139,6 +139,12 @@ class PendingGuide:
 
         if timeout:
             self.cancel_repeat()
+            # Once an action has started repeating, remain unobtrusive until
+            # its inactivity timeout exits the mode. In particular, this lets
+            # a repeat timeout be longer than the guide's display delay.
+            if self.display_timer is not None:
+                remove_timer(self.display_timer)
+                self.display_timer = None
             # Native dispatch removes a completed sequence mode. Restore its
             # submenu so subsequent i/d presses execute immediately as well.
             if self.root not in self.mappings.keyboard_mode_stack:
