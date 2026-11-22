@@ -42,9 +42,10 @@ Host home.ts.net
 # UseKeychain yes # shouldn't be needed as we have bitwarden now
 
 
-Host git.sahinakkaya.dev
+Host git.sahinakkaya.dev git
   IdentityFile ~/.ssh/id_ed25519
-  Port 2242
+  User git
+  Port 22
 
 {{ end -}}
 

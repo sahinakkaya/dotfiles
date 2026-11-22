@@ -68,6 +68,7 @@ packages:
     - git
     - difftastic
     - ttf-nerd-fonts-symbols
+    - syncthing
   macports_headless:
     - fish
     - vim
