@@ -77,6 +77,7 @@ Library
 {{ if not .personal }}
 .gnupg
 .ssh/id_ed25519*
+.ssh/.id_ed25519*
 .config/mpv/scripts/autosub.lua
 .local/bin/joplin
 .local/bin/joplin-secure
