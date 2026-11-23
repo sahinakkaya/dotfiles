@@ -225,10 +225,10 @@ bindings = [
 name = "Resize pane or resize in Vim"
 keys_label = "ctrl+hjkl"
 bindings = [
-  { keys = ["ctrl+h"], label = "Left", action = "kitten pass_keys.py relative_resize left  3 alt+h" },
-  { keys = ["ctrl+j"], label = "Down", action = "kitten pass_keys.py relative_resize down  3 alt+j" },
-  { keys = ["ctrl+k"], label = "Up", action = "kitten pass_keys.py relative_resize up    3 alt+k" },
-  { keys = ["ctrl+l"], label = "Right", action = "kitten pass_keys.py relative_resize right 3 alt+l" },
+  { keys = ["ctrl+h"], label = "Left", action = "kitten pass_keys.py relative_resize left  3 alt+h", repeat_timeout=0.6 },
+  { keys = ["ctrl+j"], label = "Down", action = "kitten pass_keys.py relative_resize down  3 alt+j", repeat_timeout=0.6 },
+  { keys = ["ctrl+k"], label = "Up", action = "kitten pass_keys.py relative_resize up    3 alt+k", repeat_timeout=0.6 },
+  { keys = ["ctrl+l"], label = "Right", action = "kitten pass_keys.py relative_resize right 3 alt+l", repeat_timeout=0.6 },
 ]
 
 [[groups.actions]]
@@ -308,7 +308,7 @@ mode = "kitty_prefix"
 [[groups.actions]]
 name = "Cycle pane layouts"
 bindings = [
-  { keys = ["space"], action = "next_layout" },
+  { keys = ["space"], action = "next_layout", repeat_timeout=0.6 },
 ]
 
 [[groups.actions]]

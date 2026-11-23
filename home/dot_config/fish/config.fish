@@ -7,6 +7,8 @@ fish_add_path --path "$HOME/.local/bin"
 
 if test -r "$XDG_CONFIG_HOME/shell/common-aliases"
     source "$XDG_CONFIG_HOME/shell/common-aliases"
+    alias headscale='docker exec -it headscale headscale'
+    alias caddy='docker exec -it caddy caddy'
 end
 
 if status is-interactive

@@ -14,7 +14,7 @@ case "${1:-}" in
         fi
         ;;
     open)
-        hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x1107", scale = 2.0 })'
+        hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x1107", scale = 1.5 })'
         ;;
     *)
         echo "Usage: hypr-lid open|close" >&2

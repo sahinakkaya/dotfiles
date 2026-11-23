@@ -3,7 +3,7 @@
 [options]
 focus_follows_mouse = true
 mouse_follows_focus = false
-animation_speed = 15
+animation_speed = 20
 preset_column_widths = [0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
 window_resize_cycle = false
 mouse_resize_modifier = "cmd + shift"
@@ -14,6 +14,7 @@ disable_native_tabs = false
 
 
 auto_center = true
+window_hidden_ratio = 0.4
 
 [padding]
 top = 0
@@ -27,6 +28,8 @@ window_virtual_north = "cmd - k"
 window_virtual_south = "cmd - j"
 window_virtualmove_north = "cmd + shift - k"
 window_virtualmove_south = "cmd + shift - j"
+window_virtualsend_north = "cmd + ctrl - k"
+window_virtualsend_south = "cmd + ctrl - j"
 window_center = "cmd - t"
 
 window_virtualnum_1 = "cmd - 1"
@@ -86,8 +89,8 @@ quit = "ctrl + cmd - q"
 restart = "ctrl + cmd - r"
 
 [swipe]
-deceleration = 4
-sensitivity = 0.5
+deceleration = 7
+sensitivity = 0.75
 continuous = false
 
 [swipe.gesture]
