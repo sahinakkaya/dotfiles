@@ -45,6 +45,7 @@ dot_local/share/symlink_darkman
 
 {{ if .headless }}
 .config/task
+.config/alacritty
 .zshenv
 .config/zsh
 .config/zsh-paths.zsh
