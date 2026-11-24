@@ -223,6 +223,56 @@ local function balance_columns()
     hl.dispatch(hl.dsp.layout("colresize all " .. tostring(width)))
 end
 
+local pseudo_max_widths = {}
+local configured_column_widths = { 0.50, 0.60, 0.70, 0.80, 0.90, 1.00 }
+
+local function closest_configured_width(width)
+    local closest = configured_column_widths[1]
+    local closest_distance = math.abs(width - closest)
+
+    for i = 2, #configured_column_widths do
+        local candidate = configured_column_widths[i]
+        local distance = math.abs(width - candidate)
+        if distance < closest_distance then
+            closest = candidate
+            closest_distance = distance
+        end
+    end
+
+    return closest
+end
+
+local function toggle_pseudo_maximize()
+    local window = hl.get_active_window()
+    local monitor = hl.get_active_monitor()
+    if not window or not monitor or window.floating then
+        return
+    end
+
+    local window_width = window.size and (window.size.x or window.size[1])
+    local monitor_width = monitor.width or (monitor.size and (monitor.size.x or monitor.size[1]))
+    if not window_width or not monitor_width or monitor_width == 0 then
+        return
+    end
+
+    local key = window.stable_id
+    if not key or key == "" then
+        key = window.address
+    end
+
+    local saved_width = pseudo_max_widths[key]
+    if saved_width then
+        hl.dispatch(hl.dsp.layout("colresize " .. tostring(saved_width)))
+        pseudo_max_widths[key] = nil
+        return
+    end
+
+    local logical_monitor_width = monitor_width / (monitor.scale or 1)
+    local current_width = window_width / logical_monitor_width
+    pseudo_max_widths[key] = closest_configured_width(current_width)
+    hl.dispatch(hl.dsp.layout("colresize 1.0"))
+end
+
 hl.bind("SUPER + tab", hl.dsp.focus({ workspace = "previous" }))
 hl.bind("SUPER + return", hl.dsp.exec_cmd("kitty --single-instance"))
 hl.bind("SUPER + q", hl.dsp.window.close())
@@ -241,7 +291,7 @@ hl.bind("SUPER + CONTROL + t", hl.dsp.group.toggle())
 hl.bind("SUPER + t", hl.dsp.layout("center"))
 hl.bind("SUPER + SHIFT + t", hl.dsp.layout("fit_into_view"))
 hl.bind("SUPER + b", balance_columns)
-hl.bind("SUPER + m", hl.dsp.window.fullscreen({ mode = "maximized" }))
+hl.bind("SUPER + m", toggle_pseudo_maximize)
 hl.bind("SUPER + SHIFT + m", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind("SUPER + SHIFT + n", hl.dsp.exec_cmd("swaync-client -t -sw"))
 hl.bind("SUPER + h", hl.dsp.layout("focus l"))
